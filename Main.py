@@ -6,51 +6,65 @@ from flask import Flask
 from threading import Thread
 
 # --- CONFIG ---
-# Pehle check karein ki ye Keys sahi hain
 BOT_TOKEN = '8324843782:AAGsDnmPurCkZg4123GJSndtN4wiyTI6NnY'
-GEMINI_KEY = 'AIzaSyARhU1QpC3pFZvSAocroZ1NT2w62dWMUrE'
+# Aapki OpenAI Key
+OPENAI_KEY = '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'
 
 bot = telebot.TeleBot(BOT_TOKEN)
 app = Flask('')
 
 def call_swarg_ai(prompt):
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_KEY}"
-    payload = {"contents": [{"parts": [{"text": f"Your name is Swarg AI. Answer in Hinglish: {prompt}"}]}]}
-    headers = {'Content-Type': 'application/json'}
-    
+    url = "https://api.openai.com/v1/chat/completions"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {OPENAI_KEY}"
+    }
+    payload = {
+        "model": "gpt-3.5-turbo",
+        "messages": [
+            {"role": "system", "content": "Your name is Swarg AI. Answer everything in friendly Hinglish."},
+            {"role": "user", "content": prompt}
+        ]
+    }
     try:
-        response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
+        response = requests.post(url, headers=headers, json=payload, timeout=15)
         res_data = response.json()
-        
-        # Agar response sahi hai
-        if 'candidates' in res_data and len(res_data['candidates']) > 0:
-            return res_data['candidates'][0]['content']['parts'][0]['text']
-        
-        # Agar Google ne koi error diya, toh wo message bhejein
-        if 'error' in res_data:
-            return f"❌ Google Error: {res_data['error'].get('message', 'Unknown error')}"
-        
-        return f"❌ Unknown Response: {str(res_data)}"
-            
+        if 'choices' in res_data:
+            return res_data['choices'][0]['message']['content']
+        else:
+            # Agar OpenAI key mein balance khatam hai toh ye dikhayega
+            print(f"Error: {res_data}")
+            return "❌ Swarg AI abhi jawab nahi de pa raha. Shayad limit khatam ho gayi hai."
     except Exception as e:
-        return f"❌ Connection Fail: {str(e)}"
+        return f"❌ Connection Error: Thodi der baad koshish karein."
 
+# --- Welcome Message (Aapke mutabiq) ---
 @bot.message_handler(commands=['start'])
 def welcome(message):
-    bot.send_message(message.chat.id, "✨ Swarg AI is ready! Kuch bhi puchiye.")
+    welcome_text = (
+        "✨ **Swarg AI ko message karne ke liye dhanyawaad!** ✨\n\n"
+        "Main aapka personal AI assistant hoon. Aap **Swarg AI se kuch bhi puche, ye jawab dega!** 🚀"
+    )
+    # Seedha send_message use karein taaki Error 400 na aaye
+    bot.send_message(message.chat.id, welcome_text, parse_mode="Markdown")
 
 @bot.message_handler(func=lambda message: True)
-def chat(message):
+def handle_chat(message):
     bot.send_chat_action(message.chat.id, 'typing')
     answer = call_swarg_ai(message.text)
     bot.send_message(message.chat.id, answer)
 
+# --- Health Check (Render ke liye zaroori) ---
 @app.route('/')
-def home(): return "Online"
+def home():
+    return "Swarg AI is Online!"
 
-def run_flask(): app.run(host='0.0.0.0', port=8080)
+def run_flask():
+    # Render hamesha 8080 port par health check karta hai
+    app.run(host='0.0.0.0', port=8080)
 
 if __name__ == "__main__":
+    print("🚀 Swarg AI is launching on Render...")
     Thread(target=run_flask).start()
     bot.polling(none_stop=True)
     
