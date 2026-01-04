@@ -5,9 +5,10 @@ import os
 from flask import Flask
 from threading import Thread
 
-# --- CONFIG ---
+# --- CONFIG (Check karein ki ye sahi hain) ---
 BOT_TOKEN = '8324843782:AAGsDnmPurCkZg4123GJSndtN4wiyTI6NnY'
 GEMINI_KEY = 'AIzaSyARhU1QpC3pFZvSAocroZ1NT2w62dWMUrE'
+
 bot = telebot.TeleBot(BOT_TOKEN)
 app = Flask('')
 
@@ -20,16 +21,24 @@ def call_swarg_ai(prompt):
     try:
         response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
         res_data = response.json()
-        if 'candidates' in res_data:
+        
+        # Ye line Render logs mein error dikhayegi
+        print(f"DEBUG AI RESPONSE: {res_data}") 
+        
+        if 'candidates' in res_data and len(res_data['candidates']) > 0:
             return res_data['candidates'][0]['content']['parts'][0]['text']
-        return "❌ Swarg AI ko jawab nahi mila."
+        elif 'error' in res_data:
+            return f"❌ Google AI Error: {res_data['error'].get('message', 'Unknown Error')}"
+        else:
+            return "❌ AI ne khali jawab diya. Dubara try karein."
+            
     except Exception as e:
-        return f"❌ AI Connection Error: Thodi der baad try karein."
+        print(f"Fatal Error: {e}")
+        return "❌ Connection fail ho gaya."
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
-    # reply_to ki jagah send_message use karein taaki Error 400 na aaye
-    bot.send_message(message.chat.id, "✨ Swarg AI is Live! Main aapki kya madad kar sakta hoon?")
+    bot.send_message(message.chat.id, "✨ **Swarg AI Live ho gaya hai!**\nAapka bot ab Render par 24/7 chalega. Puchiye jo puchna hai!")
 
 @bot.message_handler(func=lambda message: True)
 def chat(message):
@@ -37,17 +46,16 @@ def chat(message):
     answer = call_swarg_ai(message.text)
     bot.send_message(message.chat.id, answer)
 
-# --- Health Check ke liye Flask ---
 @app.route('/')
 def home():
-    return "Swarg AI is Running!"
+    return "Swarg AI Status: Healthy & Online!"
 
 def run_flask():
-    # Koyeb/Render ke liye port 8080 set karein
+    # Render ke liye port 8080
     app.run(host='0.0.0.0', port=8080)
 
 if __name__ == "__main__":
-    print("🚀 Swarg AI starting...")
+    print("🚀 Swarg AI is launching on Render...")
     Thread(target=run_flask).start()
     bot.polling(none_stop=True)
     
