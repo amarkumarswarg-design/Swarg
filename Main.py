@@ -7,7 +7,7 @@ from threading import Thread
 
 # --- CONFIG ---
 BOT_TOKEN = '8324843782:AAGsDnmPurCkZg4123GJSndtN4wiyTI6NnY'
-# Aapki OpenAI Key (GitHub par 'Allow Secret' zaroor karna)
+# Aapki OpenAI Key
 OPENAI_KEY = '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'
 
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -29,18 +29,14 @@ def call_swarg_ai(prompt):
     try:
         response = requests.post(url, headers=headers, json=payload, timeout=15)
         res_data = response.json()
-        
-        # Ye line Render logs mein asli error batayegi
-        print(f"DEBUG OPENAI: {res_data}")
-        
         if 'choices' in res_data:
             return res_data['choices'][0]['message']['content']
         else:
-            return "❌ Swarg AI ko abhi jawab nahi mila. Shayad key mein balance ya quota khatam hai."
+            return "❌ Swarg AI ko jawab nahi mila. Shayad key mein balance khatam hai."
     except Exception as e:
-        return f"❌ Connection Error: Thodi der baad try karein."
+        return "❌ Connection fail ho gaya."
 
-# --- Welcome Message (Jo aapne manga tha) ---
+# --- Aapka Manga Hua Welcome Message ---
 @bot.message_handler(commands=['start'])
 def welcome(message):
     msg = (
@@ -57,13 +53,13 @@ def chat(message):
 
 @app.route('/')
 def home():
-    return "Swarg AI is Online!"
+    return "Live"
 
 def run_flask():
     app.run(host='0.0.0.0', port=8080)
 
 if __name__ == "__main__":
-    print("🚀 Swarg AI is starting on Render...")
+    print("🚀 Starting Swarg AI...")
     Thread(target=run_flask).start()
     bot.polling(none_stop=True)
     
