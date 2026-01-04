@@ -5,58 +5,49 @@ import os
 from flask import Flask
 from threading import Thread
 
-# --- Render ke liye Web Server ---
-app = Flask('')
-@app.route('/')
-def home():
-    return "Swarg AI is Online!"
-
-def run():
-    app.run(host='0.0.0.0', port=8080)
-
-def keep_alive():
-    t = Thread(target=run)
-    t.start()
-
-# --- Bot Config ---
+# --- CONFIG ---
 BOT_TOKEN = '8324843782:AAGsDnmPurCkZg4123GJSndtN4wiyTI6NnY'
 GEMINI_KEY = 'AIzaSyARhU1QpC3pFZvSAocroZ1NT2w62dWMUrE'
 bot = telebot.TeleBot(BOT_TOKEN)
+app = Flask('')
 
 def call_swarg_ai(prompt):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_KEY}"
-    # System Prompt: Isse bot Swarg ki tarah behave karega
-    system_instruction = "Your name is Swarg AI. You are a wise and helpful educational assistant for Indian students. Explain concepts simply in Hinglish. Be polite and encouraging."
-    
     payload = {
-        "contents": [{
-            "parts": [{"text": f"{system_instruction}\n\nUser Question: {prompt}"}]
-        }]
+        "contents": [{"parts": [{"text": f"Your name is Swarg AI. Answer in friendly Hinglish: {prompt}"}]}]
     }
     headers = {'Content-Type': 'application/json'}
-    response = requests.post(url, headers=headers, data=json.dumps(payload))
-    return response.json()['candidates'][0]['content']['parts'][0]['text']
+    try:
+        response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
+        res_data = response.json()
+        if 'candidates' in res_data:
+            return res_data['candidates'][0]['content']['parts'][0]['text']
+        return "❌ Swarg AI ko jawab nahi mila."
+    except Exception as e:
+        return f"❌ AI Connection Error: Thodi der baad try karein."
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
-    welcome_text = (
-        "✨ **Swarg AI mein aapka swagat hai!** ✨\n\n"
-        "Main aapka personal study partner hoon. Aap mujhse kisi bhi subject ke bare mein puch sakte hain.\n"
-        "Example: 'Physics Newton's law samjhao' ya 'History notes' "
-    )
-    bot.reply_to(message, welcome_text, parse_mode="Markdown")
+    # reply_to ki jagah send_message use karein taaki Error 400 na aaye
+    bot.send_message(message.chat.id, "✨ Swarg AI is Live! Main aapki kya madad kar sakta hoon?")
 
 @bot.message_handler(func=lambda message: True)
 def chat(message):
-    status = bot.reply_to(message, "☁️ Swarg AI soch raha hai...")
-    try:
-        answer = call_swarg_ai(message.text)
-        bot.edit_message_text(answer, message.chat.id, status.message_id, parse_mode="Markdown")
-    except:
-        bot.edit_message_text("❌ Swarg ke servers abhi busy hain. Thoda intezar karein.", message.chat.id, status.message_id)
+    bot.send_chat_action(message.chat.id, 'typing')
+    answer = call_swarg_ai(message.text)
+    bot.send_message(message.chat.id, answer)
+
+# --- Health Check ke liye Flask ---
+@app.route('/')
+def home():
+    return "Swarg AI is Running!"
+
+def run_flask():
+    # Koyeb/Render ke liye port 8080 set karein
+    app.run(host='0.0.0.0', port=8080)
 
 if __name__ == "__main__":
-    keep_alive() # Render ko active rakhne ke liye
-    print("🚀 Swarg AI is launching on Render...")
+    print("🚀 Swarg AI starting...")
+    Thread(target=run_flask).start()
     bot.polling(none_stop=True)
     
