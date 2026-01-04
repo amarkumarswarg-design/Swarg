@@ -1,4 +1,3 @@
-
 import telebot
 import requests
 import json
@@ -6,7 +5,7 @@ import os
 from flask import Flask
 from threading import Thread
 
-# --- CONFIG (Render Environment se Keys uthayega) ---
+# --- Render ke Environment Variables se read karega ---
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 GEMINI_KEY = os.getenv('GEMINI_KEY')
 
@@ -14,6 +13,7 @@ bot = telebot.TeleBot(BOT_TOKEN)
 app = Flask('')
 
 def call_swarg_ai(prompt):
+    # Check karein ki Key mil rahi hai ya nahi
     if not GEMINI_KEY:
         return "❌ Error: Gemini Key nahi mili. Render Environment check karein."
     
@@ -26,11 +26,12 @@ def call_swarg_ai(prompt):
         res_data = response.json()
         if 'candidates' in res_data:
             return res_data['candidates'][0]['content']['parts'][0]['text']
-        return f"❌ Google Error: {res_data.get('error', {}).get('message', 'Unknown Error')}"
+        else:
+            return f"❌ Google Error: {res_data.get('error', {}).get('message', 'Check API Key')}"
     except Exception as e:
         return "❌ Swarg AI connect nahi ho paa raha."
 
-# --- Aapka Manga Hua Welcome Message ---
+# --- Welcome Message (Jo aapne bataya tha) ---
 @bot.message_handler(commands=['start'])
 def welcome(message):
     msg = (
@@ -48,9 +49,8 @@ def chat(message):
 @app.route('/')
 def home(): return "Healthy"
 
-def run_flask(): app.run(host='0.0.0.0', port=8080)
-
 if __name__ == "__main__":
-    Thread(target=run_flask).start()
+    # Flask ko background mein chalayein
+    Thread(target=lambda: app.run(host='0.0.0.0', port=8080)).start()
     bot.polling(none_stop=True)
     
