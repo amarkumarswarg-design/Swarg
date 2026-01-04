@@ -1,56 +1,46 @@
-import telebot
-import requests
-import json
 import os
-from flask import Flask
-from threading import Thread
+import google.generativeai as genai
+from telegram import Update
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    MessageHandler,
+    ContextTypes,
+    filters
+)
 
-# --- Render ke Environment Variables se read karega ---
-BOT_TOKEN = os.getenv('BOT_TOKEN')
-GEMINI_KEY = os.getenv('GEMINI_KEY')
+# Environment variables
+GEMINI_API_KEY = os.getenv("GEMINI_KEY")
+TELEGRAM_TOKEN = os.getenv("BOT_TOKEN")
 
-bot = telebot.TeleBot(BOT_TOKEN)
-app = Flask('')
+if not GEMINI_API_KEY or not TELEGRAM_TOKEN:
+    raise ValueError("ENV variables missing")
 
-def call_swarg_ai(prompt):
-    # Check karein ki Key mil rahi hai ya nahi
-    if not GEMINI_KEY:
-        return "❌ Error: Gemini Key nahi mili. Render Environment check karein."
-    
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_KEY}"
-    payload = {"contents": [{"parts": [{"text": f"Your name is Swarg AI. Answer in Hinglish: {prompt}"}]}]}
-    headers = {'Content-Type': 'application/json'}
-    
-    try:
-        response = requests.post(url, headers=headers, json=payload, timeout=15)
-        res_data = response.json()
-        if 'candidates' in res_data:
-            return res_data['candidates'][0]['content']['parts'][0]['text']
-        else:
-            return f"❌ Google Error: {res_data.get('error', {}).get('message', 'Check API Key')}"
-    except Exception as e:
-        return "❌ Swarg AI connect nahi ho paa raha."
+# Gemini setup
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel("gemini-pro")
 
-# --- Welcome Message (Jo aapne bataya tha) ---
-@bot.message_handler(commands=['start'])
-def welcome(message):
-    msg = (
-        "✨ **Swarg AI ko message karne ke liye dhanyawaad!** ✨\n\n"
-        "Main aapka personal AI assistant hoon. Aap **Swarg AI se kuch bhi puche, ye jawab dega!** 🚀"
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "🤖 Gemini Telegram Bot ready hai.\nMessage bhejo."
     )
-    bot.send_message(message.chat.id, msg, parse_mode="Markdown")
 
-@bot.message_handler(func=lambda message: True)
-def chat(message):
-    bot.send_chat_action(message.chat.id, 'typing')
-    answer = call_swarg_ai(message.text)
-    bot.send_message(message.chat.id, answer)
+async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        user_text = update.message.text
+        response = model.generate_content(user_text)
+        await update.message.reply_text(response.text)
+    except Exception:
+        await update.message.reply_text("❌ Error aaya, baad me try karein.")
 
-@app.route('/')
-def home(): return "Healthy"
+def main():
+    app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat))
+
+    print("Bot started...")
+    app.run_polling()
 
 if __name__ == "__main__":
-    # Flask ko background mein chalayein
-    Thread(target=lambda: app.run(host='0.0.0.0', port=8080)).start()
-    bot.polling(none_stop=True)
-    
+    main()
