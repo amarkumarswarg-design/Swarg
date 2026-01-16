@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swarg | Cipher Matrix Ultimate</title>
+    <title>Swarg | Cipher Matrix Supreme</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;600;800&family=JetBrains+Mono:wght@400;700;800&family=Montserrat:wght@800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;600;800&family=JetBrains+Mono:wght@400;700;800&family=Montserrat:wght@900&display=swap');
 
         :root {
             --matrix-glow: #00f2ff;
             --matrix-dark: #05080a;
             --premium-gold: #c5a059;
-            --emerald-glow: #10b981;
             --twitter-blue: #1d9bf0;
         }
 
@@ -25,236 +24,241 @@
             color: #ffffff;
             min-height: 100vh;
             overflow-x: hidden;
+            user-select: none;
         }
 
-        /* BACKGROUND EFFECTS */
-        .bg-gradient-animate { background: radial-gradient(circle at 50% 50%, #0a192f 0%, #05080a 100%); position: fixed; inset: 0; z-index: -1; }
+        /* ---------------------------------------------------------------------
+           PREMIUM BACKGROUND
+        --------------------------------------------------------------------- */
+        .bg-animate { background: radial-gradient(circle at 50% 50%, #0a192f 0%, #05080a 100%); position: fixed; inset: 0; z-index: -1; }
         .matrix-lines { position: absolute; width: 100%; height: 100%; background: linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px); background-size: 50px 50px; z-index: -1; }
 
-        /* HEADER & OWNER BRANDING */
+        /* ---------------------------------------------------------------------
+           SUPREME HEADER: FIXED SPACING & LOGO
+        --------------------------------------------------------------------- */
+        .header-container {
+            padding-top: 60px;
+            margin-bottom: 80px; /* Big space below header */
+            text-align: center;
+        }
+
         .swarg-logo {
-            font-size: clamp(5rem, 15vw, 8.5rem);
+            font-size: clamp(5rem, 15vw, 9rem);
             font-weight: 900;
-            letter-spacing: -4px;
+            letter-spacing: -3px;
             background: linear-gradient(to bottom, #ffffff 40%, #555 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6));
             font-style: italic;
-            line-height: 1.2;
-            display: block;
+            line-height: 1;
+            margin-bottom: 35px; /* Added space between Swarg and Amar */
+            display: inline-block;
         }
 
-        .owner-tag-container {
+        .owner-identity {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: -20px;
+            gap: 15px;
         }
 
-        .owner-name-stylized {
+        .amar-kumar-elite {
             font-family: 'Montserrat', sans-serif;
             font-weight: 900;
-            font-size: 20px;
-            letter-spacing: 4px;
+            font-size: 24px;
+            letter-spacing: 6px;
             background: linear-gradient(45deg, var(--premium-gold), #fff, var(--premium-gold));
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
-            animation: shine 3s linear infinite;
+            animation: textShine 3s linear infinite;
         }
-        @keyframes shine { to { background-position: 200% center; } }
+        @keyframes textShine { to { background-position: 200% center; } }
 
-        .twitter-blue-tick {
+        .verified-tick {
             color: var(--twitter-blue);
-            font-size: 22px;
-            margin-left: 10px;
-            filter: drop-shadow(0 0 8px rgba(29, 155, 240, 0.6));
+            font-size: 26px;
+            filter: drop-shadow(0 0 10px rgba(29, 155, 240, 0.5));
+            animation: tickGlow 2s infinite ease-in-out;
         }
+        @keyframes tickGlow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); opacity: 0.8; } }
 
-        /* TABS */
-        .tab-btn { position: relative; padding: 18px 45px; font-weight: 700; letter-spacing: 2.5px; color: #555; transition: all 0.4s; border-bottom: 2px solid #111; font-size: 13px; }
+        /* ---------------------------------------------------------------------
+           TABS & INTERFACE
+        --------------------------------------------------------------------- */
+        .premium-glass { background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 50px; box-shadow: 0 50px 120px rgba(0,0,0,0.5); }
+        
+        .tab-btn { position: relative; padding: 20px 50px; font-weight: 800; letter-spacing: 3px; color: #444; transition: all 0.4s; border-bottom: 2px solid #111; font-size: 14px; }
         .tab-btn.active { color: var(--matrix-glow); border-bottom: 2px solid var(--matrix-glow); }
-        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--matrix-glow); filter: blur(8px); }
-        .tab-content { display: none; }
-        .active-view { display: block; animation: matrixEnter 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        @keyframes matrixEnter { from { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--matrix-glow); filter: blur(10px); }
 
-        /* GLASS UI */
-        .premium-glass { background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 45px; box-shadow: 0 40px 100px rgba(0,0,0,0.4); }
-        .input-matrix { background: rgba(0,0,0,0.4); border: 1px solid #1a1a1a; border-radius: 24px; color: var(--matrix-glow); font-family: 'JetBrains Mono', monospace; resize: none; transition: all 0.4s; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); }
-        .input-matrix:focus { border-color: var(--matrix-glow); box-shadow: 0 0 30px rgba(0, 242, 255, 0.15), inset 0 2px 10px rgba(0,0,0,0.5); outline: none; }
+        .active-view { display: block; animation: entry 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        @keyframes entry { from { opacity: 0; transform: translateY(40px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        /* BUTTONS & OUTPUT - NEW LAYOUT */
-        .action-btn { background: linear-gradient(135deg, #00f2ff 0%, #0066ff 100%); color: #000; font-weight: 900; text-transform: uppercase; letter-spacing: 4px; padding: 24px; border-radius: 24px; box-shadow: 0 15px 40px rgba(0, 242, 255, 0.2); transition: all 0.4s; }
-        .action-btn:hover { transform: translateY(-8px); box-shadow: 0 25px 60px rgba(0, 242, 255, 0.4); filter: brightness(1.2); }
-        
-        .output-box { background: rgba(0, 242, 255, 0.03); border: 1px dashed rgba(0, 242, 255, 0.3); color: var(--matrix-glow); word-break: break-all; min-height: 200px; }
-        
-        /* RELOCATED COPY BUTTONS */
-        .copy-trigger {
+        /* ---------------------------------------------------------------------
+           NON-OVERLAPPING OUTPUT SYSTEM
+        --------------------------------------------------------------------- */
+        .matrix-textarea { background: rgba(0,0,0,0.4); border: 1px solid #1a1a1a; border-radius: 24px; color: var(--matrix-glow); font-family: 'JetBrains Mono', monospace; resize: none; transition: all 0.4s; box-shadow: inset 0 2px 15px rgba(0,0,0,0.5); }
+        .matrix-textarea:focus { border-color: var(--matrix-glow); box-shadow: 0 0 30px rgba(0, 242, 255, 0.1), inset 0 2px 15px rgba(0,0,0,0.5); outline: none; }
+
+        .output-box-supreme { background: rgba(0, 242, 255, 0.02); border: 1px dashed rgba(0, 242, 255, 0.2); color: var(--matrix-glow); word-break: break-all; min-height: 250px; border-radius: 24px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 24px; font-weight: 800; padding: 30px; }
+
+        .copy-button-elite {
+            width: 100%;
+            margin-top: 15px;
+            padding: 18px;
+            background: rgba(0, 242, 255, 0.05);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            border-radius: 20px;
+            color: var(--matrix-glow);
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-size: 13px;
+            transition: all 0.3s;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            margin-top: 15px;
-            background: rgba(0, 242, 255, 0.1);
-            border: 1px solid rgba(0, 242, 255, 0.3);
-            color: var(--matrix-glow);
-            padding: 16px;
-            border-radius: 18px;
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 3px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-            cursor: pointer;
+            gap: 12px;
         }
-        .copy-trigger:hover { background: var(--matrix-glow); color: #000; box-shadow: 0 0 30px var(--matrix-glow); }
-        
-        .truth-btn { color: var(--emerald-glow); border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.1); }
-        .truth-btn:hover { background: var(--emerald-glow); color: #000; box-shadow: 0 0 30px var(--emerald-glow); }
+        .copy-button-elite:hover { background: var(--matrix-glow); color: #000; box-shadow: 0 0 30px var(--matrix-glow); transform: translateY(-3px); }
+        .copy-button-elite:active { transform: translateY(0); }
 
-        .footer-corporate { color: #222; font-size: 11px; font-weight: 900; letter-spacing: 6px; text-transform: uppercase; }
+        .decode-btn { color: #10b981; border-color: rgba(16, 185, 129, 0.2); background: rgba(16, 185, 129, 0.05); }
+        .decode-btn:hover { background: #10b981; color: #000; box-shadow: 0 0 30px #10b981; }
+
+        /* ACTION BUTTON */
+        .master-btn { background: linear-gradient(135deg, #00f2ff 0%, #0066ff 100%); color: #000; font-weight: 900; text-transform: uppercase; letter-spacing: 5px; padding: 25px; border-radius: 25px; box-shadow: 0 20px 50px rgba(0, 242, 255, 0.2); transition: all 0.4s; }
+        .master-btn:hover { transform: translateY(-10px); box-shadow: 0 30px 70px rgba(0, 242, 255, 0.4); filter: brightness(1.2); }
     </style>
 </head>
 <body class="p-4 md:p-12">
 
-    <div class="bg-gradient-animate"></div>
+    <div class="bg-animate"></div>
     <div class="matrix-lines"></div>
 
     <div class="max-w-6xl mx-auto">
         
-        <header class="text-center mb-20">
+        <header class="header-container">
             <h1 class="swarg-logo">Swarg</h1>
-            <div class="owner-tag-container">
-                <span class="owner-name-stylized">Amar Kumar</span>
-                <i class="fas fa-circle-check twitter-blue-tick"></i>
+            <div class="owner-identity">
+                <span class="amar-kumar-elite">Amar Kumar</span>
+                <i class="fas fa-circle-check verified-tick"></i>
             </div>
-            <div class="mt-12 inline-flex items-center space-x-4 px-8 py-3 bg-white/5 rounded-full border border-white/10 backdrop-blur-md">
+            <div class="mt-16 inline-flex items-center space-x-4 px-10 py-3 bg-white/5 rounded-full border border-white/10 backdrop-blur-md">
                 <i class="fas fa-shield-halved text-cyan-400 text-xs"></i>
-                <span class="text-[10px] font-black tracking-[0.5em] text-slate-300 uppercase">Neural Cipher Oracle V3.0</span>
+                <span class="text-[10px] font-black tracking-[0.5em] text-slate-300 uppercase">Neural Cipher Oracle V4.0</span>
             </div>
         </header>
 
-        <main class="premium-glass p-8 md:p-16">
+        <main class="premium-glass p-8 md:p-20">
             
-            <nav class="flex justify-center mb-16 border-b border-white/5">
-                <button onclick="switchTab('encode', this)" class="tab-btn active" id="btn-encode">
-                    <i class="fas fa-fingerprint mr-3 opacity-40"></i>ENCODE CORE
-                </button>
-                <button onclick="switchTab('decode', this)" class="tab-btn" id="btn-decode">
-                    <i class="fas fa-shredder mr-3 opacity-40"></i>DECODE ORACLE
-                </button>
+            <nav class="flex justify-center mb-20 border-b border-white/5">
+                <button onclick="switchTab('encode', this)" class="tab-btn active" id="btn-enc">ENCODE CORE</button>
+                <button onclick="switchTab('decode', this)" class="tab-btn" id="btn-dec">DECODE ORACLE</button>
             </nav>
 
-            <div id="view-encode" class="tab-content active-view space-y-10">
-                <div class="grid lg:grid-cols-2 gap-12">
-                    <div class="space-y-5">
-                        <h3 class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Human Input</h3>
-                        <textarea id="raw-input" placeholder="Whisper your secret..." class="w-full h-72 p-8 input-matrix text-lg"></textarea>
+            <div id="view-encode" class="active-view space-y-12">
+                <div class="grid lg:grid-cols-2 gap-16">
+                    <div class="space-y-6">
+                        <label class="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] ml-2">Human Message</label>
+                        <textarea id="raw-inp" placeholder="Type your secret..." class="w-full h-80 p-8 matrix-textarea text-xl"></textarea>
                     </div>
-                    <div class="space-y-5">
-                        <h3 class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Celestial Output</h3>
+                    <div class="space-y-6">
+                        <label class="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] ml-2">Celestial Code</label>
                         <div>
-                            <div id="cipher-result" class="w-full h-56 p-8 input-matrix output-box overflow-y-auto no-scrollbar font-bold text-2xl flex items-center justify-center text-center">
-                                <span class="opacity-20 italic text-sm tracking-widest">Waiting for Neural Processing...</span>
+                            <div id="cipher-res" class="output-box-supreme">
+                                <span class="opacity-20 italic text-sm tracking-widest">System Ready...</span>
                             </div>
-                            <button onclick="copyToClipboard('cipher-result')" class="copy-trigger">
-                                <i class="fas fa-copy mr-3"></i>COPY SECURE CODE
+                            <button onclick="copyToClipboard('cipher-res')" class="copy-button-elite">
+                                <i class="fas fa-copy"></i> Copy Secret Code
                             </button>
                         </div>
                     </div>
                 </div>
-                <button onclick="runEncryption()" class="action-btn w-full mt-8">
-                    <i class="fas fa-atom mr-4 animate-spin-slow"></i>Process Matrix Encryption
+                <button onclick="runEncryption()" class="master-btn w-full mt-12">
+                    <i class="fas fa-microchip mr-4"></i> Initiate Matrix Encryption
                 </button>
             </div>
 
-            <div id="view-decode" class="tab-content space-y-10">
-                <div class="grid lg:grid-cols-2 gap-12">
-                    <div class="space-y-5">
-                        <h3 class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Secret Symbols</h3>
-                        <textarea id="cipher-input" placeholder="Paste the symbols..." class="w-full h-72 p-8 input-matrix text-lg"></textarea>
+            <div id="view-decode" class="hidden space-y-12">
+                <div class="grid lg:grid-cols-2 gap-16">
+                    <div class="space-y-6">
+                        <label class="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] ml-2">Secret Symbols</label>
+                        <textarea id="cipher-inp" placeholder="Paste the symbols..." class="w-full h-80 p-8 matrix-textarea text-xl"></textarea>
                     </div>
-                    <div class="space-y-5">
-                        <h3 class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Revealed Truth</h3>
+                    <div class="space-y-6">
+                        <label class="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] ml-2">Revealed Truth</label>
                         <div>
-                            <div id="truth-result" class="w-full h-56 p-8 input-matrix output-box !border-emerald-500/20 !text-emerald-400 overflow-y-auto no-scrollbar font-bold text-2xl flex items-center justify-center text-center">
-                                <span class="opacity-20 italic text-sm tracking-widest">Awaiting Oracle Revelation...</span>
+                            <div id="truth-res" class="output-box-supreme !border-emerald-500/20 !text-emerald-400">
+                                <span class="opacity-20 italic text-sm tracking-widest">Awaiting Oracle...</span>
                             </div>
-                            <button onclick="copyToClipboard('truth-result')" class="copy-trigger truth-btn">
-                                <i class="fas fa-copy mr-3"></i>COPY REVEALED TRUTH
+                            <button onclick="copyToClipboard('truth-res')" class="copy-button-elite decode-btn">
+                                <i class="fas fa-copy"></i> Copy Decoded Truth
                             </button>
                         </div>
                     </div>
                 </div>
-                <button onclick="runDecryption()" class="action-btn w-full mt-8 !from-emerald-400 !to-cyan-600 !shadow-emerald-500/20">
-                    <i class="fas fa-eye-low-vision mr-4"></i>Initiate Oracle Decoding
+                <button onclick="runDecryption()" class="master-btn w-full mt-12 !from-emerald-400 !to-cyan-600 !shadow-emerald-500/20">
+                    <i class="fas fa-eye mr-4"></i> Execute Oracle Decoding
                 </button>
             </div>
 
         </main>
 
-        <footer class="mt-24 text-center">
-            <p class="footer-corporate">Powered by Swarg Quantum Systems &copy; 2026</p>
+        <footer class="mt-28 text-center pb-10">
+            <p class="text-slate-800 font-black text-[11px] uppercase tracking-[0.6em]">Swarg Neural Networks &copy; 2026</p>
         </footer>
 
     </div>
 
     <script>
-        /**
-         * SWARG CIPHER MATRIX V30
-         * FIXED LAYOUT & BRANDING
-         */
-
-        const MAP = { 'a':'£', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'†', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', '?':'¿', '!':'¡', ',':'¬', '@':'⊛' };
+        const MAP = { 'a':'£', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'†', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', '?':'¿', '!':'¡', ',':'¬' };
         const REVERSE = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
 
         function switchTab(t, btn) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-view'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('view-encode').classList.add('hidden');
+            document.getElementById('view-decode').classList.add('hidden');
+            document.getElementById('btn-enc').classList.remove('active');
+            document.getElementById('btn-dec').classList.remove('active');
+            
+            document.getElementById('view-' + t).classList.remove('hidden');
             document.getElementById('view-' + t).classList.add('active-view');
             btn.classList.add('active');
         }
 
         function runEncryption() {
-            const raw = document.getElementById('raw-input').value.toLowerCase();
-            if(!raw) return;
+            const val = document.getElementById('raw-inp').value.toLowerCase();
+            if(!val) return;
             let res = "";
-            for(let c of raw) res += MAP[c] || c;
-            const out = document.getElementById('cipher-result');
+            for(let c of val) res += MAP[c] || c;
+            const out = document.getElementById('cipher-res');
             out.innerText = res;
-            out.classList.remove('flex', 'items-center', 'justify-center', 'text-center');
+            out.classList.remove('italic', 'opacity-20');
         }
 
         function runDecryption() {
-            const val = document.getElementById('cipher-input').value.trim();
+            const val = document.getElementById('cipher-inp').value.trim();
             if(!val) return;
             let res = "";
             for(let c of val) res += REVERSE[c] || c;
-            const out = document.getElementById('truth-result');
+            const out = document.getElementById('truth-res');
             out.innerText = res;
-            out.classList.remove('flex', 'items-center', 'justify-center', 'text-center');
+            out.classList.remove('italic', 'opacity-20');
         }
 
         function copyToClipboard(id) {
-            const text = document.getElementById(id).innerText;
-            if(!text || text.includes('Waiting') || text.includes('Awaiting')) return;
-            navigator.clipboard.writeText(text).then(() => {
+            const txt = document.getElementById(id).innerText;
+            if(txt.includes('...') || !txt) return;
+            navigator.clipboard.writeText(txt).then(() => {
                 const btn = event.currentTarget;
-                const original = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check-circle mr-3"></i>COPIED SECURELY';
-                if(btn.classList.contains('truth-btn')) {
-                     btn.style.background = "#10b981"; btn.style.color = "#000";
-                } else {
-                     btn.style.background = "#00f2ff"; btn.style.color = "#000";
-                }
-                setTimeout(() => {
-                    btn.innerHTML = original;
-                    btn.style.background = ""; btn.style.color = "";
-                }, 2000);
+                const old = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-circle-check"></i> SECURED TO CLIPBOARD';
+                btn.style.background = "#00f2ff"; btn.style.color = "#000";
+                setTimeout(() => { btn.innerHTML = old; btn.style.background = ""; btn.style.color = ""; }, 2000);
             });
         }
     </script>
