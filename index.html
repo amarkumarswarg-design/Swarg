@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swarg | Cipher Matrix Elite</title>
+    <title>Swarg | Cipher Matrix Ultimate</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;600;800&family=JetBrains+Mono:wght@400;700;800&family=Montserrat:wght@800;900&display=swap');
 
         :root {
             --matrix-glow: #00f2ff;
             --matrix-dark: #05080a;
             --premium-gold: #c5a059;
             --emerald-glow: #10b981;
+            --twitter-blue: #1d9bf0;
         }
 
         body {
@@ -26,29 +27,11 @@
             overflow-x: hidden;
         }
 
-        /* ---------------------------------------------------------------------
-           PREMIUM ANIMATED BACKGROUND
-        --------------------------------------------------------------------- */
-        .bg-gradient-animate {
-            background: radial-gradient(circle at 50% 50%, #0a192f 0%, #05080a 100%);
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-        }
+        /* BACKGROUND EFFECTS */
+        .bg-gradient-animate { background: radial-gradient(circle at 50% 50%, #0a192f 0%, #05080a 100%); position: fixed; inset: 0; z-index: -1; }
+        .matrix-lines { position: absolute; width: 100%; height: 100%; background: linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px); background-size: 50px 50px; z-index: -1; }
 
-        .matrix-lines {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: -1;
-        }
-
-        /* ---------------------------------------------------------------------
-           HEADER STYLING (FIXED FOR 'G' VISIBILITY)
-        --------------------------------------------------------------------- */
+        /* HEADER & OWNER BRANDING */
         .swarg-logo {
             font-size: clamp(5rem, 15vw, 8.5rem);
             font-weight: 900;
@@ -58,146 +41,82 @@
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6));
             font-style: italic;
-            line-height: 1.2; /* Adjusted for g visibility */
-            padding-bottom: 20px; /* Buffer for descender */
+            line-height: 1.2;
             display: block;
         }
 
-        .owner-tag {
-            font-size: 14px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 14px;
-            color: var(--premium-gold);
-            margin-top: -15px;
-            opacity: 0.9;
-            filter: drop-shadow(0 0 10px rgba(197, 160, 89, 0.3));
+        .owner-tag-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -20px;
         }
 
-        /* ---------------------------------------------------------------------
-           TAB INTERFACE
-        --------------------------------------------------------------------- */
-        .tab-btn {
-            position: relative;
-            padding: 18px 45px;
-            font-weight: 700;
-            letter-spacing: 2.5px;
-            color: #555;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border-bottom: 2px solid #111;
-            font-size: 13px;
-        }
-        .tab-btn.active {
-            color: var(--matrix-glow);
-            border-bottom: 2px solid var(--matrix-glow);
-        }
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--matrix-glow);
-            filter: blur(8px);
-        }
-
-        .tab-content { display: none; }
-        .active-view { 
-            display: block; 
-            animation: matrixEnter 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); 
-        }
-        @keyframes matrixEnter {
-            from { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); }
-            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-        }
-
-        /* ---------------------------------------------------------------------
-           PREMIUM GLASS CARDS & INPUTS
-        --------------------------------------------------------------------- */
-        .premium-glass {
-            background: rgba(255, 255, 255, 0.01);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 45px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.4);
-        }
-
-        .input-matrix {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid #1a1a1a;
-            border-radius: 24px;
-            color: var(--matrix-glow);
-            font-family: 'JetBrains Mono', monospace;
-            resize: none;
-            transition: all 0.4s;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
-        }
-        .input-matrix:focus {
-            border-color: var(--matrix-glow);
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15), inset 0 2px 10px rgba(0,0,0,0.5);
-            outline: none;
-        }
-
-        /* ACTION BUTTONS */
-        .action-btn {
-            background: linear-gradient(135deg, #00f2ff 0%, #0066ff 100%);
-            color: #000;
+        .owner-name-stylized {
+            font-family: 'Montserrat', sans-serif;
             font-weight: 900;
-            text-transform: uppercase;
+            font-size: 20px;
             letter-spacing: 4px;
-            padding: 24px;
-            border-radius: 24px;
-            box-shadow: 0 15px 40px rgba(0, 242, 255, 0.2);
-            transition: all 0.4s;
+            background: linear-gradient(45deg, var(--premium-gold), #fff, var(--premium-gold));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            animation: shine 3s linear infinite;
         }
-        .action-btn:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 60px rgba(0, 242, 255, 0.4);
-            filter: brightness(1.2);
-        }
-        .action-btn:active { transform: translateY(-2px); }
+        @keyframes shine { to { background-position: 200% center; } }
 
-        /* OUTPUT BOX & COPY BUTTON */
-        .output-container { position: relative; }
+        .twitter-blue-tick {
+            color: var(--twitter-blue);
+            font-size: 22px;
+            margin-left: 10px;
+            filter: drop-shadow(0 0 8px rgba(29, 155, 240, 0.6));
+        }
+
+        /* TABS */
+        .tab-btn { position: relative; padding: 18px 45px; font-weight: 700; letter-spacing: 2.5px; color: #555; transition: all 0.4s; border-bottom: 2px solid #111; font-size: 13px; }
+        .tab-btn.active { color: var(--matrix-glow); border-bottom: 2px solid var(--matrix-glow); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--matrix-glow); filter: blur(8px); }
+        .tab-content { display: none; }
+        .active-view { display: block; animation: matrixEnter 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        @keyframes matrixEnter { from { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
+
+        /* GLASS UI */
+        .premium-glass { background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 45px; box-shadow: 0 40px 100px rgba(0,0,0,0.4); }
+        .input-matrix { background: rgba(0,0,0,0.4); border: 1px solid #1a1a1a; border-radius: 24px; color: var(--matrix-glow); font-family: 'JetBrains Mono', monospace; resize: none; transition: all 0.4s; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); }
+        .input-matrix:focus { border-color: var(--matrix-glow); box-shadow: 0 0 30px rgba(0, 242, 255, 0.15), inset 0 2px 10px rgba(0,0,0,0.5); outline: none; }
+
+        /* BUTTONS & OUTPUT - NEW LAYOUT */
+        .action-btn { background: linear-gradient(135deg, #00f2ff 0%, #0066ff 100%); color: #000; font-weight: 900; text-transform: uppercase; letter-spacing: 4px; padding: 24px; border-radius: 24px; box-shadow: 0 15px 40px rgba(0, 242, 255, 0.2); transition: all 0.4s; }
+        .action-btn:hover { transform: translateY(-8px); box-shadow: 0 25px 60px rgba(0, 242, 255, 0.4); filter: brightness(1.2); }
         
+        .output-box { background: rgba(0, 242, 255, 0.03); border: 1px dashed rgba(0, 242, 255, 0.3); color: var(--matrix-glow); word-break: break-all; min-height: 200px; }
+        
+        /* RELOCATED COPY BUTTONS */
         .copy-trigger {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 15px;
             background: rgba(0, 242, 255, 0.1);
             border: 1px solid rgba(0, 242, 255, 0.3);
             color: var(--matrix-glow);
-            padding: 10px 18px;
-            border-radius: 14px;
-            font-size: 12px;
+            padding: 16px;
+            border-radius: 18px;
+            font-size: 13px;
             font-weight: 800;
+            letter-spacing: 3px;
             backdrop-filter: blur(10px);
             transition: all 0.3s;
             cursor: pointer;
-            z-index: 10;
         }
-        .copy-trigger:hover {
-            background: var(--matrix-glow);
-            color: #000;
-            box-shadow: 0 0 20px var(--matrix-glow);
-        }
+        .copy-trigger:hover { background: var(--matrix-glow); color: #000; box-shadow: 0 0 30px var(--matrix-glow); }
+        
+        .truth-btn { color: var(--emerald-glow); border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.1); }
+        .truth-btn:hover { background: var(--emerald-glow); color: #000; box-shadow: 0 0 30px var(--emerald-glow); }
 
-        .output-box {
-            background: rgba(0, 242, 255, 0.03);
-            border: 1px dashed rgba(0, 242, 255, 0.3);
-            color: var(--matrix-glow);
-            word-break: break-all;
-            min-height: 256px;
-        }
-
-        .footer-corporate {
-            color: #222;
-            font-size: 11px;
-            font-weight: 900;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-        }
+        .footer-corporate { color: #222; font-size: 11px; font-weight: 900; letter-spacing: 6px; text-transform: uppercase; }
     </style>
 </head>
 <body class="p-4 md:p-12">
@@ -209,10 +128,13 @@
         
         <header class="text-center mb-20">
             <h1 class="swarg-logo">Swarg</h1>
-            <p class="owner-tag">Amar Kumar</p>
-            <div class="mt-10 inline-flex items-center space-x-4 px-8 py-3 bg-white/5 rounded-full border border-white/10 backdrop-blur-md">
+            <div class="owner-tag-container">
+                <span class="owner-name-stylized">Amar Kumar</span>
+                <i class="fas fa-circle-check twitter-blue-tick"></i>
+            </div>
+            <div class="mt-12 inline-flex items-center space-x-4 px-8 py-3 bg-white/5 rounded-full border border-white/10 backdrop-blur-md">
                 <i class="fas fa-shield-halved text-cyan-400 text-xs"></i>
-                <span class="text-[10px] font-black tracking-[0.5em] text-slate-300 uppercase">Neural Cipher Oracle V2.5</span>
+                <span class="text-[10px] font-black tracking-[0.5em] text-slate-300 uppercase">Neural Cipher Oracle V3.0</span>
             </div>
         </header>
 
@@ -231,21 +153,21 @@
                 <div class="grid lg:grid-cols-2 gap-12">
                     <div class="space-y-5">
                         <h3 class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Human Input</h3>
-                        <textarea id="raw-input" placeholder="Whisper your secret..." class="w-full h-64 p-8 input-matrix text-lg"></textarea>
+                        <textarea id="raw-input" placeholder="Whisper your secret..." class="w-full h-72 p-8 input-matrix text-lg"></textarea>
                     </div>
                     <div class="space-y-5">
                         <h3 class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Celestial Output</h3>
-                        <div class="output-container">
-                            <button onclick="copyToClipboard('cipher-result')" class="copy-trigger">
-                                <i class="fas fa-copy mr-2"></i>COPY CODE
-                            </button>
-                            <div id="cipher-result" class="w-full h-64 p-8 input-matrix output-box overflow-y-auto no-scrollbar font-bold text-2xl flex items-center justify-center text-center">
+                        <div>
+                            <div id="cipher-result" class="w-full h-56 p-8 input-matrix output-box overflow-y-auto no-scrollbar font-bold text-2xl flex items-center justify-center text-center">
                                 <span class="opacity-20 italic text-sm tracking-widest">Waiting for Neural Processing...</span>
                             </div>
+                            <button onclick="copyToClipboard('cipher-result')" class="copy-trigger">
+                                <i class="fas fa-copy mr-3"></i>COPY SECURE CODE
+                            </button>
                         </div>
                     </div>
                 </div>
-                <button onclick="runEncryption()" class="action-btn w-full">
+                <button onclick="runEncryption()" class="action-btn w-full mt-8">
                     <i class="fas fa-atom mr-4 animate-spin-slow"></i>Process Matrix Encryption
                 </button>
             </div>
@@ -254,21 +176,21 @@
                 <div class="grid lg:grid-cols-2 gap-12">
                     <div class="space-y-5">
                         <h3 class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Secret Symbols</h3>
-                        <textarea id="cipher-input" placeholder="Paste the symbols..." class="w-full h-64 p-8 input-matrix text-lg"></textarea>
+                        <textarea id="cipher-input" placeholder="Paste the symbols..." class="w-full h-72 p-8 input-matrix text-lg"></textarea>
                     </div>
                     <div class="space-y-5">
                         <h3 class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Revealed Truth</h3>
-                        <div class="output-container">
-                            <button onclick="copyToClipboard('truth-result')" class="copy-trigger !text-emerald-400 !border-emerald-500/30 hover:!bg-emerald-500">
-                                <i class="fas fa-copy mr-2"></i>COPY TRUTH
-                            </button>
-                            <div id="truth-result" class="w-full h-64 p-8 input-matrix output-box !border-emerald-500/20 !text-emerald-400 overflow-y-auto no-scrollbar font-bold text-2xl flex items-center justify-center text-center">
+                        <div>
+                            <div id="truth-result" class="w-full h-56 p-8 input-matrix output-box !border-emerald-500/20 !text-emerald-400 overflow-y-auto no-scrollbar font-bold text-2xl flex items-center justify-center text-center">
                                 <span class="opacity-20 italic text-sm tracking-widest">Awaiting Oracle Revelation...</span>
                             </div>
+                            <button onclick="copyToClipboard('truth-result')" class="copy-trigger truth-btn">
+                                <i class="fas fa-copy mr-3"></i>COPY REVEALED TRUTH
+                            </button>
                         </div>
                     </div>
                 </div>
-                <button onclick="runDecryption()" class="action-btn w-full !from-emerald-400 !to-cyan-600 !shadow-emerald-500/20">
+                <button onclick="runDecryption()" class="action-btn w-full mt-8 !from-emerald-400 !to-cyan-600 !shadow-emerald-500/20">
                     <i class="fas fa-eye-low-vision mr-4"></i>Initiate Oracle Decoding
                 </button>
             </div>
@@ -277,29 +199,17 @@
 
         <footer class="mt-24 text-center">
             <p class="footer-corporate">Powered by Swarg Quantum Systems &copy; 2026</p>
-            <div class="mt-6 flex justify-center space-x-10 text-slate-800">
-                <i class="fas fa-microchip hover:text-cyan-500 transition cursor-help"></i>
-                <i class="fas fa-satellite-dish hover:text-cyan-500 transition cursor-help"></i>
-                <i class="fas fa-brain hover:text-cyan-500 transition cursor-help"></i>
-            </div>
         </footer>
 
     </div>
 
     <script>
         /**
-         * SWARG CIPHER MATRIX ENGINE
-         * CORE: Neural Symbol Mapping
+         * SWARG CIPHER MATRIX V30
+         * FIXED LAYOUT & BRANDING
          */
 
-        const MAP = {
-            'a': '£', 'b': '∆', 'c': '∑', 'd': '∏', 'e': '§', 'f': '∞', 'g': 'µ', 'h': '†', 'i': '‡',
-            'j': 'Ω', 'k': '≈', 'l': '≠', 'm': '≤', 'n': '≥', 'o': '√', 'p': '∂', 'q': 'ƒ', 'r': '∫',
-            's': '◊', 't': 'π', 'u': '±', 'v': '⊕', 'w': '⊗', 'x': '⊘', 'y': '⊙', 'z': '⊚',
-            ' ': '•', '0': '⓪', '1': '①', '2': '②', '3': '③', '4': '④', '5': '⑤', '6': '⑥', '7': '⑦', '8': '⑧', '9': '⑨',
-            '.': '▫', '?': '¿', '!': '¡', ',': '¬', '@': '⊛'
-        };
-
+        const MAP = { 'a':'£', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'†', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', '?':'¿', '!':'¡', ',':'¬', '@':'⊛' };
         const REVERSE = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
 
         function switchTab(t, btn) {
@@ -314,7 +224,6 @@
             if(!raw) return;
             let res = "";
             for(let c of raw) res += MAP[c] || c;
-            
             const out = document.getElementById('cipher-result');
             out.innerText = res;
             out.classList.remove('flex', 'items-center', 'justify-center', 'text-center');
@@ -325,7 +234,6 @@
             if(!val) return;
             let res = "";
             for(let c of val) res += REVERSE[c] || c;
-            
             const out = document.getElementById('truth-result');
             out.innerText = res;
             out.classList.remove('flex', 'items-center', 'justify-center', 'text-center');
@@ -334,22 +242,21 @@
         function copyToClipboard(id) {
             const text = document.getElementById(id).innerText;
             if(!text || text.includes('Waiting') || text.includes('Awaiting')) return;
-            
             navigator.clipboard.writeText(text).then(() => {
                 const btn = event.currentTarget;
                 const original = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check mr-2"></i>SECURED';
-                btn.style.background = "#00f2ff";
-                btn.style.color = "#000";
+                btn.innerHTML = '<i class="fas fa-check-circle mr-3"></i>COPIED SECURELY';
+                if(btn.classList.contains('truth-btn')) {
+                     btn.style.background = "#10b981"; btn.style.color = "#000";
+                } else {
+                     btn.style.background = "#00f2ff"; btn.style.color = "#000";
+                }
                 setTimeout(() => {
                     btn.innerHTML = original;
-                    btn.style.background = "";
-                    btn.style.color = "";
+                    btn.style.background = ""; btn.style.color = "";
                 }, 2000);
             });
         }
-
-        console.log("Swarg Supreme V25 Online. Descender visibility fixed.");
     </script>
 </body>
 </html>
