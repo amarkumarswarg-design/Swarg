@@ -422,4 +422,123 @@
         };
         const SUPREME_REVERSE = Object.fromEntries(Object.entries(SUPREME_MAP).map(([k, v]) => [v, k]));
 
-        /* =========
+        /* =========================================
+           J4. CORE UTILITIES
+           =========================================
+        */
+        function feedTerminal(msg) {
+            const term = document.getElementById('terminal-feed');
+            term.innerHTML += `<div>> ${msg}</div>`;
+            term.scrollTop = term.scrollHeight;
+        }
+
+        function triggerMechanicalSound() { 
+            document.getElementById('snd-mechanical-click').currentTime = 0; 
+            document.getElementById('snd-mechanical-click').play(); 
+        }
+
+        function changeEngineView(mode) {
+            document.getElementById('module-encode').classList.toggle('hidden', mode === 'decode');
+            document.getElementById('module-decode').classList.toggle('hidden', mode === 'encode');
+            document.querySelectorAll('.tab-trigger').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-tab-' + (mode === 'encode' ? 'enc' : 'dec')).classList.add('active');
+            feedTerminal(`SYSTEM_ACCESS: ${mode.toUpperCase()}_MODULE_ENGAGED.`);
+        }
+
+        /* =========================================
+           J5. SHADOW PROTOCOL (STEALTH)
+           =========================================
+        */
+        function initiateStealthSequence() {
+            document.getElementById('swarg-master-ui').style.display = 'none';
+            document.getElementById('shadow-stealth-mode').style.display = 'block';
+            document.body.style.backgroundColor = "#ffffff";
+            document.body.style.cursor = "default";
+            feedTerminal("CRITICAL_PANIC_TRIGGERED: SHADOW_PROTOCOL_ACTIVE.");
+        }
+        window.addEventListener('keydown', (e) => { if(e.key === "Escape") initiateStealthSequence(); });
+
+        /* =========================================
+           J6. SUPREME EXECUTION ENGINE (UNDEFINED FIXED)
+           =========================================
+        */
+        function executeSupremeLogic(type) {
+            const secretAuthKey = document.getElementById('auth-secret-key').value;
+            const inputElement = document.getElementById(type === 'encrypt' ? 'raw-payload-input' : 'cipher-payload-input');
+            const displayElement = document.getElementById(type === 'encrypt' ? 'cipher-stream-display' : 'truth-stream-display');
+            const sourceValue = inputElement.value.toLowerCase();
+            
+            if(!sourceValue) { feedTerminal("ERROR: NULL_PAYLOAD_DETECTED."); return; }
+            feedTerminal(`INITIATING_${type.toUpperCase()}... [AUTH_KEY: ${secretAuthKey || 'UNSECURED'}]`);
+
+            // Logic Calculation with Safety Fallback
+            let resultBuffer = "";
+            for(let character of sourceValue) {
+                if(type === 'encrypt') {
+                    resultBuffer += SUPREME_MAP[character] || character; // Agar map mein nahi hai, toh waisa hi rakho
+                } else {
+                    resultBuffer += SUPREME_REVERSE[character] || character;
+                }
+            }
+
+            // ADVANCED BRUTE-FORCE DEPLOYMENT (NO UNDEFINED)
+            displayElement.innerHTML = "";
+            let currentStringIndex = 0;
+            
+            const masterLoop = setInterval(() => {
+                // Safety check: index string ke bahar na jaye
+                if(currentStringIndex < resultBuffer.length) {
+                    let internalFlickerCount = 0;
+                    
+                    const flickerLoop = setInterval(() => {
+                        // Flicker random symbols
+                        const randomGlitch = hexSymbols[Math.floor(Math.random() * hexSymbols.length)];
+                        displayElement.innerHTML = displayElement.innerHTML.slice(0, currentStringIndex) + randomGlitch;
+                        internalFlickerCount++;
+                        
+                        if(internalFlickerCount > 6) {
+                            clearInterval(flickerLoop);
+                            // Set actual character
+                            displayElement.innerHTML = displayElement.innerHTML.slice(0, currentStringIndex) + resultBuffer[currentStringIndex];
+                            currentStringIndex++;
+                            triggerMechanicalSound();
+                        }
+                    }, 15);
+                } else {
+                    clearInterval(masterLoop);
+                    document.getElementById('snd-access-granted').play();
+                    feedTerminal(`${type.toUpperCase()}_SEQUENCE_VERIFIED_SUCCESS.`);
+                    if (navigator.vibrate) navigator.vibrate(60);
+                }
+            }, 75);
+        }
+
+        /* =========================================
+           J7. CLIPBOARD SECURITY INTERFACE
+           =========================================
+        */
+        function secureClipboardSync(targetId) {
+            const dataToSync = document.getElementById(targetId).innerText;
+            if(dataToSync.includes('...') || !dataToSync) return;
+            
+            navigator.clipboard.writeText(dataToSync).then(() => {
+                feedTerminal("SUCCESS: PAYLOAD_SYNCED_TO_CLIPBOARD.");
+                const btnNode = event.currentTarget;
+                const prevHTML = btnNode.innerHTML;
+                btnNode.innerHTML = '<i class="fas fa-check-double text-green-400"></i> SECURED_SYNC';
+                btnNode.style.borderColor = "#00ff41";
+                setTimeout(() => { 
+                    btnNode.innerHTML = prevHTML; 
+                    btnNode.style.borderColor = ""; 
+                }, 2800);
+            });
+        }
+
+        // RESPONSIVE RESIZE
+        window.addEventListener('resize', () => {
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
