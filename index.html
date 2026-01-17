@@ -1,1 +1,287 @@
-a
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swarg | Ultimate Matrix Supreme</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@900&display=swap');
+
+        :root {
+            --matrix-glow: #00f2ff;
+            --matrix-dark: #05080a;
+            --premium-gold: #c5a059;
+            --error-red: #ff4b2b;
+        }
+
+        /* CUSTOM CURSOR */
+        #cursor-glow {
+            width: 20px; height: 20px; background: var(--matrix-glow); border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference;
+            transition: transform 0.1s ease; box-shadow: 0 0 15px var(--matrix-glow);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--matrix-dark);
+            color: #ffffff;
+            cursor: none; /* Custom cursor use karne ke liye default hide kiya */
+            overflow-x: hidden;
+        }
+
+        #matrix-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.2; }
+
+        /* LOGO & BRANDING */
+        .swarg-logo {
+            font-size: clamp(4rem, 12vw, 8rem); font-weight: 900; font-style: italic;
+            background: linear-gradient(to bottom, #fff 30%, #444 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(0,242,255,0.3));
+            animation: glitch 4s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: skew(0deg); }
+            2% { transform: skew(10deg); color: #ff00c1; }
+            4% { transform: skew(-10deg); color: #00f2ff; }
+            5% { transform: skew(0deg); }
+        }
+
+        /* TERMINAL STYLE */
+        .terminal-log {
+            font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #4ade80;
+            height: 100px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.5);
+            border-radius: 10px; border: 1px solid rgba(74, 222, 128, 0.2);
+        }
+
+        /* SCANLINE EFFECT */
+        .scanline {
+            width: 100%; height: 2px; background: rgba(0, 242, 255, 0.1);
+            position: absolute; top: 0; left: 0; z-index: 10;
+            animation: scan 3s linear infinite; pointer-events: none;
+        }
+        @keyframes scan { from { top: 0; } to { top: 100%; } }
+
+        .premium-glass { 
+            background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 35px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6); position: relative; overflow: hidden;
+        }
+
+        .input-key {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(0,242,255,0.2);
+            border-radius: 12px; padding: 10px 15px; color: var(--matrix-glow); outline: none;
+            transition: 0.3s; width: 150px; text-align: center; font-family: 'JetBrains Mono';
+        }
+        .input-key:focus { box-shadow: 0 0 15px var(--matrix-glow); border-color: var(--matrix-glow); }
+
+        .master-btn {
+            background: linear-gradient(135deg, #00f2ff, #0066ff); color: #000;
+            font-weight: 800; border-radius: 15px; transition: 0.3s;
+        }
+        .master-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,242,255,0.4); }
+
+        /* PROFILE MODAL */
+        #profile-modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cursor-glow"></div>
+    <canvas id="matrix-canvas"></canvas>
+
+    <audio id="snd-click" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
+    <audio id="snd-success" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
+
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        
+        <header class="text-center mb-12">
+            <h1 class="swarg-logo">Swarg</h1>
+            <div onclick="showProfile()" class="flex items-center justify-center gap-3 mt-4 cursor-pointer group">
+                <span class="font-black tracking-[5px] text-xl bg-gradient-to-r from-yellow-500 to-white bg-clip-text text-transparent group-hover:scale-110 transition">AMAR KUMAR</span>
+                <i class="fas fa-circle-check text-[#1d9bf0] text-xl"></i>
+            </div>
+            
+            <div class="mt-8 max-w-lg mx-auto terminal-log" id="terminal">
+                <div>> System Initialized...</div>
+                <div>> Encryption Engine V4.0 Active.</div>
+            </div>
+        </header>
+
+        <main class="premium-glass p-8 md:p-12">
+            <div class="scanline"></div>
+            
+            <div class="flex flex-wrap justify-between items-center mb-10 gap-4">
+                <nav class="flex space-x-6">
+                    <button onclick="switchTab('encode')" id="tab-enc" class="text-cyan-400 font-bold tracking-widest border-b-2 border-cyan-400 pb-1">ENCODE</button>
+                    <button onclick="switchTab('decode')" id="tab-dec" class="text-slate-500 font-bold tracking-widest hover:text-white transition pb-1">DECODE</button>
+                </nav>
+                <div class="flex items-center gap-3">
+                    <label class="text-[10px] uppercase font-bold text-slate-400">Secret Key:</label>
+                    <input type="password" id="secret-key" placeholder="Key (optional)" class="input-key" oninput="playClick()">
+                </div>
+            </div>
+
+            <div id="view-encode" class="space-y-8">
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <textarea id="raw-inp" placeholder="Enter secret message..." class="h-64 p-6 bg-black/40 rounded-3xl border border-white/5 text-cyan-400 focus:border-cyan-400 outline-none font-mono" oninput="playClick()"></textarea>
+                    <div id="cipher-res" class="h-64 p-6 bg-cyan-400/5 rounded-3xl border border-dashed border-cyan-400/20 flex items-center justify-center text-center text-2xl font-bold text-cyan-400 break-all overflow-y-auto">
+                        <span class="opacity-20 text-sm">Ready for encryption...</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="runProcess('encrypt')" class="master-btn py-5 uppercase tracking-widest">
+                        <i class="fas fa-bolt mr-2"></i> Encrypt Now
+                    </button>
+                    <button onclick="copyAndShare()" class="bg-white/10 hover:bg-white/20 py-5 rounded-xv rounded-2xl font-bold uppercase tracking-widest transition">
+                        <i class="fab fa-whatsapp mr-2 text-green-500"></i> Share
+                    </button>
+                </div>
+            </div>
+
+            <div id="view-decode" class="hidden space-y-8">
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <textarea id="cipher-inp" placeholder="Paste symbols here..." class="h-64 p-6 bg-black/40 rounded-3xl border border-white/5 text-emerald-400 focus:border-emerald-400 outline-none font-mono" oninput="playClick()"></textarea>
+                    <div id="truth-res" class="h-64 p-6 bg-emerald-400/5 rounded-3xl border border-dashed border-emerald-400/20 flex items-center justify-center text-center text-2xl font-bold text-emerald-400 break-all overflow-y-auto">
+                        <span class="opacity-20 text-sm">Waiting for symbols...</span>
+                    </div>
+                </div>
+                <button onclick="runProcess('decrypt')" class="master-btn !from-emerald-400 !to-teal-600 w-full py-5 uppercase tracking-widest">
+                    <i class="fas fa-unlock mr-2"></i> Decrypt Now
+                </button>
+            </div>
+
+            <div class="mt-10 flex justify-center">
+                <button onclick="selfDestruct()" class="text-[10px] font-bold text-red-500 hover:text-red-400 tracking-[4px] uppercase border border-red-500/20 px-4 py-2 rounded-full transition">
+                    <i class="fas fa-bomb mr-2"></i> Self Destruct
+                </button>
+            </div>
+        </main>
+
+        <footer class="mt-12 text-center opacity-40 text-[9px] tracking-[10px] font-bold uppercase">
+            Developed by Amar Kumar &copy; 2026
+        </footer>
+    </div>
+
+    <div id="profile-modal" onclick="this.style.display='none'">
+        <div class="bg-zinc-900 border border-white/10 p-10 rounded-[40px] text-center max-w-xs w-full">
+            <div class="w-24 h-24 bg-cyan-500 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl font-bold text-black shadow-[0_0_30px_rgba(0,242,255,0.5)]">A</div>
+            <h2 class="text-2xl font-black mb-2 uppercase tracking-widest">Amar Kumar</h2>
+            <p class="text-cyan-400 text-xs font-bold mb-6">Supreme Developer</p>
+            <div class="space-y-3">
+                <div class="bg-white/5 p-3 rounded-xl text-[10px] uppercase font-bold tracking-widest">Class: 12th Student</div>
+                <div class="bg-white/5 p-3 rounded-xl text-[10px] uppercase font-bold tracking-widest">Specialty: Matrix Neural Systems</div>
+            </div>
+            <p class="mt-6 text-[9px] text-slate-500 uppercase">Click anywhere to close</p>
+        </div>
+    </div>
+
+    <script>
+        // --- CUSTOM CURSOR ---
+        const cursor = document.getElementById('cursor-glow');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // --- MATRIX RAIN ---
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const chars = "01010101ABCDEF";
+        const drops = Array(Math.floor(canvas.width/20)).fill(1);
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(5, 8, 10, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00f2ff"; ctx.font = "15px monospace";
+            drops.forEach((y, i) => {
+                ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*20, y*20);
+                if(y*20 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        setInterval(drawMatrix, 50);
+
+        // --- CORE ENGINE ---
+        const MAP = { 'a':'£', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'†', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨' };
+        const REVERSE = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
+
+        function log(msg) {
+            const t = document.getElementById('terminal');
+            t.innerHTML += `<div>> ${msg}</div>`;
+            t.scrollTop = t.scrollHeight;
+        }
+
+        function playClick() { document.getElementById('snd-click').currentTime = 0; document.getElementById('snd-click').play(); }
+
+        function switchTab(mode) {
+            document.getElementById('view-encode').classList.toggle('hidden', mode === 'decode');
+            document.getElementById('view-decode').classList.toggle('hidden', mode === 'encode');
+            document.getElementById('tab-enc').className = mode === 'encode' ? 'text-cyan-400 font-bold tracking-widest border-b-2 border-cyan-400 pb-1' : 'text-slate-500 font-bold tracking-widest hover:text-white transition pb-1';
+            document.getElementById('tab-dec').className = mode === 'decode' ? 'text-emerald-400 font-bold tracking-widest border-b-2 border-emerald-400 pb-1' : 'text-slate-500 font-bold tracking-widest hover:text-white transition pb-1';
+            log(`Switched to ${mode.toUpperCase()} mode.`);
+        }
+
+        function runProcess(type) {
+            const key = document.getElementById('secret-key').value;
+            const input = document.getElementById(type === 'encrypt' ? 'raw-inp' : 'cipher-inp').value.toLowerCase();
+            const outBox = document.getElementById(type === 'encrypt' ? 'cipher-res' : 'truth-res');
+            
+            if(!input) return;
+            log(`Starting ${type}... Key: ${key || 'None'}`);
+            
+            let result = "";
+            for(let i=0; i<input.length; i++) {
+                let char = input[i];
+                if(type === 'encrypt') result += MAP[char] || char;
+                else result += REVERSE[char] || char;
+            }
+
+            // Typewriter effect
+            outBox.innerHTML = "";
+            let idx = 0;
+            const timer = setInterval(() => {
+                if(idx < result.length) {
+                    outBox.innerHTML += result[idx];
+                    idx++;
+                    playClick();
+                } else {
+                    clearInterval(timer);
+                    document.getElementById('snd-success').play();
+                    log(`${type.toUpperCase()} successful.`);
+                }
+            }, 30);
+        }
+
+        function copyAndShare() {
+            const txt = document.getElementById('cipher-res').innerText;
+            navigator.clipboard.writeText(txt).then(() => {
+                log("Copied to clipboard.");
+                window.open(`https://wa.me/?text=Secret Message: ${txt}`);
+            });
+        }
+
+        function selfDestruct() {
+            log("SELF DESTRUCT INITIATED...");
+            let count = 3;
+            const t = setInterval(() => {
+                log(`T-Minus ${count}...`);
+                count--;
+                if(count < 0) {
+                    clearInterval(t);
+                    document.body.innerHTML = "<div style='display:flex; height:100vh; align-items:center; justify-content:center; font-family:monospace; color:red; font-size:2rem; letter-spacing:10px;'>SYSTEM PURGED</div>";
+                }
+            }, 1000);
+        }
+
+        function showProfile() { document.getElementById('profile-modal').style.display = 'flex'; }
+    </script>
+</body>
+  </html>
+  
