@@ -263,6 +263,7 @@
             document.getElementById('stealth-ui').style.display = 'block';
         }
 
+        // --- FIXED RUN FUNCTION (No trailing numbers) ---
         function run(type) {
             const input = document.getElementById(type === 'encrypt' ? 'i-enc' : 'i-dec').value.toLowerCase();
             const out = document.getElementById(type === 'encrypt' ? 'o-enc' : 'o-dec');
@@ -274,22 +275,30 @@
                 else res += REV[char] || char;
             }
 
-            out.innerHTML = "";
+            out.innerText = ""; // Use innerText for safety
+            let currentText = "";
             let idx = 0;
+            
             const timer = setInterval(() => {
                 if(idx < res.length) {
                     let fc = 0;
                     const flicker = setInterval(() => {
-                        out.innerHTML = out.innerHTML.slice(0, idx) + glitch[Math.floor(Math.random()*glitch.length)];
+                        // Show current progress + random char
+                        out.innerText = currentText + glitch[Math.floor(Math.random()*glitch.length)];
                         fc++;
                         if(fc > 3) {
                             clearInterval(flicker);
-                            if(res[idx] !== undefined) out.innerHTML = out.innerHTML.slice(0, idx) + res[idx];
+                            // Add real char to known string
+                            currentText += res[idx];
+                            // Update display with known string ONLY
+                            out.innerText = currentText;
                             idx++; typeSnd();
                         }
                     }, 15);
                 } else {
                     clearInterval(timer);
+                    // Final guarantee: set text to exact result
+                    out.innerText = res; 
                     document.getElementById('snd-done').play();
                     if(navigator.vibrate) navigator.vibrate(60);
                 }
