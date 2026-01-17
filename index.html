@@ -424,4 +424,60 @@
             // Logic: Encryption/Decryption with Undefined Check
             let finalOutput = "";
             for(let char of inputVal) {
-                if(type === 'encrypt') finalOutput += CIPHER_MAP[char] || char
+                if(type === 'encrypt') finalOutput += CIPHER_MAP[char] || char;
+                else finalOutput += REVERSE_MAP[char] || char;
+            }
+
+            // ADVANCED BRUTE-FORCE EFFECT
+            outputBox.innerHTML = "";
+            let currentIdx = 0;
+            const masterTimer = setInterval(() => {
+                if(currentIdx < finalOutput.length) {
+                    let bruteForceIterations = 0;
+                    const flickerInterval = setInterval(() => {
+                        // Display random characters for flicker effect
+                        const randomChar = hackerChars[Math.floor(Math.random() * hackerChars.length)];
+                        outputBox.innerHTML = outputBox.innerHTML.slice(0, currentIdx) + randomChar;
+                        bruteForceIterations++;
+                        
+                        if(bruteForceIterations > 5) {
+                            clearInterval(flickerInterval);
+                            outputBox.innerHTML = outputBox.innerHTML.slice(0, currentIdx) + finalOutput[currentIdx];
+                            currentIdx++;
+                            playClickSound();
+                        }
+                    }, 15);
+                } else {
+                    clearInterval(masterTimer);
+                    document.getElementById('snd-success').play();
+                    logToTerminal(`${type.toUpperCase()}_SEQUENCE_COMPLETE_SUCCESSFULLY.`);
+                    if (navigator.vibrate) navigator.vibrate(50);
+                }
+            }, 60);
+        }
+
+        // 6. SECURE CLIPBOARD SYSTEM
+        function secureClipboardCopy(elementId) {
+            const textContent = document.getElementById(elementId).innerText;
+            if(textContent.includes('...') || !textContent) return;
+            navigator.clipboard.writeText(textContent).then(() => {
+                logToTerminal("SUCCESS: DATA_SYNCED_TO_CLIPBOARD.");
+                const btn = event.currentTarget;
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check-double text-green-400"></i> SECURED';
+                btn.style.borderColor = "#00ff41";
+                setTimeout(() => { 
+                    btn.innerHTML = originalHTML; 
+                    btn.style.borderColor = ""; 
+                }, 2500);
+            });
+        }
+
+        // HANDLE WINDOW RESIZE
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
