@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swarg | Quantum Luxury Suite</title>
+    <title>Swarg | Quantum Executive Suite</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -11,13 +11,14 @@
 
     <style>
         /* =========================================
-           LUXURY THEME VARIABLES
+           EXECUTIVE THEME VARIABLES
         ========================================= */
         :root {
             --lux-bg: #030508;
             --lux-accent-cyan: #00fff2;
             --lux-accent-blue: #4a8eff;
             --lux-gold: #d4af37;
+            --verified-blue: #1d9bf0;
             --lux-glass-border: rgba(255, 255, 255, 0.08);
             --lux-glass-surface: rgba(10, 15, 25, 0.7);
             --panic-red: #ff3b30;
@@ -40,15 +41,15 @@
         .neural-particle {
             position: absolute; width: 2px; height: 2px; background: var(--lux-accent-cyan);
             border-radius: 50%; box-shadow: 0 0 10px var(--lux-accent-cyan), 0 0 20px var(--lux-accent-blue);
-            animation: float 20s infinite linear; opacity: 0.3;
+            animation: float 25s infinite linear; opacity: 0.3;
         }
         @keyframes float {
-            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
             50% { opacity: 0.5; }
-            100% { transform: translateY(-100vh) translateX(50vw) scale(0.5); opacity: 0; }
+            100% { transform: translateY(-100vh) translateX(20vw); opacity: 0; }
         }
 
-        /* MILLION DOLLAR GLASSMORPHISM */
+        /* MILLION DOLLAR GLASSMORPHISM CARD */
         .luxury-glass {
             background: var(--lux-glass-surface);
             backdrop-filter: blur(50px) saturate(150%);
@@ -56,28 +57,10 @@
             border: 1px solid var(--lux-glass-border);
             box-shadow: 
                 inset 0 0 20px rgba(255, 255, 255, 0.02),
-                0 20px 50px rgba(0, 0, 0, 0.8),
-                0 0 0 1px rgba(0, 0, 0, 0.5);
+                0 20px 50px rgba(0, 0, 0, 0.8);
             border-radius: 36px;
             position: relative; overflow: hidden;
         }
-        .luxury-glass::before {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(125deg, rgba(255,255,255,0.1) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.05) 100%);
-            pointer-events: none;
-        }
-
-        /* CINEMATIC BOOT SCREEN */
-        #boot-screen {
-            position: fixed; inset: 0; background: var(--lux-bg); z-index: 5000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .loader-ring {
-            width: 80px; height: 80px; border: 4px solid rgba(0, 255, 242, 0.1);
-            border-top: 4px solid var(--lux-accent-cyan); border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* ELITE TYPOGRAPHY */
         .swarg-logo-lux {
@@ -88,10 +71,13 @@
         }
 
         .amar-brand {
-            font-family: 'Satoshi', sans-serif; font-weight: 900; font-size: 18px; letter-spacing: 4px;
-            color: var(--lux-gold); text-transform: uppercase; display: flex; align-items: center; gap: 10px;
+            font-family: 'Satoshi', sans-serif; font-weight: 900; font-size: 20px; letter-spacing: 3px;
+            color: #fff; display: flex; align-items: center; gap: 12px;
         }
-        .amar-brand i { color: var(--verified-blue); filter: drop-shadow(0 0 15px var(--verified-blue)); }
+        .v-tick { 
+            color: var(--verified-blue); font-size: 22px;
+            filter: drop-shadow(0 0 15px var(--verified-blue)); 
+        }
 
         /* LUXURY INPUTS & OUTPUTS */
         .lux-input {
@@ -110,73 +96,72 @@
             border: 1px dashed rgba(0, 255, 242, 0.2);
             border-radius: 28px; min-height: 220px; padding: 30px;
             display: flex; align-items: center; justify-content: center;
-            text-align: center; font-size: 26px; font-weight: 700;
+            text-align: center; font-size: 24px; font-weight: 700;
             color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace;
         }
 
-        /* BUTTONS & INTERACTIVE ELEMENTS */
+        /* BUTTONS */
         .lux-btn {
             background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue));
             color: #000; font-weight: 800; border-radius: 24px; padding: 20px;
             text-transform: uppercase; letter-spacing: 3px; font-size: 14px;
             box-shadow: 0 20px 40px rgba(0, 255, 242, 0.3); transition: 0.5s;
         }
-        .lux-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 30px 60px rgba(74, 142, 255, 0.5); }
+        .lux-btn:hover { transform: translateY(-5px); box-shadow: 0 30px 60px rgba(74, 142, 255, 0.5); }
 
+        /* PANIC SHIELD FAB */
         .panic-fab {
-            position: fixed; bottom: 40px; right: 40px; width: 70px; height: 70px;
-            background: var(--panic-red); border-radius: 24px; display: flex;
+            position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px;
+            background: var(--panic-red); border-radius: 20px; display: flex;
             align-items: center; justify-content: center; z-index: 2000;
             box-shadow: 0 20px 40px rgba(255, 59, 48, 0.4); border: 2px solid rgba(255,255,255,0.2);
-            transition: 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); cursor: pointer;
+            transition: 0.4s; cursor: pointer;
         }
-        .panic-fab:active { transform: scale(0.85); }
+        .panic-fab:active { transform: scale(0.9); }
 
-        /* PREMIUM MODALS */
-        #qr-modal {
+        /* CLEAN SUPPORT MODAL (No QR) */
+        #support-modal {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
             z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(30px);
         }
-        .qr-card {
-            background: rgba(10, 15, 25, 0.95); border: 1px solid var(--lux-accent-cyan);
-            padding: 40px; border-radius: 36px; text-align: center; max-width: 400px; width: 90%;
+        .support-card {
+            background: rgba(10, 15, 25, 0.95); border: 1px solid var(--lux-accent-blue);
+            padding: 40px; border-radius: 36px; text-align: center; max-width: 350px; width: 90%;
             box-shadow: 0 50px 100px rgba(0,0,0,0.8);
         }
 
-        #stealth-ui { display: none; background: #fff; color: #1a1a1a; min-height: 100vh; padding: 60px 10%; }
+        /* PROFESSIONAL ABOUT PAGE */
+        #stealth-ui { 
+            display: none; background: #0a0f1d; color: #fff; 
+            min-height: 100vh; padding: 80px 10%; font-family: 'Satoshi', sans-serif; 
+        }
+        #stealth-ui h1 { font-size: 40px; font-weight: 900; margin-bottom: 30px; color: var(--lux-accent-cyan); }
+        #stealth-ui p { font-size: 18px; line-height: 1.8; margin-bottom: 25px; color: #ccc; }
+        .highlight { color: var(--lux-accent-blue); font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <div id="boot-screen">
-        <div class="loader-ring mb-8"></div>
-        <h2 class="text-2xl font-black tracking-[8px] uppercase swarg-logo-lux text-[3rem]">Swarg</h2>
-        <p class="text-slate-500 text-sm tracking-[4px] mt-4">INITIALIZING QUANTUM CORE...</p>
-        <button onclick="bootSystem()" class="mt-12 px-12 py-4 bg-white/5 border border-white/10 rounded-full text-sm font-bold tracking-[4px] hover:bg-cyan-400/10 hover:border-cyan-400 transition uppercase">Tap to Access</button>
-    </div>
-
-    <div id="app-interface" style="opacity: 0; transition: opacity 1s ease;">
-        <div id="cosmos-bg">
-            </div>
+    <div id="app-interface">
+        <div id="cosmos-bg"></div>
         
-        <div class="panic-fab" onclick="activateShadow()" title="Security Lock">
-            <i class="fas fa-shield-halved text-white text-2xl"></i>
+        <div class="panic-fab" onclick="activateAboutPage()" title="About System">
+            <i class="fas fa-shield-alt text-white text-xl"></i>
         </div>
 
         <audio id="snd-type" preload="auto" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
         <audio id="snd-done" preload="auto" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
-        <audio id="snd-boot" preload="auto" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
 
         <div class="max-w-4xl mx-auto px-6 py-12">
             <header class="text-center mb-16">
                 <h1 class="swarg-logo-lux">Swarg</h1>
-                <div class="flex items-center justify-center gap-4 mt-2">
-                    <span class="amar-brand">Amar Kumar <i class="fas fa-certificate v-tick"></i></span>
+                <div class="flex items-center justify-center gap-4 mt-4">
+                    <span class="amar-brand">Amar Kumar <i class="fas fa-circle-check v-tick"></i></span>
                 </div>
                 
                 <div class="mt-10">
-                    <button onclick="showQR()" class="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-[11px] font-black uppercase tracking-[4px] hover:bg-white/10 transition group">
-                        <i class="fas fa-gem text-cyan-400 mr-3 group-hover:rotate-12 transition"></i> Premium Support
+                    <button onclick="toggleSupport()" class="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-[11px] font-bold uppercase tracking-[3px] hover:bg-white/10 transition group">
+                        <i class="fas fa-coffee text-cyan-400 mr-3"></i> Support
                     </button>
                 </div>
             </header>
@@ -190,7 +175,7 @@
                 <div id="v-enc" class="space-y-10">
                     <textarea id="i-enc" placeholder="Enter sensitive data..." class="lux-input h-52 w-full" oninput="typeSnd()"></textarea>
                     <div id="o-enc" class="lux-output">
-                        <span class="opacity-30 text-sm uppercase tracking-widest">Awaiting Input...</span>
+                        <span class="opacity-30 text-sm uppercase tracking-widest">System Ready...</span>
                     </div>
                     <div class="grid grid-cols-2 gap-5">
                         <button onclick="run('encrypt')" class="lux-btn w-full">Secure Data</button>
@@ -201,28 +186,26 @@
                 <div id="v-dec" class="hidden space-y-10">
                     <textarea id="i-dec" placeholder="Paste encrypted tokens..." class="lux-input h-52 w-full" oninput="typeSnd()"></textarea>
                     <div id="o-dec" class="lux-output !text-emerald-400 !border-emerald-500/10">
-                        <span class="opacity-30 text-sm uppercase tracking-widest">Waiting for Oracle...</span>
+                        <span class="opacity-30 text-sm uppercase tracking-widest">Awaiting Input...</span>
                     </div>
                     <button onclick="run('decrypt')" class="lux-btn !from-emerald-400 !to-blue-600 w-full">Reveal Truth</button>
                 </div>
             </main>
 
             <footer class="mt-20 text-center opacity-30 text-[10px] tracking-[12px] font-bold uppercase">
-                &copy; 2026 Amar Kumar Elite Systems
+                &copy; 2026 Amar Kumar Systems
             </footer>
         </div>
     </div>
 
-    <div id="qr-modal" onclick="showQR()">
-        <div class="qr-card" onclick="event.stopPropagation()">
-            <i class="fas fa-diamond text-4xl text-cyan-400 mb-6"></i>
-            <h2 class="text-2xl font-black mb-4 uppercase tracking-widest text-white">Premium Support</h2>
-            <p class="text-xs text-slate-400 mb-8 uppercase tracking-[3px]">Scan via any UPI App</p>
+    <div id="support-modal" onclick="toggleSupport()">
+        <div class="support-card" onclick="event.stopPropagation()">
+            <i class="fas fa-heart text-3xl text-cyan-400 mb-6"></i>
+            <h2 class="text-xl font-black mb-4 uppercase tracking-widest text-white">Support Development</h2>
+            <p class="text-xs text-slate-400 mb-8 uppercase tracking-[2px]">Direct UPI Contribution</p>
             
-            <img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=upi://pay?pa=AmarKumarr@fam&pn=Amar%20Kumar&choe=UTF-8" class="mx-auto mb-8 rounded-3xl w-64 border-4 border-white/10 shadow-2xl p-2 bg-white">
-            
-            <div class="bg-white/5 p-4 rounded-2xl mb-6 border border-white/10">
-                <p class="text-cyan-400 font-mono text-sm tracking-widest">amarkumarr@fam</p>
+            <div class="bg-blue-500/10 p-5 rounded-2xl mb-8 border border-blue-500/30">
+                <p class="text-cyan-400 font-mono text-lg font-bold tracking-widest">amarkumarr@fam</p>
             </div>
             
             <button onclick="copyUPI()" class="w-full bg-cyan-400 text-black py-4 rounded-2xl font-bold uppercase text-[11px] tracking-[4px] hover:bg-cyan-300 transition">Copy UPI ID</button>
@@ -230,36 +213,36 @@
     </div>
 
     <div id="stealth-ui">
-        <h1 style="font-family: 'Georgia', serif; font-size: 32px; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 30px;">Geography of India - Wikipedia</h1>
-        <p style="font-family: 'Georgia', serif; font-size: 18px; line-height: 1.6; margin-bottom: 20px;">India is a country of great physical diversity. The main land comprises four regions: the great mountain zone, plains of the Ganga and the Indus, the desert region, and the southern peninsula.</p>
-        <p style="font-family: 'Georgia', serif; font-size: 18px; line-height: 1.6;">The Himalayan range is the highest mountain range in the world, acting as a natural barrier in the north.</p>
+        <h1>About Swarg Neural Suite</h1>
+        <p>Swarg is an enterprise-grade <span class="highlight">polymorphic encryption engine</span> designed for secure data transmission in high-risk environments. Utilizing advanced neural network simulations, it ensures that communication remains tamper-proof and confidential.</p>
+        <p>Developed by <span class="highlight">Amar Kumar Systems</span>, this tool focuses on minimalism, speed, and absolute security competence, moving beyond traditional cryptographic methods.</p>
+        <hr style="margin: 40px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
+        <p style="font-size: 13px; color: #777;">Version 7.0.1 (Stable) | Built on Quantum-Ready Architecture.</p>
+        <button onclick="location.reload()" class="mt-10 px-8 py-3 border border-white/20 rounded-full text-sm hover:bg-white/10 transition">Return to System</button>
     </div>
 
     <script>
         // --- INITIALIZATION ---
         const bg = document.getElementById('cosmos-bg');
-        for(let i=0; i<50; i++) {
+        for(let i=0; i<40; i++) {
             const p = document.createElement('div');
             p.className = 'neural-particle';
             p.style.left = Math.random()*100+'vw';
             p.style.top = Math.random()*100+'vh';
-            p.style.animationDelay = Math.random()*20+'s';
+            p.style.animationDelay = Math.random()*25+'s';
             bg.appendChild(p);
         }
 
-        function bootSystem() {
-            document.getElementById('snd-boot').play();
-            document.getElementById('boot-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('boot-screen').style.display = 'none';
-                document.getElementById('app-interface').style.opacity = '1';
-            }, 1000);
-        }
+        // Unlock Audio on first interaction
+        document.body.addEventListener('click', () => {
+             document.getElementById('snd-type').play().catch(()=>{});
+             document.getElementById('snd-type').pause();
+        }, { once: true });
 
         // --- LOGIC ENGINE ---
         const MAP = { 'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', ',':'¬', '!':'¡', '?':'¿', '@':'∂' };
         const REV = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
-        const glitch = "ABCDEF0123456789XMZ";
+        const glitch = "XYZ0123456789";
 
         function typeSnd() { const s=document.getElementById('snd-type'); s.currentTime=0; s.play().catch(()=>{}); }
 
@@ -270,15 +253,14 @@
             document.getElementById('t-dec').className = m === 'dec' ? 'text-emerald-400 font-black border-b-4 border-emerald-400 pb-4 text-sm tracking-[3px]' : 'text-slate-500 font-black pb-4 tracking-[3px]';
         }
 
-        function showQR() {
-            const m = document.getElementById('qr-modal');
+        function toggleSupport() {
+            const m = document.getElementById('support-modal');
             m.style.display = (m.style.display === 'flex' ? 'none' : 'flex');
         }
 
-        function activateShadow() {
+        function activateAboutPage() {
             document.getElementById('app-interface').style.display = 'none';
             document.getElementById('stealth-ui').style.display = 'block';
-            document.body.style.backgroundColor = "white";
         }
 
         function run(type) {
@@ -300,23 +282,23 @@
                     const flicker = setInterval(() => {
                         out.innerHTML = out.innerHTML.slice(0, idx) + glitch[Math.floor(Math.random()*glitch.length)];
                         fc++;
-                        if(fc > 4) {
+                        if(fc > 3) {
                             clearInterval(flicker);
                             if(res[idx] !== undefined) out.innerHTML = out.innerHTML.slice(0, idx) + res[idx];
                             idx++; typeSnd();
                         }
-                    }, 10);
+                    }, 15);
                 } else {
                     clearInterval(timer);
                     document.getElementById('snd-done').play();
-                    if(navigator.vibrate) navigator.vibrate(50);
+                    if(navigator.vibrate) navigator.vibrate(60);
                 }
             }, 60);
         }
 
         function copy(id) {
             const t = document.getElementById(id).innerText;
-            if(!t.includes('..')) navigator.clipboard.writeText(t).then(()=>alert("Secured into Clipboard."));
+            if(!t.includes('..')) navigator.clipboard.writeText(t).then(()=>alert("Data Copied to Clipboard."));
         }
 
         function copyUPI() {
@@ -324,5 +306,4 @@
         }
     </script>
 </body>
-    </html>
-    
+</html>
