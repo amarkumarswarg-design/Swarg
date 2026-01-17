@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swarg | Quantum Neural Privacy</title>
+    <title>Swarg | Quantum Neural Suite</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -14,9 +14,10 @@
         :root {
             --p-accent: #00f2ff;
             --p-deep: #0a0f1d;
-            --p-glass: rgba(255, 255, 255, 0.02);
+            --p-card: rgba(255, 255, 255, 0.03);
             --premium-gold: #c5a059;
             --verified-blue: #1d9bf0;
+            --panic-red: #ff3b30;
         }
 
         body {
@@ -27,230 +28,220 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* PREMIUM AURA BACKGROUND */
         #neural-bg {
             position: fixed; inset: 0; z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #16213e 0%, #0a0f1d 100%);
+            background-image: radial-gradient(rgba(0, 242, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
-        /* ELITE BRANDING */
         .swarg-title {
-            font-size: clamp(3rem, 12vw, 5.5rem);
+            font-size: clamp(3.5rem, 15vw, 6rem);
             font-weight: 900; letter-spacing: -2px;
-            background: linear-gradient(180deg, #ffffff 0%, #aaa 100%);
+            background: linear-gradient(180deg, #ffffff 0%, #888 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));
         }
 
         .amar-identity {
             font-family: 'Montserrat', sans-serif;
-            font-weight: 900; font-size: 18px; letter-spacing: 5px;
+            font-weight: 900; font-size: 20px; letter-spacing: 6px;
             background: linear-gradient(45deg, var(--premium-gold), #fff, var(--premium-gold));
             background-size: 200% auto;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-transform: uppercase;
-            animation: auraFlow 4s linear infinite;
+            animation: auraShine 4s linear infinite;
         }
-        @keyframes auraFlow { to { background-position: 200% center; } }
+        @keyframes auraShine { to { background-position: 200% center; } }
 
-        .v-tick { color: var(--verified-blue); font-size: 24px; filter: drop-shadow(0 0 10px rgba(29, 155, 240, 0.4)); }
+        .v-tick { color: var(--verified-blue); font-size: 26px; filter: drop-shadow(0 0 10px rgba(29, 155, 240, 0.5)); }
 
-        /* UI CARDS - ANDROID STYLE */
         .aura-card {
-            background: var(--p-glass);
+            background: var(--p-card);
             backdrop-filter: blur(40px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 32px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
         }
 
         .aura-textarea {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
-            padding: 22px;
-            color: var(--p-accent);
+            padding: 25px; color: var(--p-accent);
             font-family: 'JetBrains Mono', monospace;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .aura-textarea:focus { border-color: var(--p-accent); outline: none; background: rgba(0,0,0,0.5); }
 
-        /* PANIC FAB - PROFESSIONAL LOOK */
-        .panic-fab {
-            position: fixed; bottom: 30px; right: 30px;
-            width: 65px; height: 65px;
-            background: #ff3b30; border-radius: 22px;
+        .aura-output {
+            background: rgba(0, 242, 255, 0.02);
+            border: 1px dashed rgba(0, 242, 255, 0.2);
+            border-radius: 24px; min-height: 220px; padding: 30px;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 30px rgba(255, 59, 48, 0.3);
-            z-index: 2000; cursor: pointer; transition: 0.4s;
-            border: 2px solid rgba(255,255,255,0.2);
+            text-align: center; font-size: 24px; font-weight: 800;
+            color: var(--p-accent); font-family: 'JetBrains Mono', monospace;
         }
-        .panic-fab:active { transform: scale(0.9); }
 
-        /* STEALTH WIKIPEDIA (Geography) */
-        #stealth-ui { 
-            display: none; background: white; color: #1a1a1a; 
-            min-height: 100vh; padding: 40px 8%; font-family: 'serif'; text-align: left; 
+        .panic-fab {
+            position: fixed; bottom: 35px; left: 35px; /* Moved to left to avoid payment overlap */
+            width: 60px; height: 60px;
+            background: var(--panic-red); border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 25px rgba(255, 59, 48, 0.3);
+            z-index: 2000; cursor: pointer; transition: 0.4s;
         }
-        #stealth-ui h1 { font-size: 30px; border-bottom: 1px solid #a2a9b1; margin-bottom: 20px; font-family: 'Georgia', serif; }
+
+        /* SUPPORT MODAL STYLES */
+        #support-modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(15px);
+        }
+        .support-card {
+            background: #111; border: 1px solid var(--p-accent);
+            padding: 30px; border-radius: 30px; text-align: center; max-w: 320px; width: 90%;
+        }
+
+        #stealth-container {
+            display: none; background: #fff; color: #202122;
+            min-height: 100vh; padding: 60px 12%; font-family: 'serif'; text-align: left;
+        }
 
         .p-btn {
             background: linear-gradient(135deg, #00f2ff 0%, #0077ff 100%);
             color: #000; font-weight: 800; border-radius: 20px;
-            padding: 18px; text-transform: uppercase; letter-spacing: 2px;
-            transition: 0.4s; box-shadow: 0 10px 25px rgba(0, 242, 255, 0.2);
+            padding: 18px; text-transform: uppercase; letter-spacing: 3px;
         }
-        .p-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0, 242, 255, 0.4); }
     </style>
 </head>
 <body>
 
-    <div id="app-interface">
+    <div id="app-root">
         <div id="neural-bg"></div>
         
-        <div class="panic-fab" onclick="shadowActivate()" title="Security Lock">
-            <i class="fas fa-shield-alt text-white text-xl"></i>
+        <div class="panic-fab" onclick="engageShadowProtocol()">
+            <i class="fas fa-shield-alt text-white"></i>
         </div>
 
-        <audio id="snd-click" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
-        <audio id="snd-verify" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
-
-        <div class="max-w-4xl mx-auto px-6 py-10">
-            
-            <header class="text-center mb-12">
+        <div class="max-w-5xl mx-auto px-6 py-12">
+            <header class="text-center mb-16">
                 <h1 class="swarg-title">Swarg</h1>
-                <div class="flex items-center justify-center gap-3 mt-4">
+                <div class="flex items-center justify-center gap-4 mt-6">
                     <span class="amar-identity">Amar Kumar</span>
                     <i class="fas fa-circle-check v-tick"></i>
                 </div>
                 
-                <div class="mt-8 text-[11px] text-slate-500 uppercase tracking-[4px]">
-                    Neural Privacy Oracle V7.0 | Verified Secure
+                <div class="mt-8">
+                    <button onclick="toggleSupport()" class="px-6 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] font-black uppercase tracking-[3px] text-cyan-400 hover:bg-cyan-400 hover:text-black transition">
+                        <i class="fas fa-coffee mr-2"></i> Support Developer
+                    </button>
                 </div>
             </header>
 
-            <main class="aura-card p-8 md:p-12">
-                
-                <nav class="flex justify-center space-x-12 mb-10">
-                    <button onclick="tab('enc')" id="t-enc" class="text-cyan-400 font-black border-b-4 border-cyan-400 pb-2 text-sm tracking-widest">ENCODE</button>
-                    <button onclick="tab('dec')" id="t-dec" class="text-slate-500 font-black pb-2 hover:text-white transition text-sm tracking-widest">DECODE</button>
+            <main class="aura-card p-10 md:p-16">
+                <nav class="flex justify-center space-x-14 mb-14 border-b border-white/5">
+                    <button onclick="changeView('enc')" id="tab-enc" class="text-cyan-400 font-black border-b-4 border-cyan-400 pb-3 text-sm">ENCODE</button>
+                    <button onclick="changeView('dec')" id="tab-dec" class="text-slate-500 font-black pb-3 hover:text-white transition text-sm">DECODE</button>
                 </nav>
 
-                <div id="v-enc" class="space-y-8">
-                    <div class="flex flex-col gap-6">
-                        <textarea id="i-enc" placeholder="Enter message to protect..." class="aura-textarea h-48 w-full" oninput="clicker()"></textarea>
-                        <div id="o-enc" class="h-48 bg-white/5 rounded-3xl border border-dashed border-white/10 flex items-center justify-center text-center p-6 text-2xl font-bold text-cyan-400 font-mono break-all">
-                            <span class="opacity-20 text-sm">System Ready...</span>
-                        </div>
+                <div id="view-enc" class="space-y-10">
+                    <textarea id="msg-input" placeholder="Type secret message..." class="aura-textarea h-60 w-full"></textarea>
+                    <div id="msg-output" class="aura-output">
+                        <span class="opacity-20 text-sm italic">Standing By...</span>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="run('encrypt')" class="p-btn w-full">Protect</button>
-                        <button onclick="copy('o-enc')" class="bg-white/5 py-5 rounded-2xl font-bold uppercase text-[10px] tracking-[4px]">Copy Code</button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <button onclick="processFlow('encrypt')" class="p-btn w-full">Protect</button>
+                        <button onclick="copySecure('msg-output')" class="bg-white/5 py-5 rounded-3xl font-bold uppercase text-[10px] tracking-[4px]">Copy</button>
                     </div>
                 </div>
 
-                <div id="v-dec" class="hidden space-y-8">
-                    <div class="flex flex-col gap-6">
-                        <textarea id="i-dec" placeholder="Paste symbols..." class="aura-textarea h-48 w-full" oninput="clicker()"></textarea>
-                        <div id="o-dec" class="h-48 bg-emerald-500/5 rounded-3xl border border-dashed border-emerald-500/10 flex items-center justify-center text-center p-6 text-2xl font-bold text-emerald-400 font-mono break-all">
-                            <span class="opacity-20 text-sm">Awaiting Oracle...</span>
-                        </div>
+                <div id="view-dec" class="hidden space-y-10">
+                    <textarea id="cipher-input" placeholder="Paste protected symbols..." class="aura-textarea h-60 w-full"></textarea>
+                    <div id="truth-output" class="aura-output !text-emerald-400">
+                        <span class="opacity-20 text-sm italic">Waiting for Oracle...</span>
                     </div>
-                    <button onclick="run('decrypt')" class="p-btn !from-emerald-400 !to-blue-600 w-full">Reveal Truth</button>
+                    <button onclick="processFlow('decrypt')" class="p-btn !from-emerald-400 !to-blue-600 w-full">Unlock Oracle</button>
                 </div>
-
             </main>
 
-            <footer class="mt-14 text-center opacity-20 text-[10px] tracking-[15px] font-bold uppercase">
+            <footer class="mt-20 text-center opacity-20 text-[10px] tracking-[15px] font-bold uppercase">
                 &copy; 2026 Amar Kumar
             </footer>
         </div>
     </div>
 
-    <div id="stealth-ui">
+    <div id="support-modal" onclick="toggleSupport()">
+        <div class="support-card" onclick="event.stopPropagation()">
+            <div class="text-cyan-400 text-3xl mb-4"><i class="fas fa-heart"></i></div>
+            <h2 class="text-xl font-black mb-2 uppercase tracking-widest">Support Amar</h2>
+            <p class="text-[10px] text-slate-400 mb-6 uppercase tracking-[2px]">Help keep Swarg alive</p>
+            
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=AmarKumarr@fam&pn=Amar%20Kumar" class="mx-auto mb-6 rounded-xl border-4 border-white">
+            
+            <div class="bg-white/5 p-4 rounded-xl mb-6">
+                <p class="text-[9px] text-slate-500 uppercase mb-1">UPI ID</p>
+                <p class="text-cyan-400 font-mono text-sm">AmarKumarr@fam</p>
+            </div>
+            
+            <button onclick="copyToClipboard('AmarKumarr@fam')" class="w-full bg-cyan-400 text-black py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest">Copy ID</button>
+        </div>
+    </div>
+
+    <div id="stealth-container">
         <h1>Geography of India - Wikipedia</h1>
-        <p>India is a country of great physical diversity. The main land comprises four regions, namely: the great mountain zone, plains of the Ganga and the Indus, the desert region and the southern peninsula.</p>
-        <p><b>Physiographic Divisions:</b> The Himalayan mountain range, Indo-Gangetic plains, and the Peninsular Plateau form the major structural divisions of India.</p>
-        <p>The Himalayan mountain range is about 2,400 km long and consists of three almost parallel ranges interspersed with large plateaus and valleys.</p>
-        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ddd;">
-        <p style="font-size: 12px; color: #666;">Article last edited January 2026. Source: NCERT / Geography Project Archive.</p>
+        <p>India is a country of great physical diversity. The main land comprises four regions: the great mountain zone, plains of the Ganga and the Indus, the desert region and the southern peninsula.</p>
+        <p>This reference is part of the 12th Grade Geography Practical Archive.</p>
     </div>
 
     <script>
-        // --- CORE PROTECTION ENGINE ---
-        const MAP = { 
-            'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•',
-            '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨',
-            '.':'▫', ',':'¬', '!':'¡', '?':'¿', '@':'∂', '(': '(', ')': ')'
-        };
+        const MAP = { 'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•' };
         const REV = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
-        const flickerChars = "ABCDEF0123456789";
 
-        function clicker() { document.getElementById('snd-click').currentTime = 0; document.getElementById('snd-click').play(); }
-
-        function tab(mode) {
-            document.getElementById('v-enc').classList.toggle('hidden', mode === 'dec');
-            document.getElementById('v-dec').classList.toggle('hidden', mode === 'enc');
-            document.getElementById('t-enc').className = mode === 'enc' ? 'text-cyan-400 font-black border-b-4 border-cyan-400 pb-2 text-sm tracking-widest' : 'text-slate-500 font-black pb-2 text-sm tracking-widest';
-            document.getElementById('t-dec').className = mode === 'dec' ? 'text-emerald-400 font-black border-b-4 border-emerald-400 pb-2 text-sm tracking-widest' : 'text-slate-500 font-black pb-2 text-sm tracking-widest';
+        function changeView(mode) {
+            document.getElementById('view-enc').classList.toggle('hidden', mode === 'dec');
+            document.getElementById('view-dec').classList.toggle('hidden', mode === 'enc');
         }
 
-        function shadowActivate() {
-            document.getElementById('app-interface').style.display = 'none';
-            document.getElementById('stealth-ui').style.display = 'block';
+        function toggleSupport() {
+            const m = document.getElementById('support-modal');
+            m.style.display = (m.style.display === 'flex' ? 'none' : 'flex');
+        }
+
+        function engageShadowProtocol() {
+            document.getElementById('app-root').style.display = 'none';
+            document.getElementById('stealth-container').style.display = 'block';
             document.body.style.backgroundColor = "white";
         }
 
-        // --- BUG-FREE EXECUTION ENGINE ---
-        function run(type) {
-            const inputField = document.getElementById(type === 'encrypt' ? 'i-enc' : 'i-dec');
-            const outputBox = document.getElementById(type === 'encrypt' ? 'o-enc' : 'o-dec');
-            const text = inputField.value.toLowerCase();
+        function processFlow(type) {
+            const input = document.getElementById(type === 'encrypt' ? 'msg-input' : 'cipher-input').value.toLowerCase();
+            const outputBox = document.getElementById(type === 'encrypt' ? 'msg-output' : 'truth-output');
+            if(!input) return;
             
-            if(!text) return;
-
             let result = "";
-            for(let char of text) {
-                if(type === 'encrypt') result += MAP[char] || char; // Fixed: If not in map, keeps original
+            for(let char of input) {
+                if(type === 'encrypt') result += MAP[char] || char;
                 else result += REV[char] || char;
             }
 
-            // Professional Neural Animation (No Undefined)
             outputBox.innerHTML = "";
             let idx = 0;
             const timer = setInterval(() => {
-                // Safety check: Don't go beyond result length
                 if(idx < result.length) {
-                    let iterations = 0;
-                    const flicker = setInterval(() => {
-                        const randomBit = flickerChars[Math.floor(Math.random() * flickerChars.length)];
-                        outputBox.innerHTML = outputBox.innerHTML.slice(0, idx) + randomBit;
-                        iterations++;
-                        if(iterations > 4) {
-                            clearInterval(flicker);
-                            // Safety: Final double check before setting char
-                            if(result[idx] !== undefined) {
-                                outputBox.innerHTML = outputBox.innerHTML.slice(0, idx) + result[idx];
-                            }
-                            idx++;
-                            clicker();
-                        }
-                    }, 10);
+                    outputBox.innerHTML += result[idx];
+                    idx++;
                 } else {
                     clearInterval(timer);
-                    document.getElementById('snd-verify').play();
                     if(navigator.vibrate) navigator.vibrate(50);
                 }
-            }, 60);
+            }, 50);
         }
 
-        function copy(id) {
-            const txt = document.getElementById(id).innerText;
-            if(txt.includes('...') || !txt) return;
-            navigator.clipboard.writeText(txt).then(() => alert("Message Secured."));
+        function copySecure(id) {
+            navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => alert("Copied!"));
         }
 
-        window.addEventListener('keydown', (e) => { if(e.key === "Escape") shadowActivate(); });
+        function copyToClipboard(txt) {
+            navigator.clipboard.writeText(txt).then(() => alert("UPI ID Copied!"));
+        }
     </script>
 </body>
 </html>
