@@ -3,291 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swarg | Android Matrix Supreme</title>
+    <title>Swarg | Quantum Neural Suite</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@900&display=swap');
 
         :root {
-            --md-sys-color-primary: #00f2ff;
-            --md-sys-color-on-primary: #00373a;
-            --md-sys-color-surface: #05080a;
-            --md-sys-color-surface-variant: #1a1c1e;
+            --p-accent: #00f2ff;
+            --p-deep: #0a0f1d;
+            --p-card: rgba(255, 255, 255, 0.03);
+            --p-glass: rgba(255, 255, 255, 0.01);
             --premium-gold: #c5a059;
-            --twitter-blue: #1d9bf0;
-            --hacker-green: #00ff41;
+            --verified-blue: #1d9bf0;
+            --panic-red: #ff3b30;
         }
 
-        /* 1. ANDROID SYSTEM STYLES */
+        /* 1. PREMIUM AMBIANCE */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--md-sys-color-surface);
-            color: #e1e2e3;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--p-deep);
+            color: #ffffff;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
-            user-select: none;
         }
 
-        #matrix-bg { position: fixed; inset: 0; z-index: -1; opacity: 0.15; }
+        /* Subtle Background Dots (Not Matrix characters) */
+        #neural-bg {
+            position: fixed; inset: 0; z-index: -1;
+            background-image: radial-gradient(rgba(0, 242, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
 
-        /* 2. AMAR KUMAR BRANDING & LOGO */
-        .swarg-logo {
-            font-size: clamp(3rem, 15vw, 5rem);
-            font-weight: 900; font-style: italic;
-            background: linear-gradient(to bottom, #fff, #666);
+        /* 2. ELITE BRANDING */
+        .swarg-title {
+            font-size: clamp(3.5rem, 15vw, 6rem);
+            font-weight: 900; letter-spacing: -2px;
+            background: linear-gradient(180deg, #ffffff 0%, #888 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.3));
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));
         }
 
-        .amar-kumar-elite {
+        .amar-identity {
             font-family: 'Montserrat', sans-serif;
-            font-weight: 900; font-size: 20px; letter-spacing: 5px;
+            font-weight: 900; font-size: 20px; letter-spacing: 6px;
             background: linear-gradient(45deg, var(--premium-gold), #fff, var(--premium-gold));
             background-size: 200% auto;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-transform: uppercase;
-            animation: textShine 4s linear infinite;
+            animation: auraShine 4s linear infinite;
         }
-        @keyframes textShine { to { background-position: 200% center; } }
+        @keyframes auraShine { to { background-position: 200% center; } }
 
-        /* 3. MATERIAL DESIGN 3 CARDS */
-        .md3-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 28px; /* Android Style Extra Rounded */
-            backdrop-filter: blur(30px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        .v-tick {
+            color: var(--verified-blue); font-size: 26px;
+            filter: drop-shadow(0 0 10px rgba(29, 155, 240, 0.5));
         }
 
-        .md3-input {
-            background: var(--md-sys-color-surface-variant);
-            border-radius: 20px;
-            padding: 20px;
-            color: var(--md-sys-color-primary);
-            font-family: 'JetBrains Mono', monospace;
-            border: 2px solid transparent;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        /* 3. PREMIUM UI COMPONENTS */
+        .aura-card {
+            background: var(--p-card);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
         }
-        .md3-input:focus { border-color: var(--md-sys-color-primary); outline: none; }
 
-        /* 4. ANDROID FAB (PANIC BUTTON) */
-        .panic-fab {
-            position: fixed; bottom: 30px; right: 30px;
-            width: 72px; height: 72px;
-            background: #ff3131; border-radius: 20px; /* MD3 FAB shape */
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 30px rgba(255, 49, 49, 0.4);
-            z-index: 1000; cursor: pointer; transition: 0.3s;
-        }
-        .panic-fab:active { transform: scale(0.9); }
-
-        /* 5. BRUTE-FORCE DISPLAY */
-        .output-display {
-            background: rgba(0, 242, 255, 0.03);
-            border: 2px dashed rgba(0, 242, 255, 0.1);
+        .aura-textarea {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
-            min-height: 200px;
             padding: 25px;
+            color: var(--p-accent);
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .aura-textarea:focus { border-color: var(--p-accent); outline: none; background: rgba(0,0,0,0.6); }
+
+        .aura-output {
+            background: rgba(0, 242, 255, 0.02);
+            border: 1px dashed rgba(0, 242, 255, 0.2);
+            border-radius: 24px;
+            min-height: 220px;
+            padding: 30px;
             display: flex; align-items: center; justify-content: center;
             text-align: center; font-size: 24px; font-weight: 800;
-            color: var(--md-sys-color-primary);
+            color: var(--p-accent);
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* 6. STEALTH MODE UI */
-        #stealth-ui { 
-            display: none; background: white; color: #202122; 
-            min-height: 100vh; padding: 40px 10%; font-family: 'serif'; text-align: left; 
+        /* 4. PREMIUM PANIC FAB */
+        .panic-fab {
+            position: fixed; bottom: 35px; right: 35px;
+            width: 70px; height: 70px;
+            background: var(--panic-red); border-radius: 24px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 15px 35px rgba(255, 59, 48, 0.4);
+            z-index: 2000; cursor: pointer; transition: 0.4s;
+            border: 3px solid white;
         }
-        #stealth-ui h1 { font-size: 32px; border-bottom: 1px solid #a2a9b1; margin-bottom: 20px; }
+        .panic-fab:active { transform: scale(0.9) rotate(-10deg); }
 
-        .terminal-log {
-            font-family: 'JetBrains Mono', monospace; font-size: 11px;
-            color: var(--hacker-green); height: 100px; overflow-y: auto;
-            padding: 15px; background: rgba(0,0,0,0.7); border-radius: 18px;
-            border: 1px solid rgba(0, 255, 65, 0.1);
+        /* 5. STEALTH GEOGRAPHY PAGE */
+        #stealth-container {
+            display: none; background: #fff; color: #202122;
+            min-height: 100vh; padding: 60px 12%; font-family: 'serif'; text-align: left;
         }
+        #stealth-container h1 { font-size: 36px; border-bottom: 2px solid #333; margin-bottom: 25px; }
+
+        .status-terminal {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            color: #888; height: 90px; overflow-y: auto;
+            padding: 15px; border-radius: 20px; background: rgba(255,255,255,0.02);
+        }
+
+        .p-btn {
+            background: linear-gradient(135deg, #00f2ff 0%, #0077ff 100%);
+            color: #000; font-weight: 800; border-radius: 20px;
+            padding: 18px; text-transform: uppercase; letter-spacing: 3px;
+            transition: 0.4s;
+        }
+        .p-btn:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0, 242, 255, 0.4); }
     </style>
 </head>
 <body>
 
-    <div id="main-ui">
-        <canvas id="matrix-bg"></canvas>
-
-        <div class="panic-fab" onclick="triggerPanic()" title="Shadow Protocol">
-            <i class="fas fa-biohazard text-white text-2xl"></i>
+    <div id="app-root">
+        <div id="neural-bg"></div>
+        
+        <div class="panic-fab" onclick="engageShadowProtocol()" title="Security Panic Button">
+            <i class="fas fa-shield-alt text-white text-2xl"></i>
         </div>
 
-        <audio id="snd-click" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
-        <audio id="snd-success" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
+        <audio id="snd-mechanical" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
+        <audio id="snd-verified" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
 
-        <div class="max-w-4xl mx-auto px-6 py-10">
+        <div class="max-w-5xl mx-auto px-6 py-12">
             
-            <header class="text-center mb-12">
-                <h1 class="swarg-logo">Swarg</h1>
-                <div class="flex items-center justify-center gap-4 mt-4">
-                    <span class="amar-kumar-elite">Amar Kumar</span>
-                    <i class="fas fa-circle-check verified-tick text-sky-500"></i>
+            <header class="text-center mb-16">
+                <h1 class="swarg-title">Swarg</h1>
+                <div class="flex items-center justify-center gap-4 mt-6">
+                    <span class="amar-identity">Amar Kumar</span>
+                    <i class="fas fa-circle-check v-tick"></i>
                 </div>
                 
-                <div class="mt-8 terminal-log text-left max-w-lg mx-auto" id="terminal">
-                    <div>> SYSTEM_BOOT_V7.0... [READY]</div>
-                    <div>> AMAR_KUMAR_IDENTITY_VERIFIED.</div>
+                <div class="mt-10 status-terminal text-left max-w-lg mx-auto" id="log-feed">
+                    <div>> INITIALIZING_QUANTUM_CORE... [ONLINE]</div>
+                    <div>> SECURITY_LAYER_ACTIVE... [ENCRYPTED]</div>
                 </div>
             </header>
 
-            <main class="md3-card p-8 md:p-12">
+            <main class="aura-card p-10 md:p-16">
                 
-                <nav class="flex justify-center space-x-12 mb-10">
-                    <button onclick="switchTab('enc')" id="tab-enc" class="text-cyan-400 font-black border-b-4 border-cyan-400 pb-2">ENCODE</button>
-                    <button onclick="switchTab('dec')" id="tab-dec" class="text-slate-500 font-black pb-2 hover:text-white transition">DECODE</button>
+                <nav class="flex justify-center space-x-14 mb-14 border-b border-white/5">
+                    <button onclick="changeView('enc')" id="tab-enc" class="text-cyan-400 font-black border-b-4 border-cyan-400 pb-3 tracking-widest text-sm">ENCODE_CORE</button>
+                    <button onclick="changeView('dec')" id="tab-dec" class="text-slate-500 font-black pb-3 hover:text-white transition tracking-widest text-sm">DECODE_ORACLE</button>
                 </nav>
 
-                <div id="view-enc" class="space-y-8">
-                    <div class="flex flex-col gap-6">
-                        <textarea id="inp-enc" placeholder="Enter message..." class="md3-input h-48 w-full" oninput="playClick()"></textarea>
-                        <div id="out-enc" class="output-display">
-                            <span class="opacity-20 text-sm">System Standing By...</span>
+                <div id="view-enc" class="space-y-10">
+                    <div class="grid lg:grid-cols-2 gap-10">
+                        <textarea id="msg-input" placeholder="Type secret message..." class="aura-textarea h-64 w-full" oninput="clickSnd()"></textarea>
+                        <div id="msg-output" class="aura-output">
+                            <span class="opacity-20 text-sm italic">System Standing By...</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="process('encrypt')" class="bg-cyan-500 text-black font-black py-5 rounded-3xl uppercase tracking-widest shadow-lg active:scale-95 transition">Encrypt</button>
-                        <button onclick="copyToClipboard('out-enc')" class="bg-white/5 py-5 rounded-3xl font-bold uppercase text-[10px] tracking-widest">Copy Code</button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <button onclick="processFlow('encrypt')" class="p-btn w-full">Protect Message</button>
+                        <button onclick="copySecure('msg-output')" class="bg-white/5 py-5 rounded-3xl font-bold uppercase text-[10px] tracking-[4px]">Sync Clipboard</button>
                     </div>
                 </div>
 
-                <div id="view-dec" class="hidden space-y-8">
-                    <div class="flex flex-col gap-6">
-                        <textarea id="inp-dec" placeholder="Paste symbols..." class="md3-input h-48 w-full" oninput="playClick()"></textarea>
-                        <div id="out-dec" class="output-display !text-emerald-400 !border-emerald-500/10">
-                            <span class="opacity-20 text-sm">Awaiting Oracle...</span>
+                <div id="view-dec" class="hidden space-y-10">
+                    <div class="grid lg:grid-cols-2 gap-10">
+                        <textarea id="cipher-input" placeholder="Paste protected symbols..." class="aura-textarea h-64 w-full" oninput="clickSnd()"></textarea>
+                        <div id="truth-output" class="aura-output !text-emerald-400 !border-emerald-500/10">
+                            <span class="opacity-20 text-sm italic">Awaiting Oracle...</span>
                         </div>
                     </div>
-                    <button onclick="process('decrypt')" class="w-full bg-emerald-500 text-black font-black py-5 rounded-3xl uppercase tracking-widest active:scale-95 transition">Decrypt</button>
+                    <button onclick="processFlow('decrypt')" class="p-btn !from-emerald-400 !to-blue-600 w-full">Unlock Oracle</button>
                 </div>
 
             </main>
 
-            <footer class="mt-12 text-center opacity-30 text-[9px] tracking-[10px] font-bold uppercase">
-                &copy; 2026 Amar Kumar | Secure Protocol
+            <footer class="mt-20 text-center">
+                <p class="opacity-20 text-[10px] tracking-[15px] font-bold uppercase mb-4">Neural Systems by Amar Kumar &copy; 2026</p>
+                <button onclick="location.reload()" class="text-[9px] text-slate-700 hover:text-cyan-400 uppercase tracking-[6px]">System Restart</button>
             </footer>
         </div>
     </div>
 
-    <div id="stealth-ui">
+    <div id="stealth-container">
         <h1>Geography of India - Wikipedia</h1>
-        <p>India is a country of great physical diversity. The main land comprises four regions: the great mountain zone, plains of the Ganga and the Indus, the desert region, and the southern peninsula.</p>
-        <p><b>Physiographic Divisions:</b> The Himalayas, Indo-Gangetic Plains, Thar Desert, and the Peninsular Plateau form the major structural divisions of India.</p>
-        <p>The Himalayan mountain range is about 2,400 km long and consists of three almost parallel ranges interspersed with large plateaus and valleys.</p>
-        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ddd;">
-        <p style="font-size: 12px; color: #777;">Article last edited Jan 2026. Part of Amar Kumar's Project Archive.</p>
+        <p>India is a country of great physical diversity. The main land comprises four regions, namely: the great mountain zone, plains of the Ganga and the Indus, the desert region and the southern peninsula.</p>
+        <p><b>Physiographic Divisions:</b> The Himalayan mountain range, Indo-Gangetic plains, and the Peninsular Plateau form the major structural divisions of the country. India's geography is highly varied, with snow-capped mountain ranges, deserts, plains, and rainforests.</p>
+        <p><b>The Great Mountain Zone:</b> It consists of three almost parallel ranges interspersed with large plateaus and valleys, some of which, like the Kashmir and Kullu valleys, are fertile and extensive.</p>
+        <hr style="margin: 40px 0; border: 0; border-top: 1px solid #ddd;">
+        <p style="font-size: 13px; color: #72777d;">Reference article for 12th Grade Geography Practical Examination 2026.</p>
     </div>
 
     <script>
-        // --- 1. CONSOLE SHIELD ---
-        console.log("%c PROPERTY OF AMAR KUMAR. ACCESS DENIED.", "color: #00f2ff; font-size: 30px; font-weight: 900;");
-
-        // --- 2. MATRIX FLOW ---
-        const canvas = document.getElementById('matrix-bg');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const symbols = "01アイウエオカキクケコサシスセソタチツテトナニヌネノ";
-        const drops = Array(Math.floor(canvas.width/20)).fill(1);
-        function drawMatrix() {
-            ctx.fillStyle = "rgba(5, 8, 10, 0.15)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#00f2ff"; ctx.font = "15px monospace";
-            drops.forEach((y, i) => {
-                ctx.fillText(symbols[Math.floor(Math.random()*symbols.length)], i*20, y*20);
-                if(y*20 > canvas.height && Math.random() > 0.98) drops[i] = 0;
-                drops[i]++;
-            });
-        }
-        setInterval(drawMatrix, 50);
-
-        // --- 3. SUPREME LOGIC (BUG-FIXED) ---
+        // 1. DYNAMIC SYSTEM
         const MAP = { 
             'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•',
             '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨',
-            '.':'▫', ',':'¬', '!':'¡', '?':'¿', '@':'∂'
+            '.':'▫', ',':'¬', '!':'¡', '?':'¿', '@':'∂', '#':'#', '$':'$', '%':'%', '&':'&'
         };
         const REV = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
+        const glitchChars = "ABCDEFGHIJKLMN0123456789";
 
-        function log(msg) {
-            const t = document.getElementById('terminal');
-            t.innerHTML += `<div>> ${msg}</div>`;
-            t.scrollTop = t.scrollHeight;
+        function terminal(msg) {
+            const feed = document.getElementById('log-feed');
+            feed.innerHTML += `<div>> ${msg}</div>`;
+            feed.scrollTop = feed.scrollHeight;
         }
 
-        function playClick() { document.getElementById('snd-click').currentTime = 0; document.getElementById('snd-click').play(); }
+        function clickSnd() { document.getElementById('snd-mechanical').currentTime = 0; document.getElementById('snd-mechanical').play(); }
 
-        function switchTab(mode) {
+        function changeView(mode) {
             document.getElementById('view-enc').classList.toggle('hidden', mode === 'dec');
             document.getElementById('view-dec').classList.toggle('hidden', mode === 'enc');
-            document.getElementById('tab-enc').className = mode === 'enc' ? 'text-cyan-400 font-black border-b-4 border-cyan-400 pb-2' : 'text-slate-500 font-black pb-2';
-            document.getElementById('tab-dec').className = mode === 'dec' ? 'text-emerald-400 font-black border-b-4 border-emerald-400 pb-2' : 'text-slate-500 font-black pb-2';
+            document.getElementById('tab-enc').className = mode === 'enc' ? 'text-cyan-400 font-black border-b-4 border-cyan-400 pb-3 tracking-widest text-sm' : 'text-slate-500 font-black pb-3 tracking-widest text-sm';
+            document.getElementById('tab-dec').className = mode === 'dec' ? 'text-emerald-400 font-black border-b-4 border-emerald-400 pb-3 tracking-widest text-sm' : 'text-slate-500 font-black pb-3 tracking-widest text-sm';
+            terminal(`MODULE_ACCESS: ${mode.toUpperCase()}_ENGAGED.`);
         }
 
-        function triggerPanic() {
-            document.getElementById('main-ui').style.display = 'none';
-            document.getElementById('stealth-ui').style.display = 'block';
+        function engageShadowProtocol() {
+            document.getElementById('app-root').style.display = 'none';
+            document.getElementById('stealth-container').style.display = 'block';
             document.body.style.backgroundColor = "white";
         }
 
-        // --- FIXED UNDEFINED PROTECTION ENGINE ---
-        function process(type) {
-            const input = document.getElementById(type === 'encrypt' ? 'inp-enc' : 'inp-dec').value.toLowerCase();
-            const outputBox = document.getElementById(type === 'encrypt' ? 'out-enc' : 'out-dec');
-            if(!input) { log("ERROR: EMPTY_INPUT"); return; }
-            log(`INITIATING_${type.toUpperCase()}...`);
+        // 2. SUPREME ENGINE (ZERO UNDEFINED BUG)
+        function processFlow(type) {
+            const input = document.getElementById(type === 'encrypt' ? 'msg-input' : 'cipher-input').value.toLowerCase();
+            const outputBox = document.getElementById(type === 'encrypt' ? 'msg-output' : 'truth-output');
+            if(!input) { terminal("ERROR: NULL_PAYLOAD"); return; }
+            terminal(`INITIATING_${type.toUpperCase()}...`);
 
-            let resultData = "";
+            let rawResult = "";
             for(let char of input) {
-                if(type === 'encrypt') resultData += MAP[char] || char;
-                else resultData += REV[char] || char;
+                if(type === 'encrypt') rawResult += MAP[char] || char; // Safety Fallback
+                else rawResult += REV[char] || char;
             }
 
-            // Fixed Animation Logic
+            // Silk Animation Logic (Fixed Index)
             outputBox.innerHTML = "";
             let idx = 0;
-            const masterTimer = setInterval(() => {
-                // Critical Fix: String length check
-                if(idx < resultData.length) {
-                    let iterations = 0;
-                    const flicker = setInterval(() => {
-                        const randomChar = symbols[Math.floor(Math.random() * symbols.length)];
-                        outputBox.innerHTML = outputBox.innerHTML.slice(0, idx) + randomChar;
-                        iterations++;
-                        if(iterations > 4) {
-                            clearInterval(flicker);
-                            // Safety: Extra check before setting the final character
-                            if(resultData[idx] !== undefined) {
-                                outputBox.innerHTML = outputBox.innerHTML.slice(0, idx) + resultData[idx];
+            const engineTimer = setInterval(() => {
+                // Strict length check to prevent "undefined"
+                if(idx < rawResult.length) {
+                    let flickerCount = 0;
+                    const flickerInterval = setInterval(() => {
+                        const randomBit = glitchChars[Math.floor(Math.random() * glitchChars.length)];
+                        outputBox.innerHTML = outputBox.innerHTML.slice(0, idx) + randomBit;
+                        flickerCount++;
+                        if(flickerCount > 5) {
+                            clearInterval(flickerInterval);
+                            // Safety check before setting character
+                            if(rawResult[idx] !== undefined) {
+                                outputBox.innerHTML = outputBox.innerHTML.slice(0, idx) + rawResult[idx];
                             }
                             idx++;
-                            playClick();
+                            clickSnd();
                         }
-                    }, 10);
+                    }, 12);
                 } else {
-                    clearInterval(masterTimer);
-                    document.getElementById('snd-success').play();
-                    log(`${type.toUpperCase()}_SUCCESSFUL.`);
+                    clearInterval(engineTimer);
+                    document.getElementById('snd-verified').play();
+                    terminal(`${type.toUpperCase()}_PAYLOAD_VERIFIED.`);
                     if(navigator.vibrate) navigator.vibrate(60);
                 }
-            }, 60);
+            }, 65);
         }
 
-        function copyToClipboard(id) {
+        function copySecure(id) {
             const txt = document.getElementById(id).innerText;
             if(txt.includes('...') || !txt) return;
             navigator.clipboard.writeText(txt).then(() => {
-                log("SYNC_SUCCESSFUL.");
-                alert("PAYLOAD COPIED.");
+                terminal("PAYLOAD_SYNC_SUCCESSFUL.");
+                alert("Protected Message Copied.");
             });
         }
+
+        window.addEventListener('keydown', (e) => { if(e.key === "Escape") engageShadowProtocol(); });
     </script>
 </body>
-                        </html>
-                            
+</html>
