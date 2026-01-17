@@ -18,7 +18,8 @@
             --lux-bg: #030508;
             --lux-accent-cyan: #00fff2;
             --lux-accent-blue: #4a8eff;
-            --lux-gold: #d4af37;
+            /* Richer Gold */
+            --premium-gold: #d4af37; 
             --verified-blue: #1d9bf0;
             --lux-glass-border: rgba(255, 255, 255, 0.08);
             --lux-glass-surface: rgba(10, 15, 25, 0.7);
@@ -26,7 +27,7 @@
         }
 
         body {
-            font-family: 'Satoshi', sans-serif; /* Body stays clean */
+            font-family: 'Satoshi', sans-serif;
             background-color: var(--lux-bg);
             color: #ffffff;
             overflow-x: hidden;
@@ -34,7 +35,7 @@
         }
 
         /* =========================================
-           2. NEW FLYING BACKGROUND ANIMATION
+           NEW FLYING BACKGROUND ANIMATION (UNCHANGED)
         ========================================= */
         #cosmos-bg {
             position: fixed; inset: 0; z-index: -1;
@@ -43,13 +44,12 @@
         }
         .neural-particle {
             position: absolute; 
-            width: 3px; height: 3px; /* Slightly bigger for visibility */
+            width: 3px; height: 3px;
             background: var(--lux-accent-cyan);
             border-radius: 50%; 
             box-shadow: 0 0 10px var(--lux-accent-cyan), 0 0 20px var(--lux-accent-blue);
-            opacity: 0; /* Start invisible */
+            opacity: 0;
         }
-        /* New faster flying animation upwards */
         @keyframes flyUp {
             0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
             20% { opacity: 0.7; }
@@ -67,42 +67,43 @@
         }
 
         /* =========================================
-           1. RESTORED OLD TYPOGRAPHY STYLES
+           TYPOGRAPHY UPDATES (BIGGER SWARG & GOLDEN AMAR)
         ========================================= */
-        /* The heavy italic look for Swarg */
+        /* Swarg Title - MUCH BIGGER */
         .swarg-title-classic {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-style: italic;
-            font-size: clamp(3.5rem, 15vw, 6.5rem);
+            /* Increased size significantly */
+            font-size: clamp(5rem, 22vw, 10rem);
             font-weight: 900;
-            letter-spacing: -2px;
-            /* Using a strong gradient to match the new dark bg */
+            letter-spacing: -3px;
             background: linear-gradient(180deg, #ffffff 30%, #666 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6));
-            line-height: 1;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.7));
+            line-height: 0.9;
         }
 
-        /* The wide, shiny Montserrat look for Amar Kumar */
+        /* Amar Kumar - GOLDEN & VISIBLE */
         .amar-brand-classic {
             font-family: 'Montserrat', sans-serif;
             font-weight: 900;
-            font-size: 20px;
-            letter-spacing: 6px;
+            /* Increased size for better visibility */
+            font-size: 26px;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            /* Gold shine effect */
-            background: linear-gradient(45deg, var(--premium-gold), #fff, var(--premium-gold));
-            background-size: 200% auto;
+            /* RICH GOLDEN GRADIENT SHINE */
+            background: linear-gradient(45deg, #b88a44, #e6c86e, #b88a44, #fff, #b88a44);
+            background-size: 300% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: textShine 4s linear infinite;
+            animation: textShine 3s linear infinite;
             display: flex; align-items: center; gap: 12px;
         }
-        @keyframes textShine { to { background-position: 200% center; } }
+        @keyframes textShine { to { background-position: 300% center; } }
 
         .v-tick { 
-            color: var(--verified-blue); font-size: 22px;
+            color: var(--verified-blue); font-size: 24px;
             filter: drop-shadow(0 0 15px var(--verified-blue)); 
         }
 
@@ -178,7 +179,7 @@
         <div class="max-w-4xl mx-auto px-6 py-12">
             <header class="text-center mb-16">
                 <h1 class="swarg-title-classic">Swarg</h1>
-                <div class="flex items-center justify-center gap-4 mt-4">
+                <div class="flex items-center justify-center gap-4 mt-6">
                     <span class="amar-brand-classic">Amar Kumar <i class="fas fa-circle-check v-tick"></i></span>
                 </div>
                 
@@ -245,17 +246,14 @@
     </div>
 
     <script>
-        // --- UPDATED PARTICLE INITIALIZATION ---
+        // --- PARTICLE INITIALIZATION (UNCHANGED) ---
         const bg = document.getElementById('cosmos-bg');
-        // Increased count slightly for better effect
         for(let i=0; i<60; i++) {
             const p = document.createElement('div');
             p.className = 'neural-particle';
             p.style.left = Math.random()*100+'vw';
-            // Randomize speeds between 8s and 18s for varied flying effect
             p.style.animationDuration = (8 + Math.random()*10)+'s'; 
             p.style.animationDelay = Math.random()*10+'s';
-            // Apply the new flying animation
             p.style.animationName = 'flyUp';
             p.style.animationTimingFunction = 'linear';
             p.style.animationIterationCount = 'infinite';
@@ -340,5 +338,5 @@
         }
     </script>
 </body>
-    </html>
-            
+            </html>
+                    
