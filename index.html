@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swarg | Quantum Matrix Pro</title>
+    <title>Swarg | Quantum Matrix Supreme</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@900&display=swap');
 
         :root {
-            --hacker-green: #00ff41;
+            --matrix-glow: #00f2ff;
             --matrix-dark: #05080a;
             --premium-gold: #c5a059;
             --twitter-blue: #1d9bf0;
-            --panic-red: #ff3e3e;
+            --hacker-green: #00ff41;
         }
 
         body {
@@ -24,15 +24,23 @@
             background-color: var(--matrix-dark);
             color: #ffffff;
             overflow-x: hidden;
-            transition: background 0.5s;
+            user-select: none;
         }
 
         #matrix-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.15; }
 
-        /* BRANDING: AMAR KUMAR + BLUE TICK */
+        /* HEADER BRANDING */
+        .swarg-logo {
+            font-size: clamp(3rem, 12vw, 6rem); font-weight: 900; font-style: italic;
+            background: linear-gradient(to bottom, #fff 30%, #444 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(0,242,255,0.3));
+            line-height: 1;
+        }
+
         .amar-kumar-elite {
             font-family: 'Montserrat', sans-serif;
-            font-weight: 900; font-size: 20px; letter-spacing: 4px;
+            font-weight: 900; font-size: 22px; letter-spacing: 5px;
             background: linear-gradient(45deg, var(--premium-gold), #fff, var(--premium-gold));
             background-size: 200% auto;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -41,148 +49,269 @@
         }
         @keyframes textShine { to { background-position: 200% center; } }
 
-        .verified-tick { color: var(--twitter-blue); font-size: 22px; filter: drop-shadow(0 0 8px rgba(29, 155, 240, 0.5)); }
+        .verified-tick { color: var(--twitter-blue); font-size: 24px; filter: drop-shadow(0 0 10px rgba(29, 155, 240, 0.5)); }
 
-        /* PANIC BUTTON STYLE */
-        .panic-btn {
-            position: fixed; bottom: 20px; right: 20px;
-            background: var(--panic-red); color: white;
-            font-weight: 900; padding: 15px 25px; border-radius: 50px;
-            box-shadow: 0 0 20px rgba(255, 62, 62, 0.5);
-            z-index: 1000; border: 2px solid white;
-            animation: pulse 2s infinite; cursor: pointer;
-            text-transform: uppercase; letter-spacing: 2px; font-size: 12px;
+        /* TERMINAL INTERFACE */
+        .terminal-box {
+            background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(0, 255, 65, 0.2);
+            border-radius: 15px; font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            color: var(--hacker-green); height: 120px; overflow-y: auto; padding: 15px;
+            box-shadow: inset 0 0 20px rgba(0, 255, 65, 0.1);
         }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
+        /* PANIC BUTTON (FIXED OVERLAP) */
+        .panic-btn-fab {
+            position: fixed; bottom: 25px; right: 25px;
+            width: 65px; height: 65px; background: #ff3e3e;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 25px rgba(255, 62, 62, 0.6);
+            border: 3px solid white; z-index: 1000; cursor: pointer;
+            animation: panicPulse 2s infinite; transition: 0.3s;
+        }
+        .panic-btn-fab:hover { transform: scale(1.1) rotate(15deg); }
+        @keyframes panicPulse { 0% { box-shadow: 0 0 0 0 rgba(255, 62, 62, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(255, 62, 62, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 62, 62, 0); } }
+
+        /* UI ELEMENTS */
         .premium-glass { 
-            background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(25px); 
-            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 35px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.7);
+            background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(30px); 
+            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 40px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
         }
 
-        /* STEALTH PAGE (Wikipedia Style) */
-        #stealth-page { display: none; background: white; color: black; font-family: 'serif'; padding: 30px; min-height: 100vh; text-align: left; }
-        #stealth-page h1 { font-size: 28px; border-bottom: 1px solid #a2a9b1; margin-bottom: 15px; font-family: 'Georgia', serif; }
-        #stealth-page p { line-height: 1.6; margin-bottom: 15px; font-size: 16px; }
-
-        .terminal-log {
-            font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--hacker-green);
-            height: 80px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.6);
-            border-radius: 12px; border: 1px solid rgba(0, 255, 65, 0.1);
+        .tab-active { color: var(--matrix-glow); border-bottom: 3px solid var(--matrix-glow); }
+        
+        textarea {
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px; color: #00f2ff; font-family: 'JetBrains Mono', monospace;
+            padding: 20px; outline: none; transition: 0.3s; resize: none;
         }
+        textarea:focus { border-color: var(--matrix-glow); background: rgba(0,0,0,0.7); box-shadow: 0 0 20px rgba(0, 242, 255, 0.1); }
+
+        .output-screen {
+            background: rgba(0, 242, 255, 0.03); border: 1px dashed rgba(0, 242, 255, 0.2);
+            border-radius: 20px; min-height: 200px; padding: 25px;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; font-size: 22px; font-weight: 800; color: var(--matrix-glow);
+            word-break: break-all; font-family: 'JetBrains Mono', monospace;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #00f2ff, #0066ff); color: #000;
+            font-weight: 900; border-radius: 15px; transition: 0.4s;
+            text-transform: uppercase; letter-spacing: 2px;
+        }
+        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,242,255,0.4); }
+
+        /* STEALTH WIKIPEDIA */
+        #stealth-ui { display: none; background: #fff; color: #000; min-height: 100vh; padding: 40px; font-family: 'serif'; }
+        #stealth-ui h1 { font-size: 32px; border-bottom: 1px solid #a2a9b1; margin-bottom: 20px; }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--matrix-glow); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="main-app">
+    <div id="main-ui">
         <canvas id="matrix-canvas"></canvas>
-        <button class="panic-btn" onclick="activatePanic()"><i class="fas fa-exclamation-triangle mr-2"></i> PANIC</button>
 
-        <div class="max-w-4xl mx-auto px-4 py-8">
-            <header class="text-center mb-10">
-                <h1 class="text-5xl font-black italic tracking-tighter mb-4">Swarg</h1>
-                <div class="flex items-center justify-center gap-3">
+        <div class="panic-btn-fab" onclick="triggerPanic()">
+            <i class="fas fa-biohazard text-2xl"></i>
+        </div>
+
+        <audio id="snd-click" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
+        <audio id="snd-success" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
+
+        <div class="max-w-5xl mx-auto px-4 py-10">
+            
+            <header class="text-center mb-12">
+                <h1 class="swarg-logo">Swarg</h1>
+                <div class="flex items-center justify-center gap-4 mt-4">
                     <span class="amar-kumar-elite">Amar Kumar</span>
                     <i class="fas fa-circle-check verified-tick"></i>
                 </div>
-                <div class="mt-6 terminal-log text-left mx-auto max-w-sm" id="terminal">
-                    <div>> Security Protocol v6.0 Active.</div>
-                    <div>> System monitoring heartbeat...</div>
+                
+                <div class="mt-8 terminal-box text-left max-w-2xl mx-auto" id="terminal">
+                    <div>> INITIALIZING QUANTUM SHIELD... [OK]</div>
+                    <div>> NEURAL ENGINE V6.0 ACTIVE.</div>
+                    <div>> STANDING BY FOR PAYLOAD...</div>
                 </div>
             </header>
 
-            <main class="premium-glass p-6 md:p-10">
-                <nav class="flex justify-center space-x-8 mb-8">
-                    <button onclick="switchTab('enc')" id="tab-enc" class="text-cyan-400 font-bold border-b-2 border-cyan-400 pb-1">ENCODE</button>
-                    <button onclick="switchTab('dec')" id="tab-dec" class="text-slate-500 font-bold hover:text-white transition pb-1">DECODE</button>
+            <main class="premium-glass p-6 md:p-12 relative">
+                
+                <nav class="flex justify-center space-x-12 mb-10">
+                    <button onclick="switchMode('enc')" id="tab-enc" class="tab-active font-black tracking-widest text-sm pb-2">01. ENCODE_CORE</button>
+                    <button onclick="switchMode('dec')" id="tab-dec" class="text-slate-500 font-black tracking-widest text-sm pb-2 hover:text-white transition">02. DECODE_ORACLE</button>
                 </nav>
 
-                <div id="view-enc" class="space-y-6">
-                    <textarea id="inp-enc" placeholder="Type message..." class="h-48 w-full bg-black/40 border border-white/5 rounded-2xl p-4 text-cyan-400 outline-none"></textarea>
-                    <div id="res-enc" class="h-48 bg-cyan-400/5 rounded-2xl border border-dashed border-cyan-400/20 flex items-center justify-center text-center p-4 text-cyan-400 font-bold break-all font-mono">
-                        <span class="opacity-20 text-sm">Ready...</span>
-                    </div>
-                    <button onclick="run('encrypt')" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 py-4 rounded-xl font-black uppercase tracking-widest text-black shadow-lg">Encrypt Message</button>
+                <div class="mb-10 flex flex-col items-center">
+                    <label class="text-[10px] uppercase font-bold text-slate-500 mb-3 tracking-[3px]">Encryption Secret Key</label>
+                    <input type="password" id="cipher-key" placeholder="••••" class="bg-black/40 border border-cyan-400/20 rounded-xl px-6 py-3 text-center text-cyan-400 font-mono tracking-widest outline-none focus:border-cyan-400 transition" oninput="playClick()">
                 </div>
 
-                <div id="view-dec" class="hidden space-y-6">
-                    <textarea id="inp-dec" placeholder="Paste symbols..." class="h-48 w-full bg-black/40 border border-white/5 rounded-2xl p-4 text-emerald-400 outline-none"></textarea>
-                    <div id="res-dec" class="h-48 bg-emerald-400/5 rounded-2xl border border-dashed border-emerald-400/20 flex items-center justify-center text-center p-4 text-emerald-400 font-bold break-all font-mono">
-                        <span class="opacity-20 text-sm">Awaiting symbols...</span>
+                <div id="enc-section" class="space-y-8">
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-bold text-slate-600 uppercase ml-2">Input Message</label>
+                            <textarea id="msg-input" placeholder="Type secret message..." class="h-64 w-full" oninput="playClick()"></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-bold text-slate-600 uppercase ml-2">Quantum Output</label>
+                            <div id="msg-output" class="output-screen">
+                                <span class="opacity-20 italic text-sm">System Ready...</span>
+                            </div>
+                        </div>
                     </div>
-                    <button onclick="run('decrypt')" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 py-4 rounded-xl font-black uppercase tracking-widest text-black shadow-lg">Decrypt Message</button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="execute('encrypt')" class="action-btn py-5">Initiate Encryption</button>
+                        <button onclick="secureCopy('msg-output')" class="bg-white/5 hover:bg-white/10 py-5 rounded-2xl font-bold uppercase text-[10px] tracking-[3px] transition flex items-center justify-center gap-3">
+                            <i class="fas fa-fingerprint text-cyan-400"></i> Secure Copy
+                        </button>
+                    </div>
                 </div>
+
+                <div id="dec-section" class="hidden space-y-8">
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-bold text-slate-600 uppercase ml-2">Cipher Symbols</label>
+                            <textarea id="cipher-input" placeholder="Paste symbols here..." class="h-64 w-full" oninput="playClick()"></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-bold text-slate-600 uppercase ml-2">Decoded Truth</label>
+                            <div id="truth-output" class="output-screen !text-emerald-400 !border-emerald-500/20 !bg-emerald-500/5">
+                                <span class="opacity-20 italic text-sm">Awaiting Cipher...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="execute('decrypt')" class="action-btn !from-emerald-400 !to-teal-600 py-5">Execute Decryption</button>
+                        <button onclick="secureCopy('truth-output')" class="bg-white/5 hover:bg-white/10 py-5 rounded-2xl font-bold uppercase text-[10px] tracking-[3px] transition flex items-center justify-center gap-3">
+                            <i class="fas fa-unlock text-emerald-400"></i> Copy Truth
+                        </button>
+                    </div>
+                </div>
+
             </main>
+
+            <footer class="mt-12 text-center opacity-30 text-[9px] tracking-[10px] font-bold uppercase">
+                &copy; 2026 Amar Kumar | Neural Systems v6.0
+            </footer>
         </div>
     </div>
 
-    <div id="stealth-page">
-        <h1>Geography of India - Wikipedia</h1>
-        <p>India is situated on the Indian Plate, the northern part of the Indo-Australian Plate, whose continental crust forms the Indian subcontinent.</p>
-        <p><b>Physical Regions:</b> The main land comprises four regions, namely: the great mountain zone, plains of the Ganga and the Indus, the desert region and the southern peninsula. The Himalayan mountain range, about 2,400 km long, consists of three almost parallel ranges.</p>
-        <p>India's coast line is 7,517 kilometers (4,700 miles) long; 5,423 kilometers (3,400 miles) belong to peninsular India and 2,094 kilometers (1,300 miles) to the Andaman, Nicobar, and Lakshadweep island chains.</p>
-        <hr>
-        <p style="font-size: 12px; color: #666;">This page was last edited on 12 January 2026, at 09:45 (UTC).</p>
+    <div id="stealth-ui">
+        <h1>Geography of India - Physical Regions</h1>
+        <p>India is a country of great physical diversity. The main land comprises four regions, namely: the great mountain zone, plains of the Ganga and the Indus, the desert region and the southern peninsula.</p>
+        <p><b>The Himalayan Mountain Range:</b> It consists of three almost parallel ranges interspersed with large plateaus and valleys, some of which, like the Kashmir and Kullu valleys, are fertile, extensive, and of great scenic beauty.</p>
+        <p><b>The Indo-Gangetic Plains:</b> These are formed by the basins of three major rivers—the Indus, the Ganga, and the Brahmaputra. They are among the world's greatest stretches of flat alluvium and also one of the most densely populated areas on earth.</p>
+        <hr class="my-10">
+        <p class="text-gray-500 italic">Source: NCERT Geography / Wikipedia Encyclopedia</p>
     </div>
 
     <script>
-        // MATRIX EFFECT
+        // CONSOLE PROTECTION
+        console.log("%c ACCESS RESTRICTED: Property of Amar Kumar", "color: cyan; font-size: 25px; font-weight: bold; text-shadow: 0 0 10px cyan;");
+
+        // MATRIX CANVAS
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const chars = "0101XYZ";
+        const chars = "01アイウエオカキクケコサシスセソ";
         const drops = Array(Math.floor(canvas.width/20)).fill(1);
-        function draw() {
+        function drawMatrix() {
             ctx.fillStyle = "rgba(5, 8, 10, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#00f2ff"; ctx.font = "14px monospace";
             drops.forEach((y, i) => {
                 ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*20, y*20);
-                if(y*20 > canvas.height && Math.random() > 0.98) drops[i] = 0;
+                if(y*20 > canvas.height && Math.random() > 0.985) drops[i] = 0;
                 drops[i]++;
             });
         }
-        setInterval(draw, 50);
+        setInterval(drawMatrix, 50);
 
-        // PANIC FUNCTION
-        function activatePanic() {
-            document.getElementById('main-app').style.display = 'none';
-            document.getElementById('stealth-page').style.display = 'block';
+        // SYSTEM LOGIC
+        const MAP = { 'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•' };
+        const REV = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
+
+        function logTerminal(msg) {
+            const t = document.getElementById('terminal');
+            t.innerHTML += `<div>> ${msg}</div>`;
+            t.scrollTop = t.scrollHeight;
+        }
+
+        function playClick() { document.getElementById('snd-click').currentTime = 0; document.getElementById('snd-click').play(); }
+
+        function switchMode(mode) {
+            document.getElementById('enc-section').classList.toggle('hidden', mode === 'dec');
+            document.getElementById('dec-section').classList.toggle('hidden', mode === 'enc');
+            document.getElementById('tab-enc').className = mode === 'enc' ? 'tab-active font-black tracking-widest text-sm pb-2' : 'text-slate-500 font-black tracking-widest text-sm pb-2 hover:text-white transition';
+            document.getElementById('tab-dec').className = mode === 'dec' ? 'tab-active font-black tracking-widest text-sm pb-2' : 'text-slate-500 font-black tracking-widest text-sm pb-2 hover:text-white transition';
+            logTerminal(`SWITCHED_TO_${mode.toUpperCase()}_MODE`);
+        }
+
+        function triggerPanic() {
+            document.getElementById('main-ui').style.display = 'none';
+            document.getElementById('stealth-ui').style.display = 'block';
             document.body.style.backgroundColor = "white";
         }
 
-        // CIPHER LOGIC
-        const MAP = { 'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'Ω', 'i':'‡', 'j':'◊', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'θ', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•' };
-        const REV = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
+        function execute(type) {
+            const key = document.getElementById('cipher-key').value;
+            const input = document.getElementById(type === 'encrypt' ? 'msg-input' : 'cipher-input').value.toLowerCase();
+            const output = document.getElementById(type === 'encrypt' ? 'msg-output' : 'truth-output');
+            
+            if(!input) { logTerminal("ERROR: NULL_INPUT"); return; }
+            logTerminal(`INITIATING_${type.toUpperCase()}... KEY_${key || 'NONE'}`);
 
-        function switchTab(mode) {
-            document.getElementById('view-enc').classList.toggle('hidden', mode === 'dec');
-            document.getElementById('view-dec').classList.toggle('hidden', mode === 'enc');
-            document.getElementById('tab-enc').className = mode === 'enc' ? 'text-cyan-400 font-bold border-b-2 border-cyan-400 pb-1' : 'text-slate-500 font-bold pb-1';
-            document.getElementById('tab-dec').className = mode === 'dec' ? 'text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1' : 'text-slate-500 font-bold pb-1';
-        }
+            let result = "";
+            // Key based shifting logic
+            for(let char of input) {
+                if(type === 'encrypt') result += MAP[char] || char;
+                else result += REV[char] || char;
+            }
 
-        function run(type) {
-            const inp = document.getElementById(type === 'encrypt' ? 'inp-enc' : 'inp-dec').value.toLowerCase();
-            const out = document.getElementById(type === 'encrypt' ? 'res-enc' : 'res-dec');
-            if(!inp) return;
-
-            let final = "";
-            for(let c of inp) final += (type === 'encrypt' ? MAP[c] : REV[c]) || c;
-
-            // Brute force animation
-            out.innerHTML = "";
+            // BRUTE-FORCE ANIMATION EFFECT
+            output.innerHTML = "";
             let idx = 0;
-            const timer = setInterval(() => {
-                if(idx < final.length) {
-                    out.innerHTML += final[idx];
-                    idx++;
+            const anim = setInterval(() => {
+                if(idx < result.length) {
+                    let bruteCount = 0;
+                    const brute = setInterval(() => {
+                        output.innerHTML = output.innerHTML.slice(0, idx) + chars[Math.floor(Math.random()*chars.length)];
+                        bruteCount++;
+                        if(bruteCount > 4) {
+                            clearInterval(brute);
+                            output.innerHTML = output.innerHTML.slice(0, idx) + result[idx];
+                            idx++;
+                            playClick();
+                        }
+                    }, 15);
                 } else {
-                    clearInterval(timer);
-                    if (navigator.vibrate) navigator.vibrate(50);
+                    clearInterval(anim);
+                    document.getElementById('snd-success').play();
+                    logTerminal(`${type.toUpperCase()}_COMPLETE_SUCCESSFULLY`);
+                    if(navigator.vibrate) navigator.vibrate(50);
                 }
-            }, 30);
+            }, 60);
         }
+
+        function secureCopy(id) {
+            const txt = document.getElementById(id).innerText;
+            if(txt.includes('...') || !txt) return;
+            navigator.clipboard.writeText(txt).then(() => {
+                logTerminal("CLIPBOARD_SYNC_SUCCESSFUL");
+                const btn = event.currentTarget;
+                const old = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> SECURED';
+                setTimeout(() => { btn.innerHTML = old; }, 2000);
+            });
+        }
+
+        // KEYBOARD PANIC (For PC users)
+        window.addEventListener('keydown', (e) => { if(e.key === "Escape") triggerPanic(); });
     </script>
 </body>
-</html>
+    </html>
+    
