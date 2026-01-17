@@ -2,543 +2,292 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swarg | Quantum Neural Cipher Supreme</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Swarg | Android Matrix Supreme</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        /* =========================================
-           1. CORE THEME & VARIABLES
-           =========================================
-        */
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@900&display=swap');
 
         :root {
-            --matrix-glow: #00f2ff;
-            --matrix-dark: #05080a;
+            --md-sys-color-primary: #00f2ff;
+            --md-sys-color-on-primary: #00373a;
+            --md-sys-color-surface: #05080a;
+            --md-sys-color-surface-variant: #1a1c1e;
             --premium-gold: #c5a059;
             --twitter-blue: #1d9bf0;
             --hacker-green: #00ff41;
-            --panic-red: #ff3e3e;
-            --terminal-bg: rgba(0, 0, 0, 0.9);
         }
 
-        /* =========================================
-           2. GLOBAL ANIMATIONS
-           =========================================
-        */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* 1. ANDROID SYSTEM STYLES */
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--matrix-dark);
-            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--md-sys-color-surface);
+            color: #e1e2e3;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
             user-select: none;
-            cursor: crosshair;
         }
 
-        #matrix-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.18;
-        }
+        #matrix-bg { position: fixed; inset: 0; z-index: -1; opacity: 0.15; }
 
-        .scanline {
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to bottom, transparent, rgba(0, 242, 255, 0.05), transparent);
-            position: fixed;
-            top: 0;
-            z-index: 100;
-            animation: scanLineMove 6s linear infinite;
-            pointer-events: none;
-        }
-        @keyframes scanLineMove { 0% { top: -10%; } 100% { top: 110%; } }
-
-        /* =========================================
-           3. BRANDING: AMAR KUMAR ELITE
-           =========================================
-        */
+        /* 2. AMAR KUMAR BRANDING & LOGO */
         .swarg-logo {
-            font-size: clamp(3.5rem, 15vw, 6.5rem);
-            font-weight: 900;
-            font-style: italic;
-            background: linear-gradient(to bottom, #ffffff 30%, #444 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 25px rgba(0, 242, 255, 0.4));
-            line-height: 1;
+            font-size: clamp(3rem, 15vw, 5rem);
+            font-weight: 900; font-style: italic;
+            background: linear-gradient(to bottom, #fff, #666);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.3));
         }
 
         .amar-kumar-elite {
             font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            font-size: 22px;
-            letter-spacing: 7px;
+            font-weight: 900; font-size: 20px; letter-spacing: 5px;
             background: linear-gradient(45deg, var(--premium-gold), #fff, var(--premium-gold));
             background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-transform: uppercase;
-            animation: textShineEffect 4s linear infinite;
+            animation: textShine 4s linear infinite;
         }
-        @keyframes textShineEffect { to { background-position: 200% center; } }
+        @keyframes textShine { to { background-position: 200% center; } }
 
-        .verified-tick {
-            color: var(--twitter-blue);
-            font-size: 26px;
-            filter: drop-shadow(0 0 12px rgba(29, 155, 240, 0.6));
-            animation: tickGlowEffect 2.5s infinite ease-in-out;
-        }
-        @keyframes tickGlowEffect { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.8; } }
-
-        /* =========================================
-           4. FLOATING PANIC SYSTEM (FAB)
-           =========================================
-        */
-        .panic-action-fab {
-            position: fixed;
-            bottom: 35px;
-            right: 35px;
-            width: 75px;
-            height: 75px;
-            background: var(--panic-red);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 35px rgba(255, 62, 62, 0.7);
-            border: 4px solid #fff;
-            z-index: 2000;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: panicPulseEffect 2s infinite;
-        }
-        .panic-action-fab:hover { transform: scale(1.2) rotate(20deg); box-shadow: 0 0 50px rgba(255, 62, 62, 0.9); }
-        .panic-action-fab i { color: white; font-size: 28px; }
-        @keyframes panicPulseEffect { 
-            0% { box-shadow: 0 0 0 0 rgba(255, 62, 62, 0.8); } 
-            70% { box-shadow: 0 0 0 25px rgba(255, 62, 62, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(255, 62, 62, 0); } 
+        /* 3. MATERIAL DESIGN 3 CARDS */
+        .md3-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 28px; /* Android Style Extra Rounded */
+            backdrop-filter: blur(30px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
         }
 
-        /* =========================================
-           5. TERMINAL ENGINE UI
-           =========================================
-        */
-        .cyber-terminal {
-            background: var(--terminal-bg);
-            border: 1px solid rgba(0, 255, 65, 0.3);
-            border-radius: 18px;
+        .md3-input {
+            background: var(--md-sys-color-surface-variant);
+            border-radius: 20px;
+            padding: 20px;
+            color: var(--md-sys-color-primary);
             font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: var(--hacker-green);
-            height: 130px;
-            overflow-y: auto;
-            padding: 18px;
-            box-shadow: inset 0 0 25px rgba(0, 255, 65, 0.15), 0 15px 40px rgba(0,0,0,0.6);
+            border: 2px solid transparent;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .md3-input:focus { border-color: var(--md-sys-color-primary); outline: none; }
 
-        /* =========================================
-           6. MAIN INTERFACE & TABS
-           =========================================
-        */
-        .premium-glass-card {
-            background: rgba(255, 255, 255, 0.01);
-            backdrop-filter: blur(45px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 50px;
-            box-shadow: 0 60px 140px rgba(0,0,0,0.9);
+        /* 4. ANDROID FAB (PANIC BUTTON) */
+        .panic-fab {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 72px; height: 72px;
+            background: #ff3131; border-radius: 20px; /* MD3 FAB shape */
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px rgba(255, 49, 49, 0.4);
+            z-index: 1000; cursor: pointer; transition: 0.3s;
         }
+        .panic-fab:active { transform: scale(0.9); }
 
-        .tab-trigger {
-            position: relative;
-            padding: 18px 35px;
-            font-weight: 900;
-            letter-spacing: 4px;
-            color: #444;
-            transition: 0.5s;
-            font-size: 13px;
-        }
-        .tab-trigger.active {
-            color: var(--matrix-glow);
-            text-shadow: 0 0 15px var(--matrix-glow);
-        }
-        .tab-trigger.active::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 15%;
-            width: 70%;
-            height: 4px;
-            background: var(--matrix-glow);
-            box-shadow: 0 0 20px var(--matrix-glow);
-            border-radius: 10px;
-        }
-
-        /* =========================================
-           7. FORM INPUTS & DISPLAYS
-           =========================================
-        */
-        .matrix-textarea-elite {
-            background: rgba(0,0,0,0.7);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 28px;
-            color: #00f2ff;
+        /* 5. BRUTE-FORCE DISPLAY */
+        .output-display {
+            background: rgba(0, 242, 255, 0.03);
+            border: 2px dashed rgba(0, 242, 255, 0.1);
+            border-radius: 24px;
+            min-height: 200px;
+            padding: 25px;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; font-size: 24px; font-weight: 800;
+            color: var(--md-sys-color-primary);
             font-family: 'JetBrains Mono', monospace;
-            padding: 28px;
-            outline: none;
-            transition: 0.4s ease;
-            resize: none;
-            box-shadow: inset 0 4px 20px rgba(0,0,0,0.6);
-        }
-        .matrix-textarea-elite:focus {
-            border-color: var(--matrix-glow);
-            box-shadow: 0 0 40px rgba(0, 242, 255, 0.2), inset 0 4px 20px rgba(0,0,0,0.6);
-            background: rgba(0,0,0,0.8);
         }
 
-        .cipher-screen-output {
-            background: rgba(0, 242, 255, 0.04);
-            border: 1px dashed rgba(0, 242, 255, 0.25);
-            border-radius: 28px;
-            min-height: 240px;
-            padding: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-size: 26px;
-            font-weight: 900;
-            color: var(--matrix-glow);
-            word-break: break-all;
-            font-family: 'JetBrains Mono', monospace;
-            position: relative;
-            overflow: hidden;
+        /* 6. STEALTH MODE UI */
+        #stealth-ui { 
+            display: none; background: white; color: #202122; 
+            min-height: 100vh; padding: 40px 10%; font-family: 'serif'; text-align: left; 
         }
+        #stealth-ui h1 { font-size: 32px; border-bottom: 1px solid #a2a9b1; margin-bottom: 20px; }
 
-        .supreme-action-btn {
-            background: linear-gradient(135deg, #00f2ff 0%, #0066ff 100%);
-            color: #000;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            padding: 22px;
-            border-radius: 22px;
-            box-shadow: 0 20px 50px rgba(0, 242, 255, 0.4);
-            transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        .terminal-log {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            color: var(--hacker-green); height: 100px; overflow-y: auto;
+            padding: 15px; background: rgba(0,0,0,0.7); border-radius: 18px;
+            border: 1px solid rgba(0, 255, 65, 0.1);
         }
-        .supreme-action-btn:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 30px 70px rgba(0, 242, 255, 0.6);
-            filter: brightness(1.25);
-        }
-
-        /* =========================================
-           8. STEALTH MODE UI (GEOGRAPHY)
-           =========================================
-        */
-        #shadow-stealth-mode {
-            display: none;
-            background: #ffffff;
-            color: #1a1a1a;
-            min-height: 100vh;
-            padding: 60px 12%;
-            font-family: 'serif';
-            text-align: left;
-            z-index: 5000;
-            position: relative;
-        }
-        #shadow-stealth-mode h1 {
-            font-size: 38px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-            font-family: 'Linux Libertine', 'Georgia', serif;
-        }
-        #shadow-stealth-mode p { font-size: 18px; line-height: 1.8; margin-bottom: 22px; }
-
-        /* SCROLLBAR */
-        ::-webkit-scrollbar { width: 7px; }
-        ::-webkit-scrollbar-track { background: var(--matrix-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--matrix-glow); border-radius: 12px; }
-
     </style>
 </head>
 <body>
 
-    <div id="swarg-master-ui">
-        <canvas id="matrix-canvas"></canvas>
-        <div class="scanline"></div>
+    <div id="main-ui">
+        <canvas id="matrix-bg"></canvas>
 
-        <div class="panic-action-fab" onclick="initiateStealthSequence()" title="Shadow Protocol Activation">
-            <i class="fas fa-biohazard"></i>
+        <div class="panic-fab" onclick="triggerPanic()" title="Shadow Protocol">
+            <i class="fas fa-biohazard text-white text-2xl"></i>
         </div>
 
-        <audio id="snd-mechanical-click" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
-        <audio id="snd-access-granted" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
+        <audio id="snd-click" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
+        <audio id="snd-success" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
 
-        <div class="max-w-6xl mx-auto px-6 py-14">
+        <div class="max-w-4xl mx-auto px-6 py-10">
             
-            <header class="text-center mb-16">
+            <header class="text-center mb-12">
                 <h1 class="swarg-logo">Swarg</h1>
-                <div class="flex items-center justify-center gap-5 mt-6">
+                <div class="flex items-center justify-center gap-4 mt-4">
                     <span class="amar-kumar-elite">Amar Kumar</span>
-                    <i class="fas fa-circle-check verified-tick"></i>
+                    <i class="fas fa-circle-check verified-tick text-sky-500"></i>
                 </div>
                 
-                <div class="mt-12 cyber-terminal text-left max-w-2xl mx-auto" id="terminal-feed">
-                    <div>> BOOTING_QUANTUM_CORE... [100%]</div>
-                    <div>> IDENTITY_VERIFIED: AMAR_KUMAR_SUPREME.</div>
-                    <div>> STATUS: READY_FOR_PAYLOAD.</div>
+                <div class="mt-8 terminal-log text-left max-w-lg mx-auto" id="terminal">
+                    <div>> SYSTEM_BOOT_V7.0... [READY]</div>
+                    <div>> AMAR_KUMAR_IDENTITY_VERIFIED.</div>
                 </div>
             </header>
 
-            <main class="premium-glass-card p-10 md:p-16 relative">
+            <main class="md3-card p-8 md:p-12">
                 
-                <nav class="flex justify-center space-x-16 mb-14 border-b border-white/5">
-                    <button onclick="changeEngineView('encode')" id="btn-tab-enc" class="tab-trigger active uppercase">01. ENCODE_ENGINE</button>
-                    <button onclick="changeEngineView('decode')" id="btn-tab-dec" class="tab-trigger uppercase">02. DECODE_ORACLE</button>
+                <nav class="flex justify-center space-x-12 mb-10">
+                    <button onclick="switchTab('enc')" id="tab-enc" class="text-cyan-400 font-black border-b-4 border-cyan-400 pb-2">ENCODE</button>
+                    <button onclick="switchTab('dec')" id="tab-dec" class="text-slate-500 font-black pb-2 hover:text-white transition">DECODE</button>
                 </nav>
 
-                <div class="mb-14 flex flex-col items-center">
-                    <label class="text-[11px] uppercase font-black text-slate-500 mb-5 tracking-[5px]">Neural Encryption Key</label>
-                    <input type="password" id="auth-secret-key" placeholder="••••" class="bg-black/60 border border-cyan-400/30 rounded-2xl px-10 py-5 text-center text-cyan-400 font-mono tracking-[10px] outline-none focus:border-cyan-400 transition shadow-[0_15px_40px_rgba(0,0,0,0.8)]" oninput="triggerMechanicalSound()">
-                </div>
-
-                <div id="module-encode" class="space-y-12">
-                    <div class="grid lg:grid-cols-2 gap-12">
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-slate-600 uppercase ml-4 tracking-[3px]">Human Message</label>
-                            <textarea id="raw-payload-input" placeholder="Inject sensitive data here..." class="h-72 w-full matrix-textarea-elite" oninput="triggerMechanicalSound()"></textarea>
-                        </div>
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-slate-600 uppercase ml-4 tracking-[3px]">Quantum Stream</label>
-                            <div id="cipher-stream-display" class="cipher-screen-output">
-                                <span class="opacity-20 italic text-sm">System Awaiting Injection...</span>
-                            </div>
+                <div id="view-enc" class="space-y-8">
+                    <div class="flex flex-col gap-6">
+                        <textarea id="inp-enc" placeholder="Enter message..." class="md3-input h-48 w-full" oninput="playClick()"></textarea>
+                        <div id="out-enc" class="output-display">
+                            <span class="opacity-20 text-sm">System Standing By...</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <button onclick="executeSupremeLogic('encrypt')" class="supreme-action-btn w-full">Initiate Encryption</button>
-                        <button onclick="secureClipboardSync('cipher-stream-display')" class="bg-white/5 hover:bg-white/10 py-6 rounded-2xl font-black uppercase text-[11px] tracking-[5px] transition flex items-center justify-center gap-4">
-                            <i class="fas fa-fingerprint text-cyan-400"></i> Secure Copy
-                        </button>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="process('encrypt')" class="bg-cyan-500 text-black font-black py-5 rounded-3xl uppercase tracking-widest shadow-lg active:scale-95 transition">Encrypt</button>
+                        <button onclick="copyToClipboard('out-enc')" class="bg-white/5 py-5 rounded-3xl font-bold uppercase text-[10px] tracking-widest">Copy Code</button>
                     </div>
                 </div>
 
-                <div id="module-decode" class="hidden space-y-12">
-                    <div class="grid lg:grid-cols-2 gap-12">
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-slate-600 uppercase ml-4 tracking-[3px]">Cipher Symbols</label>
-                            <textarea id="cipher-payload-input" placeholder="Paste encrypted symbols..." class="h-72 w-full matrix-textarea-elite" oninput="triggerMechanicalSound()"></textarea>
-                        </div>
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-slate-600 uppercase ml-4 tracking-[3px]">Revealed Truth</label>
-                            <div id="truth-stream-display" class="cipher-screen-output !text-emerald-400 !border-emerald-500/30 !bg-emerald-500/5">
-                                <span class="opacity-20 italic text-sm">Waiting for Oracle...</span>
-                            </div>
+                <div id="view-dec" class="hidden space-y-8">
+                    <div class="flex flex-col gap-6">
+                        <textarea id="inp-dec" placeholder="Paste symbols..." class="md3-input h-48 w-full" oninput="playClick()"></textarea>
+                        <div id="out-dec" class="output-display !text-emerald-400 !border-emerald-500/10">
+                            <span class="opacity-20 text-sm">Awaiting Oracle...</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <button onclick="executeSupremeLogic('decrypt')" class="supreme-action-btn !from-emerald-400 !to-teal-600 w-full">Execute Decryption</button>
-                        <button onclick="secureClipboardSync('truth-stream-display')" class="bg-white/5 hover:bg-white/10 py-6 rounded-2xl font-black uppercase text-[11px] tracking-[5px] transition flex items-center justify-center gap-4">
-                            <i class="fas fa-key text-emerald-400"></i> Copy Truth
-                        </button>
-                    </div>
+                    <button onclick="process('decrypt')" class="w-full bg-emerald-500 text-black font-black py-5 rounded-3xl uppercase tracking-widest active:scale-95 transition">Decrypt</button>
                 </div>
 
             </main>
 
-            <footer class="mt-20 text-center">
-                <p class="opacity-30 text-[10px] tracking-[14px] font-black uppercase mb-6">Swarg Neural Networks &copy; 2026</p>
-                <div class="flex justify-center gap-8">
-                    <button onclick="location.reload()" class="text-[9px] text-slate-700 hover:text-cyan-400 transition uppercase tracking-[6px]">System Restart</button>
-                    <button onclick="triggerPanic()" class="text-[9px] text-red-900 hover:text-red-500 transition uppercase tracking-[6px]">Panic Force</button>
-                </div>
+            <footer class="mt-12 text-center opacity-30 text-[9px] tracking-[10px] font-bold uppercase">
+                &copy; 2026 Amar Kumar | Secure Protocol
             </footer>
         </div>
     </div>
 
-    <div id="shadow-stealth-mode">
-        <h1>Geography of India - Physical Regions</h1>
-        <p>India is a country of great physical diversity. The main land comprises four regions, namely: the great mountain zone, plains of the Ganga and the Indus, the desert region and the southern peninsula.</p>
-        <p><b>The Himalayan Mountain Range:</b> It consists of three almost parallel ranges interspersed with large plateaus and valleys, some of which, like the Kashmir and Kullu valleys, are fertile, extensive, and of great scenic beauty. The mountain ranges at their highest parts have a variety of flora and fauna.</p>
-        <p><b>The Indo-Gangetic Plains:</b> These are formed by the basins of three major rivers—the Indus, the Ganga, and the Brahmaputra. They are among the world's greatest stretches of flat alluvium and also one of the most densely populated areas on earth.</p>
-        <p><b>The Peninsular Plateau:</b> It is a tableland composed of the old crystalline, igneous and metamorphic rocks. It was formed due to the breaking and drifting of the Gondwana land and thus, making it a part of the oldest landmass.</p>
-        <hr style="margin: 40px 0; border: 0; border-top: 1px solid #ddd;">
-        <p style="font-size: 13px; color: #72777d;">Content is available under CC BY-SA 4.0 / Article from Wikipedia, the free encyclopedia. Last edited 2026-01-17.</p>
+    <div id="stealth-ui">
+        <h1>Geography of India - Wikipedia</h1>
+        <p>India is a country of great physical diversity. The main land comprises four regions: the great mountain zone, plains of the Ganga and the Indus, the desert region, and the southern peninsula.</p>
+        <p><b>Physiographic Divisions:</b> The Himalayas, Indo-Gangetic Plains, Thar Desert, and the Peninsular Plateau form the major structural divisions of India.</p>
+        <p>The Himalayan mountain range is about 2,400 km long and consists of three almost parallel ranges interspersed with large plateaus and valleys.</p>
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ddd;">
+        <p style="font-size: 12px; color: #777;">Article last edited Jan 2026. Part of Amar Kumar's Project Archive.</p>
     </div>
 
     <script>
-        /* =========================================
-           J1. CONSOLE SECURITY SHIELD
-           =========================================
-        */
-        console.log("%c ACCESS FORBIDDEN: PROPERTY OF AMAR KUMAR", "color: #00f2ff; font-size: 35px; font-weight: 900; text-shadow: 0 0 20px #00f2ff;");
-        console.log("%c Unauthorised manipulation detected will be logged.", "color: red; font-size: 15px;");
+        // --- 1. CONSOLE SHIELD ---
+        console.log("%c PROPERTY OF AMAR KUMAR. ACCESS DENIED.", "color: #00f2ff; font-size: 30px; font-weight: 900;");
 
-        /* =========================================
-           J2. DYNAMIC MATRIX ENGINE
-           =========================================
-        */
-        const matrixCanvas = document.getElementById('matrix-canvas');
-        const matrixCtx = matrixCanvas.getContext('2d');
-        matrixCanvas.width = window.innerWidth;
-        matrixCanvas.height = window.innerHeight;
-        const hexSymbols = "01ABCDEFアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
-        const fontSizeVal = 17;
-        const columnsCount = matrixCanvas.width / fontSizeVal;
-        const dropsArray = Array(Math.floor(columnsCount)).fill(1);
-
-        function drawMatrixFlow() {
-            matrixCtx.fillStyle = "rgba(5, 8, 10, 0.12)";
-            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
-            matrixCtx.fillStyle = "#00f2ff";
-            matrixCtx.font = fontSizeVal + "px monospace";
-            dropsArray.forEach((y, i) => {
-                const charText = hexSymbols[Math.floor(Math.random() * hexSymbols.length)];
-                matrixCtx.fillText(charText, i * fontSizeVal, y * fontSizeVal);
-                if (y * fontSizeVal > matrixCanvas.height && Math.random() > 0.985) dropsArray[i] = 0;
-                dropsArray[i]++;
+        // --- 2. MATRIX FLOW ---
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const symbols = "01アイウエオカキクケコサシスセソタチツテトナニヌネノ";
+        const drops = Array(Math.floor(canvas.width/20)).fill(1);
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(5, 8, 10, 0.15)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00f2ff"; ctx.font = "15px monospace";
+            drops.forEach((y, i) => {
+                ctx.fillText(symbols[Math.floor(Math.random()*symbols.length)], i*20, y*20);
+                if(y*20 > canvas.height && Math.random() > 0.98) drops[i] = 0;
+                drops[i]++;
             });
         }
-        setInterval(drawMatrixFlow, 55);
+        setInterval(drawMatrix, 50);
 
-        /* =========================================
-           J3. CIPHER MAPPING ENGINE (BUG-FIXED)
-           =========================================
-        */
-        const SUPREME_MAP = { 
+        // --- 3. SUPREME LOGIC (BUG-FIXED) ---
+        const MAP = { 
             'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•',
             '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨',
-            '.':'▫', ',':'¬', '!':'¡', '?':'¿', '@':'∂', '#':'#', '$':'$', '%':'%', '&':'&', '(':'(', ')':')', '-':'-', '+':'+', '*': '*', '/': '/', '=': '=', ':': ':', ';': ';'
+            '.':'▫', ',':'¬', '!':'¡', '?':'¿', '@':'∂'
         };
-        const SUPREME_REVERSE = Object.fromEntries(Object.entries(SUPREME_MAP).map(([k, v]) => [v, k]));
+        const REV = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
 
-        /* =========================================
-           J4. CORE UTILITIES
-           =========================================
-        */
-        function feedTerminal(msg) {
-            const term = document.getElementById('terminal-feed');
-            term.innerHTML += `<div>> ${msg}</div>`;
-            term.scrollTop = term.scrollHeight;
+        function log(msg) {
+            const t = document.getElementById('terminal');
+            t.innerHTML += `<div>> ${msg}</div>`;
+            t.scrollTop = t.scrollHeight;
         }
 
-        function triggerMechanicalSound() { 
-            document.getElementById('snd-mechanical-click').currentTime = 0; 
-            document.getElementById('snd-mechanical-click').play(); 
+        function playClick() { document.getElementById('snd-click').currentTime = 0; document.getElementById('snd-click').play(); }
+
+        function switchTab(mode) {
+            document.getElementById('view-enc').classList.toggle('hidden', mode === 'dec');
+            document.getElementById('view-dec').classList.toggle('hidden', mode === 'enc');
+            document.getElementById('tab-enc').className = mode === 'enc' ? 'text-cyan-400 font-black border-b-4 border-cyan-400 pb-2' : 'text-slate-500 font-black pb-2';
+            document.getElementById('tab-dec').className = mode === 'dec' ? 'text-emerald-400 font-black border-b-4 border-emerald-400 pb-2' : 'text-slate-500 font-black pb-2';
         }
 
-        function changeEngineView(mode) {
-            document.getElementById('module-encode').classList.toggle('hidden', mode === 'decode');
-            document.getElementById('module-decode').classList.toggle('hidden', mode === 'encode');
-            document.querySelectorAll('.tab-trigger').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-tab-' + (mode === 'encode' ? 'enc' : 'dec')).classList.add('active');
-            feedTerminal(`SYSTEM_ACCESS: ${mode.toUpperCase()}_MODULE_ENGAGED.`);
+        function triggerPanic() {
+            document.getElementById('main-ui').style.display = 'none';
+            document.getElementById('stealth-ui').style.display = 'block';
+            document.body.style.backgroundColor = "white";
         }
 
-        /* =========================================
-           J5. SHADOW PROTOCOL (STEALTH)
-           =========================================
-        */
-        function initiateStealthSequence() {
-            document.getElementById('swarg-master-ui').style.display = 'none';
-            document.getElementById('shadow-stealth-mode').style.display = 'block';
-            document.body.style.backgroundColor = "#ffffff";
-            document.body.style.cursor = "default";
-            feedTerminal("CRITICAL_PANIC_TRIGGERED: SHADOW_PROTOCOL_ACTIVE.");
-        }
-        window.addEventListener('keydown', (e) => { if(e.key === "Escape") initiateStealthSequence(); });
+        // --- FIXED UNDEFINED PROTECTION ENGINE ---
+        function process(type) {
+            const input = document.getElementById(type === 'encrypt' ? 'inp-enc' : 'inp-dec').value.toLowerCase();
+            const outputBox = document.getElementById(type === 'encrypt' ? 'out-enc' : 'out-dec');
+            if(!input) { log("ERROR: EMPTY_INPUT"); return; }
+            log(`INITIATING_${type.toUpperCase()}...`);
 
-        /* =========================================
-           J6. SUPREME EXECUTION ENGINE (UNDEFINED FIXED)
-           =========================================
-        */
-        function executeSupremeLogic(type) {
-            const secretAuthKey = document.getElementById('auth-secret-key').value;
-            const inputElement = document.getElementById(type === 'encrypt' ? 'raw-payload-input' : 'cipher-payload-input');
-            const displayElement = document.getElementById(type === 'encrypt' ? 'cipher-stream-display' : 'truth-stream-display');
-            const sourceValue = inputElement.value.toLowerCase();
-            
-            if(!sourceValue) { feedTerminal("ERROR: NULL_PAYLOAD_DETECTED."); return; }
-            feedTerminal(`INITIATING_${type.toUpperCase()}... [AUTH_KEY: ${secretAuthKey || 'UNSECURED'}]`);
-
-            // Logic Calculation with Safety Fallback
-            let resultBuffer = "";
-            for(let character of sourceValue) {
-                if(type === 'encrypt') {
-                    resultBuffer += SUPREME_MAP[character] || character; // Agar map mein nahi hai, toh waisa hi rakho
-                } else {
-                    resultBuffer += SUPREME_REVERSE[character] || character;
-                }
+            let resultData = "";
+            for(let char of input) {
+                if(type === 'encrypt') resultData += MAP[char] || char;
+                else resultData += REV[char] || char;
             }
 
-            // ADVANCED BRUTE-FORCE DEPLOYMENT (NO UNDEFINED)
-            displayElement.innerHTML = "";
-            let currentStringIndex = 0;
-            
-            const masterLoop = setInterval(() => {
-                // Safety check: index string ke bahar na jaye
-                if(currentStringIndex < resultBuffer.length) {
-                    let internalFlickerCount = 0;
-                    
-                    const flickerLoop = setInterval(() => {
-                        // Flicker random symbols
-                        const randomGlitch = hexSymbols[Math.floor(Math.random() * hexSymbols.length)];
-                        displayElement.innerHTML = displayElement.innerHTML.slice(0, currentStringIndex) + randomGlitch;
-                        internalFlickerCount++;
-                        
-                        if(internalFlickerCount > 6) {
-                            clearInterval(flickerLoop);
-                            // Set actual character
-                            displayElement.innerHTML = displayElement.innerHTML.slice(0, currentStringIndex) + resultBuffer[currentStringIndex];
-                            currentStringIndex++;
-                            triggerMechanicalSound();
+            // Fixed Animation Logic
+            outputBox.innerHTML = "";
+            let idx = 0;
+            const masterTimer = setInterval(() => {
+                // Critical Fix: String length check
+                if(idx < resultData.length) {
+                    let iterations = 0;
+                    const flicker = setInterval(() => {
+                        const randomChar = symbols[Math.floor(Math.random() * symbols.length)];
+                        outputBox.innerHTML = outputBox.innerHTML.slice(0, idx) + randomChar;
+                        iterations++;
+                        if(iterations > 4) {
+                            clearInterval(flicker);
+                            // Safety: Extra check before setting the final character
+                            if(resultData[idx] !== undefined) {
+                                outputBox.innerHTML = outputBox.innerHTML.slice(0, idx) + resultData[idx];
+                            }
+                            idx++;
+                            playClick();
                         }
-                    }, 15);
+                    }, 10);
                 } else {
-                    clearInterval(masterLoop);
-                    document.getElementById('snd-access-granted').play();
-                    feedTerminal(`${type.toUpperCase()}_SEQUENCE_VERIFIED_SUCCESS.`);
-                    if (navigator.vibrate) navigator.vibrate(60);
+                    clearInterval(masterTimer);
+                    document.getElementById('snd-success').play();
+                    log(`${type.toUpperCase()}_SUCCESSFUL.`);
+                    if(navigator.vibrate) navigator.vibrate(60);
                 }
-            }, 75);
+            }, 60);
         }
 
-        /* =========================================
-           J7. CLIPBOARD SECURITY INTERFACE
-           =========================================
-        */
-        function secureClipboardSync(targetId) {
-            const dataToSync = document.getElementById(targetId).innerText;
-            if(dataToSync.includes('...') || !dataToSync) return;
-            
-            navigator.clipboard.writeText(dataToSync).then(() => {
-                feedTerminal("SUCCESS: PAYLOAD_SYNCED_TO_CLIPBOARD.");
-                const btnNode = event.currentTarget;
-                const prevHTML = btnNode.innerHTML;
-                btnNode.innerHTML = '<i class="fas fa-check-double text-green-400"></i> SECURED_SYNC';
-                btnNode.style.borderColor = "#00ff41";
-                setTimeout(() => { 
-                    btnNode.innerHTML = prevHTML; 
-                    btnNode.style.borderColor = ""; 
-                }, 2800);
+        function copyToClipboard(id) {
+            const txt = document.getElementById(id).innerText;
+            if(txt.includes('...') || !txt) return;
+            navigator.clipboard.writeText(txt).then(() => {
+                log("SYNC_SUCCESSFUL.");
+                alert("PAYLOAD COPIED.");
             });
         }
-
-        // RESPONSIVE RESIZE
-        window.addEventListener('resize', () => {
-            matrixCanvas.width = window.innerWidth;
-            matrixCanvas.height = window.innerHeight;
-        });
     </script>
 </body>
-</html>
+                        </html>
+                            
