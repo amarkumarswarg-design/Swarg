@@ -3,22 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swarg | Quantum Executive Suite</title>
+    <title>Swarg | Ultra-Premium Suite</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
     <style>
+        /* =========================================
+           ULTRA-LUXURY THEME VARIABLES
+        ========================================= */
         :root {
-            --lux-bg: #030508;
+            --lux-bg: #020406; /* Deeper black */
             --lux-accent-cyan: #00fff2;
-            --lux-accent-blue: #4a8eff;
-            --premium-gold: #d4af37; 
+            --lux-accent-blue: #3b82f6;
+            /* Complex metallic gold gradient */
+            --premium-gold-start: #bf953f;
+            --premium-gold-mid: #fcf6ba;
+            --premium-gold-end: #aa771c;
             --verified-blue: #1d9bf0;
             --lux-glass-border: rgba(255, 255, 255, 0.08);
-            --lux-glass-surface: rgba(10, 15, 25, 0.7);
+            --lux-glass-surface: rgba(10, 15, 25, 0.8);
             --panic-red: #ff3b30;
         }
 
@@ -30,60 +36,87 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 1. ANIMATED FLYING PARTICLES BACKGROUND */
+        /* 1. ANIMATED FLYING PARTICLES BACKGROUND (UNCHANGED) */
         #cosmos-bg {
             position: fixed; inset: 0; z-index: -1;
-            background: radial-gradient(circle at center, #1a2238 0%, #030508 100%);
+            background: radial-gradient(circle at 50% 30%, #1a2238 0%, #030508 80%);
             overflow: hidden;
         }
         .neural-particle {
             position: absolute; width: 3px; height: 3px;
             background: var(--lux-accent-cyan); border-radius: 50%; 
-            box-shadow: 0 0 10px var(--lux-accent-cyan);
+            box-shadow: 0 0 15px var(--lux-accent-cyan);
             opacity: 0; animation: flyUp linear infinite;
         }
         @keyframes flyUp {
             0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
-            20% { opacity: 0.7; }
-            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
         }
 
-        /* 2. BIG SWARG TYPOGRAPHY */
-        .swarg-title-classic {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-style: italic; font-weight: 900;
-            font-size: clamp(5rem, 25vw, 10.5rem);
-            background: linear-gradient(180deg, #ffffff 30%, #666 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.7));
-            line-height: 0.85; margin-bottom: 10px;
+        /* =========================================
+           2. THE MILLION DOLLAR HEADER (FIXED & CENTERED)
+        ========================================= */
+        .header-container {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; text-align: center;
+            margin-bottom: 4rem; position: relative;
         }
 
-        /* 3. GOLDEN SHINY AMAR KUMAR */
-        .amar-brand-classic {
+        /* SWARG - Platinum/Chrome Look, Perfectly Centered, Not cut off */
+        .swarg-title-platinum {
             font-family: 'Montserrat', sans-serif;
-            font-weight: 900; font-size: 28px; letter-spacing: 5px;
-            text-transform: uppercase;
-            background: linear-gradient(45deg, #b88a44, #e6c86e, #b88a44, #fff, #b88a44);
-            background-size: 300% auto;
+            font-style: italic; font-weight: 900;
+            /* Balanced size so it doesn't cut off */
+            font-size: clamp(4.5rem, 18vw, 8.5rem);
+            letter-spacing: -4px; line-height: 1.1;
+            /* Deep chrome gradient */
+            background: linear-gradient(180deg, #ffffff 20%, #8a9fb8 60%, #1a2238 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: goldenShine 3s linear infinite;
-            display: flex; align-items: center; justify-content: center; gap: 15px;
-        }
-        @keyframes goldenShine { to { background-position: 300% center; } }
-
-        .v-tick { 
-            color: var(--verified-blue); font-size: 26px;
-            filter: drop-shadow(0 0 15px var(--verified-blue)); 
+            /* Heavy, expensive shadow */
+            filter: drop-shadow(0 25px 50px rgba(0,0,0,0.8));
+            padding-bottom: 10px; /* Ensures shadow isn't clipped */
+            width: 100%;
         }
 
-        /* 4. OVERFLOW FIXED CARDS */
-        .luxury-glass {
+        /* AMAR KUMAR - Royal Gold Badge, Centered with Tick */
+        .amar-gold-badge {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 24px; border-radius: 50px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-top: -20px; /* Overlaps slightly for cohesive look */
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .amar-text-gold {
+            font-family: 'Montserrat', sans-serif; font-weight: 800;
+            font-size: 18px; letter-spacing: 3px; text-transform: uppercase;
+            /* Luxurious Gold Gradient */
+            background: linear-gradient(to right, var(--premium-gold-start), var(--premium-gold-mid), var(--premium-gold-end));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 10px rgba(212, 175, 55, 0.3));
+        }
+
+        .v-tick-premium { 
+            color: var(--verified-blue); font-size: 22px;
+            filter: drop-shadow(0 0 12px var(--verified-blue));
+        }
+
+        /* =========================================
+           3. MILLION DOLLAR GLASS CARD & UI
+        ========================================= */
+        .luxury-glass-deep {
             background: var(--lux-glass-surface);
-            backdrop-filter: blur(50px) saturate(150%);
+            backdrop-filter: blur(60px) saturate(180%);
             border: 1px solid var(--lux-glass-border);
-            border-radius: 36px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-            position: relative; overflow: hidden;
+            /* Double shadow for depth */
+            box-shadow: 
+                inset 0 0 30px rgba(255, 255, 255, 0.02),
+                0 30px 80px rgba(0, 0, 0, 0.9);
+            border-radius: 40px; position: relative; overflow: hidden;
         }
 
         .lux-output {
@@ -93,16 +126,18 @@
             display: flex; align-items: center; justify-content: center;
             text-align: center; font-size: 24px; font-weight: 700;
             color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace;
-            word-break: break-all; overflow-wrap: break-word; /* FIXED OVERFLOW */
+            word-break: break-all; overflow-wrap: break-word;
         }
 
         .lux-input {
-            background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 28px; padding: 25px; color: var(--lux-accent-cyan);
             font-family: 'JetBrains Mono', monospace; font-size: 16px;
             transition: 0.4s; resize: none;
         }
+        .lux-input:focus { border-color: var(--lux-accent-blue); background: rgba(0,0,0,0.6); box-shadow: 0 0 40px rgba(0, 242, 255, 0.15); }
 
+        /* PANIC & MODALS (UNCHANGED) */
         .panic-fab {
             position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px;
             background: var(--panic-red); border-radius: 20px; display: flex;
@@ -110,20 +145,11 @@
             box-shadow: 0 20px 40px rgba(255, 59, 48, 0.4); border: 2px solid rgba(255,255,255,0.2);
             transition: 0.4s; cursor: pointer;
         }
+        .panic-fab:active { transform: scale(0.95); }
 
-        #support-modal {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
-            z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(30px);
-        }
-        .support-card {
-            background: rgba(10, 15, 25, 0.95); border: 1px solid var(--lux-accent-blue);
-            padding: 40px; border-radius: 36px; text-align: center; max-width: 350px; width: 90%;
-        }
-
-        #about-ui { 
-            display: none; background: #0a0f1d; color: #fff; 
-            min-height: 100vh; padding: 80px 10%; font-family: 'Satoshi', sans-serif; 
-        }
+        #support-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(30px); }
+        .support-card { background: #0a0f19; border: 1px solid var(--lux-accent-blue); padding: 40px; border-radius: 36px; text-align: center; max-width: 350px; width: 90%; box-shadow: 0 50px 100px #000; }
+        #about-ui { display: none; background: #0a0f1d; color: #fff; min-height: 100vh; padding: 80px 10%; }
     </style>
 </head>
 <body>
@@ -138,21 +164,23 @@
         <audio id="snd-type" preload="auto" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
         <audio id="snd-done" preload="auto" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
 
-        <div class="max-w-4xl mx-auto px-6 py-12">
-            <header class="text-center mb-16">
-                <h1 class="swarg-title-classic">Swarg</h1>
-                <div class="flex items-center justify-center gap-4 mt-8">
-                    <span class="amar-brand-classic">Amar Kumar <i class="fas fa-circle-check v-tick"></i></span>
+        <div class="max-w-5xl mx-auto px-6 py-12">
+            
+            <header class="header-container">
+                <h1 class="swarg-title-platinum">Swarg</h1>
+                
+                <div class="amar-gold-badge">
+                    <span class="amar-text-gold">Amar Kumar</span>
+                    <i class="fas fa-circle-check v-tick-premium"></i>
                 </div>
                 
-                <div class="mt-12">
-                    <button onclick="toggleSupport()" class="px-10 py-3 bg-white/5 border border-white/10 rounded-full text-[12px] font-bold uppercase tracking-[4px] hover:bg-white/10 transition">
-                        <i class="fas fa-coffee text-cyan-400 mr-3"></i> Support
+                <div class="mt-10">
+                    <button onclick="toggleSupport()" class="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold uppercase tracking-[3px] hover:bg-cyan-400/10 hover:border-cyan-400 transition group">
+                        <i class="fas fa-coffee text-cyan-400 mr-3 group-hover:rotate-12 transition"></i> Support Developer
                     </button>
                 </div>
             </header>
-
-            <main class="luxury-glass p-8 md:p-16">
+            <main class="luxury-glass-deep p-8 md:p-16">
                 <nav class="flex justify-center space-x-12 mb-14 border-b border-white/5">
                     <button onclick="tab('enc')" id="t-enc" class="text-cyan-400 font-black border-b-4 border-cyan-400 pb-4 text-sm tracking-[3px]">ENCODE</button>
                     <button onclick="tab('dec')" id="t-dec" class="text-slate-500 font-black pb-4 hover:text-white transition text-sm tracking-[3px]">DECODE</button>
@@ -164,8 +192,8 @@
                         <span class="opacity-20 italic">Ready for payload...</span>
                     </div>
                     <div class="grid grid-cols-2 gap-5">
-                        <button onclick="run('encrypt')" class="bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-black py-5 rounded-3xl uppercase tracking-widest shadow-xl">Secure Data</button>
-                        <button onclick="copy('o-enc')" class="bg-white/5 py-5 rounded-3xl font-bold uppercase text-[11px] tracking-[4px] border border-white/10">Copy</button>
+                        <button onclick="run('encrypt')" class="bg-gradient-to-r from-cyan-400 to-blue-600 text-black font-black py-5 rounded-3xl uppercase tracking-widest shadow-xl hover:scale-[1.02] transition">Secure Data</button>
+                        <button onclick="copy('o-enc')" class="bg-white/5 py-5 rounded-3xl font-bold uppercase text-[11px] tracking-[4px] border border-white/10 hover:bg-white/10 transition">Copy</button>
                     </div>
                 </div>
 
@@ -174,11 +202,11 @@
                     <div id="o-dec" class="lux-output !text-emerald-400">
                         <span class="opacity-20 italic">Waiting for Oracle...</span>
                     </div>
-                    <button onclick="run('decrypt')" class="w-full bg-gradient-to-r from-emerald-400 to-blue-600 text-black font-black py-5 rounded-3xl uppercase tracking-widest shadow-xl">Reveal Truth</button>
+                    <button onclick="run('decrypt')" class="w-full bg-gradient-to-r from-emerald-400 to-blue-600 text-black font-black py-5 rounded-3xl uppercase tracking-widest shadow-xl hover:scale-[1.02] transition">Reveal Truth</button>
                 </div>
             </main>
 
-            <footer class="mt-20 text-center opacity-30 text-[10px] tracking-[15px] font-bold uppercase">
+            <footer class="mt-24 text-center opacity-30 text-[10px] tracking-[15px] font-bold uppercase">
                 &copy; 2026 Amar Kumar Systems
             </footer>
         </div>
@@ -187,23 +215,22 @@
     <div id="support-modal" onclick="toggleSupport()">
         <div class="support-card" onclick="event.stopPropagation()">
             <i class="fas fa-heart text-3xl text-cyan-400 mb-6"></i>
-            <h2 class="text-xl font-black mb-4 uppercase tracking-widest text-white">Support Developer</h2>
+            <h2 class="text-xl font-black mb-4 uppercase tracking-widest text-white">Support Development</h2>
             <div class="bg-blue-500/10 p-5 rounded-2xl mb-8 border border-blue-500/30">
-                <p class="text-cyan-400 font-mono text-lg font-bold">amarkumarr@fam</p>
+                <p class="text-cyan-400 font-mono text-lg font-bold tracking-widest">amarkumarr@fam</p>
             </div>
-            <button onclick="copyUPI()" class="w-full bg-cyan-400 text-black py-4 rounded-2xl font-bold uppercase tracking-widest">Copy UPI ID</button>
+            <button onclick="copyUPI()" class="w-full bg-cyan-400 text-black py-4 rounded-2xl font-bold uppercase tracking-widest hover:bg-cyan-300 transition">Copy UPI ID</button>
         </div>
     </div>
 
     <div id="about-ui">
         <h1 class="text-4xl font-black mb-10 text-cyan-400 uppercase tracking-widest">About Swarg</h1>
-        <p class="text-lg leading-relaxed text-slate-300 mb-6">Swarg is an enterprise-grade encryption suite developed by <span class="text-white font-bold">Amar Kumar</span>. It focuses on <span class="text-cyan-400">polymorphic security</span> and absolute privacy for sensitive data transmission.</p>
-        <p class="text-lg leading-relaxed text-slate-300">This project represents the cutting edge of neural processing simulations, ensuring that every message remains confidential and tamper-proof.</p>
-        <button onclick="location.reload()" class="mt-16 px-10 py-3 border border-white/20 rounded-full text-sm uppercase tracking-widest hover:bg-white/10 transition">System Restart</button>
+        <p class="text-lg leading-relaxed text-slate-300 mb-6">Swarg is an enterprise-grade encryption suite developed by <span class="text-white font-bold">Amar Kumar</span>. It focuses on absolute privacy for sensitive data transmission.</p>
+        <button onclick="location.reload()" class="mt-16 px-10 py-3 border border-white/20 rounded-full text-sm uppercase tracking-widest hover:bg-white/10 transition">Return to System</button>
     </div>
 
     <script>
-        // --- FLYING PARTICLES LOGIC ---
+        // PARTICLES
         const bg = document.getElementById('cosmos-bg');
         for(let i=0; i<65; i++) {
             const p = document.createElement('div');
@@ -213,64 +240,44 @@
             p.style.animationDelay = Math.random()*10+'s';
             bg.appendChild(p);
         }
+        document.body.addEventListener('click', () => { document.getElementById('snd-type').play().catch(()=>{}); document.getElementById('snd-type').pause(); }, { once: true });
 
+        // LOGIC
         const MAP = { 'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', ',':'¬' };
         const REV = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
         const glitch = "XYZ0123456789";
 
         function typeSnd() { const s=document.getElementById('snd-type'); s.currentTime=0; s.play().catch(()=>{}); }
-
         function tab(m) {
             document.getElementById('v-enc').classList.toggle('hidden', m === 'dec');
             document.getElementById('v-dec').classList.toggle('hidden', m === 'enc');
-            document.getElementById('t-enc').className = m === 'enc' ? 'text-cyan-400 font-black border-b-4 border-cyan-400 pb-4 text-sm' : 'text-slate-500 font-black pb-4';
-            document.getElementById('t-dec').className = m === 'dec' ? 'text-emerald-400 font-black border-b-4 border-emerald-400 pb-4 text-sm' : 'text-slate-500 font-black pb-4';
+            document.getElementById('t-enc').className = m === 'enc' ? 'text-cyan-400 font-black border-b-4 border-cyan-400 pb-4 text-sm tracking-[3px]' : 'text-slate-500 font-black pb-4 tracking-[3px]';
+            document.getElementById('t-dec').className = m === 'dec' ? 'text-emerald-400 font-black border-b-4 border-emerald-400 pb-4 text-sm tracking-[3px]' : 'text-slate-500 font-black pb-4 tracking-[3px]';
         }
-
         function toggleSupport() { const m = document.getElementById('support-modal'); m.style.display = (m.style.display === 'flex' ? 'none' : 'flex'); }
-
         function activateAboutPage() { document.getElementById('app-interface').style.display = 'none'; document.getElementById('about-ui').style.display = 'block'; }
 
-        // --- FIXED RUN FUNCTION (NO UNDEFINED) ---
         function run(type) {
             const input = document.getElementById(type === 'encrypt' ? 'i-enc' : 'i-dec').value.toLowerCase();
             const out = document.getElementById(type === 'encrypt' ? 'o-enc' : 'o-dec');
             if(!input) return;
-
             let res = "";
-            for(let char of input) {
-                if(type === 'encrypt') res += MAP[char] || char;
-                else res += REV[char] || char;
-            }
-
-            out.innerText = "";
-            let currentText = "";
-            let idx = 0;
-            
+            for(let char of input) { type === 'encrypt' ? res += MAP[char] || char : res += REV[char] || char; }
+            out.innerText = ""; let currentText = ""; let idx = 0;
             const timer = setInterval(() => {
                 if(idx < res.length) {
                     let fc = 0;
                     const flicker = setInterval(() => {
                         out.innerText = currentText + glitch[Math.floor(Math.random()*glitch.length)];
                         fc++;
-                        if(fc > 3) {
-                            clearInterval(flicker);
-                            currentText += res[idx];
-                            out.innerText = currentText;
-                            idx++; typeSnd();
-                        }
+                        if(fc > 3) { clearInterval(flicker); currentText += res[idx]; out.innerText = currentText; idx++; typeSnd(); }
                     }, 15);
-                } else {
-                    clearInterval(timer);
-                    out.innerText = res; // FINAL SAFETY LOCK
-                    document.getElementById('snd-done').play();
-                    if(navigator.vibrate) navigator.vibrate(60);
-                }
+                } else { clearInterval(timer); out.innerText = res; document.getElementById('snd-done').play(); if(navigator.vibrate) navigator.vibrate(60); }
             }, 60);
         }
-
         function copy(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>alert("Copied.")); }
-        function copyUPI() { navigator.clipboard.writeText("amarkumarr@fam").then(()=>alert("UPI Copied.")); }
+        function copyUPI() { navigator.clipboard.writeText("amarkumarr@fam").then(()=>alert("UPI ID Copied.")); }
     </script>
 </body>
-</html>
+    </html>
+    
