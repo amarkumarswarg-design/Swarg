@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swarg | Quantum Cipher Matrix</title>
+    <title>Swarg | Quantum Matrix Pro</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;800&family=JetBrains+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@900&display=swap');
 
         :root {
-            --matrix-glow: #00f2ff;
+            --hacker-green: #00ff41;
             --matrix-dark: #05080a;
-            --security-weak: #ff4b2b;
-            --security-strong: #00ff88;
+            --premium-gold: #c5a059;
+            --twitter-blue: #1d9bf0;
+            --panic-red: #ff3e3e;
         }
 
         body {
@@ -23,138 +24,116 @@
             background-color: var(--matrix-dark);
             color: #ffffff;
             overflow-x: hidden;
+            transition: background 0.5s;
         }
 
         #matrix-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.15; }
 
-        /* LOGO & TERMINAL */
-        .swarg-logo {
-            font-size: clamp(3rem, 10vw, 6rem); font-weight: 900; font-style: italic;
-            background: linear-gradient(to bottom, #fff, #444);
+        /* BRANDING: AMAR KUMAR + BLUE TICK */
+        .amar-kumar-elite {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900; font-size: 20px; letter-spacing: 4px;
+            background: linear-gradient(45deg, var(--premium-gold), #fff, var(--premium-gold));
+            background-size: 200% auto;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(0,242,255,0.3));
+            text-transform: uppercase;
+            animation: textShine 3s linear infinite;
         }
+        @keyframes textShine { to { background-position: 200% center; } }
 
-        .terminal-log {
-            font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4ade80;
-            height: 120px; overflow-y: auto; padding: 15px; background: rgba(0,0,0,0.7);
-            border: 1px solid rgba(74, 222, 128, 0.1); border-radius: 15px;
-        }
+        .verified-tick { color: var(--twitter-blue); font-size: 22px; filter: drop-shadow(0 0 8px rgba(29, 155, 240, 0.5)); }
 
-        /* STRENGTH METER */
-        #strength-bar {
-            height: 4px; width: 0%; transition: 0.5s ease; border-radius: 2px;
-            box-shadow: 0 0 10px currentColor;
+        /* PANIC BUTTON STYLE */
+        .panic-btn {
+            position: fixed; bottom: 20px; right: 20px;
+            background: var(--panic-red); color: white;
+            font-weight: 900; padding: 15px 25px; border-radius: 50px;
+            box-shadow: 0 0 20px rgba(255, 62, 62, 0.5);
+            z-index: 1000; border: 2px solid white;
+            animation: pulse 2s infinite; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px; font-size: 12px;
         }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
         .premium-glass { 
             background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(25px); 
-            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 40px;
-            position: relative; overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 35px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.7);
         }
 
-        /* SCANNER ANIMATION */
-        .scanner-line {
-            position: absolute; width: 100%; height: 100px;
-            background: linear-gradient(to bottom, transparent, rgba(0, 242, 255, 0.05), transparent);
-            top: -100px; left: 0; animation: scanMove 4s infinite; pointer-events: none;
-        }
-        @keyframes scanMove { 0% { top: -100px; } 100% { top: 100%; } }
+        /* STEALTH PAGE (Wikipedia Style) */
+        #stealth-page { display: none; background: white; color: black; font-family: 'serif'; padding: 30px; min-height: 100vh; text-align: left; }
+        #stealth-page h1 { font-size: 28px; border-bottom: 1px solid #a2a9b1; margin-bottom: 15px; font-family: 'Georgia', serif; }
+        #stealth-page p { line-height: 1.6; margin-bottom: 15px; font-size: 16px; }
 
-        .master-btn {
-            background: linear-gradient(135deg, #00f2ff, #0066ff); color: #000;
-            font-weight: 800; border-radius: 20px; transition: 0.3s;
+        .terminal-log {
+            font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--hacker-green);
+            height: 80px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.6);
+            border-radius: 12px; border: 1px solid rgba(0, 255, 65, 0.1);
         }
-        .master-btn:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(0,242,255,0.5); }
     </style>
 </head>
 <body>
 
-    <canvas id="matrix-canvas"></canvas>
+    <div id="main-app">
+        <canvas id="matrix-canvas"></canvas>
+        <button class="panic-btn" onclick="activatePanic()"><i class="fas fa-exclamation-triangle mr-2"></i> PANIC</button>
 
-    <audio id="snd-click" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
-    <audio id="snd-success" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
+        <div class="max-w-4xl mx-auto px-4 py-8">
+            <header class="text-center mb-10">
+                <h1 class="text-5xl font-black italic tracking-tighter mb-4">Swarg</h1>
+                <div class="flex items-center justify-center gap-3">
+                    <span class="amar-kumar-elite">Amar Kumar</span>
+                    <i class="fas fa-circle-check verified-tick"></i>
+                </div>
+                <div class="mt-6 terminal-log text-left mx-auto max-w-sm" id="terminal">
+                    <div>> Security Protocol v6.0 Active.</div>
+                    <div>> System monitoring heartbeat...</div>
+                </div>
+            </header>
 
-    <div class="max-w-5xl mx-auto px-6 py-10">
-        <header class="text-center mb-10">
-            <h1 class="swarg-logo">Swarg</h1>
-            <p class="text-[10px] tracking-[8px] text-cyan-500 uppercase font-bold mt-2">Neural Security Suite</p>
-            
-            <div class="mt-8 terminal-log text-left" id="terminal">
-                <div>> Initializing Swarg Quantum Core... [SUCCESS]</div>
-                <div>> Encryption Protocol: AES-Hybrid Shifting... [READY]</div>
-            </div>
-        </header>
-
-        <main class="premium-glass p-8 md:p-12">
-            <div class="scanner-line"></div>
-            
-            <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <nav class="flex space-x-8">
-                    <button onclick="switchTab('encode')" id="tab-enc" class="text-cyan-400 font-bold tracking-widest border-b-2 border-cyan-400 pb-1">ENCODE</button>
-                    <button onclick="switchTab('decode')" id="tab-dec" class="text-slate-500 font-bold tracking-widest hover:text-white transition pb-1">DECODE</button>
+            <main class="premium-glass p-6 md:p-10">
+                <nav class="flex justify-center space-x-8 mb-8">
+                    <button onclick="switchTab('enc')" id="tab-enc" class="text-cyan-400 font-bold border-b-2 border-cyan-400 pb-1">ENCODE</button>
+                    <button onclick="switchTab('dec')" id="tab-dec" class="text-slate-500 font-bold hover:text-white transition pb-1">DECODE</button>
                 </nav>
-                <div class="w-full md:w-64">
-                    <div class="flex items-center justify-between mb-2">
-                        <label class="text-[10px] uppercase font-bold text-slate-400">Security Key</label>
-                        <span id="strength-text" class="text-[9px] uppercase font-black text-slate-600">No Key</span>
-                    </div>
-                    <input type="password" id="secret-key" placeholder="Enter Encryption Key" 
-                           class="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-cyan-400 outline-none focus:border-cyan-400/50 transition font-mono"
-                           oninput="updateStrength()">
-                    <div class="mt-2 bg-white/5 rounded-full overflow-hidden">
-                        <div id="strength-bar"></div>
-                    </div>
-                </div>
-            </div>
 
-            <div id="view-encode" class="space-y-8">
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="space-y-2">
-                        <label class="text-[9px] font-bold text-slate-500 uppercase ml-2">Source Data</label>
-                        <textarea id="raw-inp" placeholder="Input human readable text..." 
-                                  class="w-full h-56 p-6 bg-black/40 rounded-3xl border border-white/5 text-cyan-100 outline-none font-mono focus:bg-black/60 transition"></textarea>
+                <div id="view-enc" class="space-y-6">
+                    <textarea id="inp-enc" placeholder="Type message..." class="h-48 w-full bg-black/40 border border-white/5 rounded-2xl p-4 text-cyan-400 outline-none"></textarea>
+                    <div id="res-enc" class="h-48 bg-cyan-400/5 rounded-2xl border border-dashed border-cyan-400/20 flex items-center justify-center text-center p-4 text-cyan-400 font-bold break-all font-mono">
+                        <span class="opacity-20 text-sm">Ready...</span>
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-[9px] font-bold text-slate-500 uppercase ml-2">Quantum Result</label>
-                        <div id="cipher-res" class="w-full h-56 p-6 bg-cyan-400/5 rounded-3xl border border-dashed border-cyan-400/20 flex items-center justify-center text-center text-xl font-bold text-cyan-400 break-all overflow-y-auto font-mono">
-                            <span class="opacity-10 italic">Awaiting Payload...</span>
-                        </div>
-                    </div>
+                    <button onclick="run('encrypt')" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 py-4 rounded-xl font-black uppercase tracking-widest text-black shadow-lg">Encrypt Message</button>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <button onclick="runProcess('encrypt')" class="master-btn py-5 uppercase tracking-widest text-sm">Execute Encryption</button>
-                    <button onclick="copyOnly()" class="bg-white/5 hover:bg-white/10 py-5 rounded-2xl font-bold uppercase tracking-widest transition text-sm flex items-center justify-center gap-2">
-                        <i class="fas fa-copy"></i> Copy To Clipboard
-                    </button>
-                </div>
-            </div>
 
-            <div id="view-decode" class="hidden space-y-8">
-                <div class="grid md:grid-cols-2 gap-8">
-                    <textarea id="cipher-inp" placeholder="Paste symbols here..." 
-                              class="h-56 p-6 bg-black/40 rounded-3xl border border-white/5 text-emerald-400 outline-none font-mono focus:border-emerald-500/30 transition"></textarea>
-                    <div id="truth-res" class="h-56 p-6 bg-emerald-400/5 rounded-3xl border border-dashed border-emerald-400/20 flex items-center justify-center text-center text-xl font-bold text-emerald-400 break-all overflow-y-auto font-mono">
-                        <span class="opacity-10 italic">Awaiting Symbols...</span>
+                <div id="view-dec" class="hidden space-y-6">
+                    <textarea id="inp-dec" placeholder="Paste symbols..." class="h-48 w-full bg-black/40 border border-white/5 rounded-2xl p-4 text-emerald-400 outline-none"></textarea>
+                    <div id="res-dec" class="h-48 bg-emerald-400/5 rounded-2xl border border-dashed border-emerald-400/20 flex items-center justify-center text-center p-4 text-emerald-400 font-bold break-all font-mono">
+                        <span class="opacity-20 text-sm">Awaiting symbols...</span>
                     </div>
+                    <button onclick="run('decrypt')" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 py-4 rounded-xl font-black uppercase tracking-widest text-black shadow-lg">Decrypt Message</button>
                 </div>
-                <button onclick="runProcess('decrypt')" class="master-btn !from-emerald-400 !to-teal-600 w-full py-5 uppercase tracking-widest text-sm">Execute Decryption</button>
-            </div>
-        </main>
+            </main>
+        </div>
+    </div>
 
-        <footer class="mt-10 text-center">
-            <button onclick="window.location.reload()" class="text-[9px] font-bold text-slate-600 hover:text-cyan-400 uppercase tracking-[5px] transition">Reset System Core</button>
-        </footer>
+    <div id="stealth-page">
+        <h1>Geography of India - Wikipedia</h1>
+        <p>India is situated on the Indian Plate, the northern part of the Indo-Australian Plate, whose continental crust forms the Indian subcontinent.</p>
+        <p><b>Physical Regions:</b> The main land comprises four regions, namely: the great mountain zone, plains of the Ganga and the Indus, the desert region and the southern peninsula. The Himalayan mountain range, about 2,400 km long, consists of three almost parallel ranges.</p>
+        <p>India's coast line is 7,517 kilometers (4,700 miles) long; 5,423 kilometers (3,400 miles) belong to peninsular India and 2,094 kilometers (1,300 miles) to the Andaman, Nicobar, and Lakshadweep island chains.</p>
+        <hr>
+        <p style="font-size: 12px; color: #666;">This page was last edited on 12 January 2026, at 09:45 (UTC).</p>
     </div>
 
     <script>
-        // MATRIX RAIN
+        // MATRIX EFFECT
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const chars = "01アイウエオカキクケコサシスセソ";
+        const chars = "0101XYZ";
         const drops = Array(Math.floor(canvas.width/20)).fill(1);
-        function drawMatrix() {
+        function draw() {
             ctx.fillStyle = "rgba(5, 8, 10, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#00f2ff"; ctx.font = "14px monospace";
             drops.forEach((y, i) => {
@@ -163,81 +142,46 @@
                 drops[i]++;
             });
         }
-        setInterval(drawMatrix, 50);
+        setInterval(draw, 50);
 
-        // LOGIC & CIPHER
-        const MAP = { 'a':'∑', 'b':'∏', 'c':'∆', 'd':'Ω', 'e':'§', 'f':'∞', 'g':'µ', 'h':'†', 'i':'‡', 'j':'◊', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'θ', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨' };
-        const REVERSE = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
-
-        function log(msg) {
-            const t = document.getElementById('terminal');
-            t.innerHTML += `<div>> ${msg}</div>`;
-            t.scrollTop = t.scrollHeight;
+        // PANIC FUNCTION
+        function activatePanic() {
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('stealth-page').style.display = 'block';
+            document.body.style.backgroundColor = "white";
         }
 
-        function updateStrength() {
-            const key = document.getElementById('secret-key').value;
-            const bar = document.getElementById('strength-bar');
-            const text = document.getElementById('strength-text');
-            let strength = Math.min(key.length * 10, 100);
-            
-            bar.style.width = strength + '%';
-            if(strength < 40) { bar.style.color = '#ff4b2b'; text.innerText = 'Weak'; }
-            else if(strength < 80) { bar.style.color = '#ffcc00'; text.innerText = 'Moderate'; }
-            else { bar.style.color = '#00ff88'; text.innerText = 'Military Grade'; }
-            bar.style.backgroundColor = 'currentColor';
-        }
+        // CIPHER LOGIC
+        const MAP = { 'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'Ω', 'i':'‡', 'j':'◊', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'θ', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•' };
+        const REV = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
 
         function switchTab(mode) {
-            document.getElementById('view-encode').classList.toggle('hidden', mode === 'decode');
-            document.getElementById('view-decode').classList.toggle('hidden', mode === 'encode');
-            document.getElementById('tab-enc').className = mode === 'encode' ? 'text-cyan-400 font-bold tracking-widest border-b-2 border-cyan-400 pb-1' : 'text-slate-500 font-bold tracking-widest hover:text-white transition pb-1';
-            document.getElementById('tab-dec').className = mode === 'decode' ? 'text-emerald-400 font-bold tracking-widest border-b-2 border-emerald-400 pb-1' : 'text-slate-500 font-bold tracking-widest hover:text-white transition pb-1';
-            log(`Mode switched to: ${mode.toUpperCase()}`);
+            document.getElementById('view-enc').classList.toggle('hidden', mode === 'dec');
+            document.getElementById('view-dec').classList.toggle('hidden', mode === 'enc');
+            document.getElementById('tab-enc').className = mode === 'enc' ? 'text-cyan-400 font-bold border-b-2 border-cyan-400 pb-1' : 'text-slate-500 font-bold pb-1';
+            document.getElementById('tab-dec').className = mode === 'dec' ? 'text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1' : 'text-slate-500 font-bold pb-1';
         }
 
-        function runProcess(type) {
-            const key = document.getElementById('secret-key').value;
-            const input = document.getElementById(type === 'encrypt' ? 'raw-inp' : 'cipher-inp').value.toLowerCase();
-            const outBox = document.getElementById(type === 'encrypt' ? 'cipher-res' : 'truth-res');
-            
-            if(!input) { log('Error: No data detected.'); return; }
-            
-            log(`Running ${type}... applying key offset...`);
-            
-            // Logic: Key affects the result
-            let keyShift = 0;
-            for(let char of key) keyShift += char.charCodeAt(0);
-            
-            let result = "";
-            for(let char of input) {
-                if(type === 'encrypt') result += MAP[char] || char;
-                else result += REVERSE[char] || char;
-            }
+        function run(type) {
+            const inp = document.getElementById(type === 'encrypt' ? 'inp-enc' : 'inp-dec').value.toLowerCase();
+            const out = document.getElementById(type === 'encrypt' ? 'res-enc' : 'res-dec');
+            if(!inp) return;
 
-            outBox.innerHTML = "";
+            let final = "";
+            for(let c of inp) final += (type === 'encrypt' ? MAP[c] : REV[c]) || c;
+
+            // Brute force animation
+            out.innerHTML = "";
             let idx = 0;
             const timer = setInterval(() => {
-                if(idx < result.length) {
-                    outBox.innerHTML += result[idx];
+                if(idx < final.length) {
+                    out.innerHTML += final[idx];
                     idx++;
-                    document.getElementById('snd-click').currentTime = 0;
-                    document.getElementById('snd-click').play();
                 } else {
                     clearInterval(timer);
-                    document.getElementById('snd-success').play();
-                    log(`${type.toUpperCase()} Process Secured.`);
+                    if (navigator.vibrate) navigator.vibrate(50);
                 }
-            }, 25);
-        }
-
-        function copyOnly() {
-            const txt = document.getElementById('cipher-res').innerText;
-            if(txt.includes('Awaiting')) return;
-            navigator.clipboard.writeText(txt).then(() => {
-                log("Data securely synced to clipboard.");
-                alert("Success: Secret Code Copied!");
-            });
+            }, 30);
         }
     </script>
 </body>
