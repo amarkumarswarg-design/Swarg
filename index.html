@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Montserrat:wght@900&display=swap" rel="stylesheet">
 
     <style>
         /* =========================================
@@ -25,82 +26,104 @@
         }
 
         body {
-            font-family: 'Satoshi', sans-serif;
+            font-family: 'Satoshi', sans-serif; /* Body stays clean */
             background-color: var(--lux-bg);
             color: #ffffff;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* LIVING NEURAL BACKGROUND */
+        /* =========================================
+           2. NEW FLYING BACKGROUND ANIMATION
+        ========================================= */
         #cosmos-bg {
             position: fixed; inset: 0; z-index: -1;
             background: radial-gradient(circle at center, #1a2238 0%, #030508 100%);
             overflow: hidden;
         }
         .neural-particle {
-            position: absolute; width: 2px; height: 2px; background: var(--lux-accent-cyan);
-            border-radius: 50%; box-shadow: 0 0 10px var(--lux-accent-cyan), 0 0 20px var(--lux-accent-blue);
-            animation: float 25s infinite linear; opacity: 0.3;
+            position: absolute; 
+            width: 3px; height: 3px; /* Slightly bigger for visibility */
+            background: var(--lux-accent-cyan);
+            border-radius: 50%; 
+            box-shadow: 0 0 10px var(--lux-accent-cyan), 0 0 20px var(--lux-accent-blue);
+            opacity: 0; /* Start invisible */
         }
-        @keyframes float {
-            0% { transform: translateY(0) translateX(0); opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { transform: translateY(-100vh) translateX(20vw); opacity: 0; }
+        /* New faster flying animation upwards */
+        @keyframes flyUp {
+            0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+            20% { opacity: 0.7; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
         }
 
-        /* MILLION DOLLAR GLASSMORPHISM CARD */
+        /* MILLION DOLLAR GLASSMORPHISM CARD (UNCHANGED) */
         .luxury-glass {
             background: var(--lux-glass-surface);
             backdrop-filter: blur(50px) saturate(150%);
             -webkit-backdrop-filter: blur(50px) saturate(150%);
             border: 1px solid var(--lux-glass-border);
-            box-shadow: 
-                inset 0 0 20px rgba(255, 255, 255, 0.02),
-                0 20px 50px rgba(0, 0, 0, 0.8);
-            border-radius: 36px;
-            position: relative; overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02), 0 20px 50px rgba(0, 0, 0, 0.8);
+            border-radius: 36px; position: relative; overflow: hidden;
         }
 
-        /* ELITE TYPOGRAPHY */
-        .swarg-logo-lux {
-            font-size: clamp(4rem, 15vw, 7rem); font-weight: 900; letter-spacing: -3px;
-            background: linear-gradient(180deg, #fff, #8892b0);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));
+        /* =========================================
+           1. RESTORED OLD TYPOGRAPHY STYLES
+        ========================================= */
+        /* The heavy italic look for Swarg */
+        .swarg-title-classic {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-style: italic;
+            font-size: clamp(3.5rem, 15vw, 6.5rem);
+            font-weight: 900;
+            letter-spacing: -2px;
+            /* Using a strong gradient to match the new dark bg */
+            background: linear-gradient(180deg, #ffffff 30%, #666 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6));
+            line-height: 1;
         }
 
-        .amar-brand {
-            font-family: 'Satoshi', sans-serif; font-weight: 900; font-size: 20px; letter-spacing: 3px;
-            color: #fff; display: flex; align-items: center; gap: 12px;
+        /* The wide, shiny Montserrat look for Amar Kumar */
+        .amar-brand-classic {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 20px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            /* Gold shine effect */
+            background: linear-gradient(45deg, var(--premium-gold), #fff, var(--premium-gold));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShine 4s linear infinite;
+            display: flex; align-items: center; gap: 12px;
         }
+        @keyframes textShine { to { background-position: 200% center; } }
+
         .v-tick { 
             color: var(--verified-blue); font-size: 22px;
             filter: drop-shadow(0 0 15px var(--verified-blue)); 
         }
 
-        /* LUXURY INPUTS & OUTPUTS */
+        /* LUXURY INPUTS & OUTPUTS (UNCHANGED) */
         .lux-input {
             background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 28px; padding: 25px; color: var(--lux-accent-cyan);
             font-family: 'JetBrains Mono', monospace; font-size: 16px;
             transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); resize: none;
         }
-        .lux-input:focus { 
-            border-color: var(--lux-accent-blue); 
-            box-shadow: 0 0 30px rgba(74, 142, 255, 0.2); background: rgba(0, 0, 0, 0.5); 
-        }
+        .lux-input:focus { border-color: var(--lux-accent-blue); box-shadow: 0 0 30px rgba(74, 142, 255, 0.2); background: rgba(0, 0, 0, 0.5); }
 
         .lux-output {
-            background: rgba(0, 255, 242, 0.02);
-            border: 1px dashed rgba(0, 255, 242, 0.2);
+            background: rgba(0, 255, 242, 0.02); border: 1px dashed rgba(0, 255, 242, 0.2);
             border-radius: 28px; min-height: 220px; padding: 30px;
             display: flex; align-items: center; justify-content: center;
             text-align: center; font-size: 24px; font-weight: 700;
             color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace;
         }
 
-        /* BUTTONS */
+        /* BUTTONS (UNCHANGED) */
         .lux-btn {
             background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue));
             color: #000; font-weight: 800; border-radius: 24px; padding: 20px;
@@ -109,7 +132,7 @@
         }
         .lux-btn:hover { transform: translateY(-5px); box-shadow: 0 30px 60px rgba(74, 142, 255, 0.5); }
 
-        /* PANIC SHIELD FAB */
+        /* PANIC SHIELD FAB (UNCHANGED) */
         .panic-fab {
             position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px;
             background: var(--panic-red); border-radius: 20px; display: flex;
@@ -119,7 +142,7 @@
         }
         .panic-fab:active { transform: scale(0.9); }
 
-        /* CLEAN SUPPORT MODAL (No QR) */
+        /* CLEAN SUPPORT MODAL (UPI Only - UNCHANGED) */
         #support-modal {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
             z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(30px);
@@ -130,7 +153,7 @@
             box-shadow: 0 50px 100px rgba(0,0,0,0.8);
         }
 
-        /* PROFESSIONAL ABOUT PAGE */
+        /* PROFESSIONAL ABOUT PAGE (UNCHANGED) */
         #stealth-ui { 
             display: none; background: #0a0f1d; color: #fff; 
             min-height: 100vh; padding: 80px 10%; font-family: 'Satoshi', sans-serif; 
@@ -154,9 +177,9 @@
 
         <div class="max-w-4xl mx-auto px-6 py-12">
             <header class="text-center mb-16">
-                <h1 class="swarg-logo-lux">Swarg</h1>
+                <h1 class="swarg-title-classic">Swarg</h1>
                 <div class="flex items-center justify-center gap-4 mt-4">
-                    <span class="amar-brand">Amar Kumar <i class="fas fa-circle-check v-tick"></i></span>
+                    <span class="amar-brand-classic">Amar Kumar <i class="fas fa-circle-check v-tick"></i></span>
                 </div>
                 
                 <div class="mt-10">
@@ -217,19 +240,25 @@
         <p>Swarg is an enterprise-grade <span class="highlight">polymorphic encryption engine</span> designed for secure data transmission in high-risk environments. Utilizing advanced neural network simulations, it ensures that communication remains tamper-proof and confidential.</p>
         <p>Developed by <span class="highlight">Amar Kumar Systems</span>, this tool focuses on minimalism, speed, and absolute security competence, moving beyond traditional cryptographic methods.</p>
         <hr style="margin: 40px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
-        <p style="font-size: 13px; color: #777;">Version 7.0.1 (Stable) | Built on Quantum-Ready Architecture.</p>
+        <p style="font-size: 13px; color: #777;">Version 7.0.2 (Stable) | Built on Quantum-Ready Architecture.</p>
         <button onclick="location.reload()" class="mt-10 px-8 py-3 border border-white/20 rounded-full text-sm hover:bg-white/10 transition">Return to System</button>
     </div>
 
     <script>
-        // --- INITIALIZATION ---
+        // --- UPDATED PARTICLE INITIALIZATION ---
         const bg = document.getElementById('cosmos-bg');
-        for(let i=0; i<40; i++) {
+        // Increased count slightly for better effect
+        for(let i=0; i<60; i++) {
             const p = document.createElement('div');
             p.className = 'neural-particle';
             p.style.left = Math.random()*100+'vw';
-            p.style.top = Math.random()*100+'vh';
-            p.style.animationDelay = Math.random()*25+'s';
+            // Randomize speeds between 8s and 18s for varied flying effect
+            p.style.animationDuration = (8 + Math.random()*10)+'s'; 
+            p.style.animationDelay = Math.random()*10+'s';
+            // Apply the new flying animation
+            p.style.animationName = 'flyUp';
+            p.style.animationTimingFunction = 'linear';
+            p.style.animationIterationCount = 'infinite';
             bg.appendChild(p);
         }
 
@@ -239,7 +268,7 @@
              document.getElementById('snd-type').pause();
         }, { once: true });
 
-        // --- LOGIC ENGINE ---
+        // --- LOGIC ENGINE (UNCHANGED) ---
         const MAP = { 'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', ',':'¬', '!':'¡', '?':'¿', '@':'∂' };
         const REV = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
         const glitch = "XYZ0123456789";
@@ -263,7 +292,7 @@
             document.getElementById('stealth-ui').style.display = 'block';
         }
 
-        // --- FIXED RUN FUNCTION (No trailing numbers) ---
+        // --- FIXED RUN FUNCTION (No trailing numbers - UNCHANGED) ---
         function run(type) {
             const input = document.getElementById(type === 'encrypt' ? 'i-enc' : 'i-dec').value.toLowerCase();
             const out = document.getElementById(type === 'encrypt' ? 'o-enc' : 'o-dec');
@@ -275,7 +304,7 @@
                 else res += REV[char] || char;
             }
 
-            out.innerText = ""; // Use innerText for safety
+            out.innerText = "";
             let currentText = "";
             let idx = 0;
             
@@ -283,21 +312,17 @@
                 if(idx < res.length) {
                     let fc = 0;
                     const flicker = setInterval(() => {
-                        // Show current progress + random char
                         out.innerText = currentText + glitch[Math.floor(Math.random()*glitch.length)];
                         fc++;
                         if(fc > 3) {
                             clearInterval(flicker);
-                            // Add real char to known string
                             currentText += res[idx];
-                            // Update display with known string ONLY
                             out.innerText = currentText;
                             idx++; typeSnd();
                         }
                     }, 15);
                 } else {
                     clearInterval(timer);
-                    // Final guarantee: set text to exact result
                     out.innerText = res; 
                     document.getElementById('snd-done').play();
                     if(navigator.vibrate) navigator.vibrate(60);
@@ -315,4 +340,5 @@
         }
     </script>
 </body>
-</html>
+    </html>
+            
