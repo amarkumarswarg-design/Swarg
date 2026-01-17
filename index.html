@@ -3,296 +3,326 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swarg | Quantum Neural Suite</title>
+    <title>Swarg | Quantum Luxury Suite</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@900&display=swap');
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet">
 
+    <style>
+        /* =========================================
+           LUXURY THEME VARIABLES
+        ========================================= */
         :root {
-            --p-accent: #00f2ff;
-            --p-deep: #05080a;
-            --premium-gold: #c5a059;
-            --verified-blue: #1d9bf0;
+            --lux-bg: #030508;
+            --lux-accent-cyan: #00fff2;
+            --lux-accent-blue: #4a8eff;
+            --lux-gold: #d4af37;
+            --lux-glass-border: rgba(255, 255, 255, 0.08);
+            --lux-glass-surface: rgba(10, 15, 25, 0.7);
             --panic-red: #ff3b30;
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--p-deep);
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--lux-bg);
             color: #ffffff;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
-        #neural-bg {
+        /* LIVING NEURAL BACKGROUND */
+        #cosmos-bg {
             position: fixed; inset: 0; z-index: -1;
-            background-image: radial-gradient(rgba(0, 242, 255, 0.08) 1px, transparent 1px);
-            background-size: 30px 30px;
+            background: radial-gradient(circle at center, #1a2238 0%, #030508 100%);
+            overflow: hidden;
+        }
+        .neural-particle {
+            position: absolute; width: 2px; height: 2px; background: var(--lux-accent-cyan);
+            border-radius: 50%; box-shadow: 0 0 10px var(--lux-accent-cyan), 0 0 20px var(--lux-accent-blue);
+            animation: float 20s infinite linear; opacity: 0.3;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(50vw) scale(0.5); opacity: 0; }
         }
 
-        /* HEADER BRANDING */
-        .swarg-title {
-            font-size: clamp(3.5rem, 15vw, 6rem);
-            font-weight: 900; letter-spacing: -2px;
-            background: linear-gradient(180deg, #ffffff 0%, #888 100%);
+        /* MILLION DOLLAR GLASSMORPHISM */
+        .luxury-glass {
+            background: var(--lux-glass-surface);
+            backdrop-filter: blur(50px) saturate(150%);
+            -webkit-backdrop-filter: blur(50px) saturate(150%);
+            border: 1px solid var(--lux-glass-border);
+            box-shadow: 
+                inset 0 0 20px rgba(255, 255, 255, 0.02),
+                0 20px 50px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(0, 0, 0, 0.5);
+            border-radius: 36px;
+            position: relative; overflow: hidden;
+        }
+        .luxury-glass::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(125deg, rgba(255,255,255,0.1) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.05) 100%);
+            pointer-events: none;
+        }
+
+        /* CINEMATIC BOOT SCREEN */
+        #boot-screen {
+            position: fixed; inset: 0; background: var(--lux-bg); z-index: 5000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .loader-ring {
+            width: 80px; height: 80px; border: 4px solid rgba(0, 255, 242, 0.1);
+            border-top: 4px solid var(--lux-accent-cyan); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* ELITE TYPOGRAPHY */
+        .swarg-logo-lux {
+            font-size: clamp(4rem, 15vw, 7rem); font-weight: 900; letter-spacing: -3px;
+            background: linear-gradient(180deg, #fff, #8892b0);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));
         }
 
-        .amar-identity {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900; font-size: 20px; letter-spacing: 5px;
-            background: linear-gradient(45deg, var(--premium-gold), #fff, var(--premium-gold));
-            background-size: 200% auto;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            animation: auraShine 4s linear infinite;
+        .amar-brand {
+            font-family: 'Satoshi', sans-serif; font-weight: 900; font-size: 18px; letter-spacing: 4px;
+            color: var(--lux-gold); text-transform: uppercase; display: flex; align-items: center; gap: 10px;
         }
-        @keyframes auraShine { to { background-position: 200% center; } }
+        .amar-brand i { color: var(--verified-blue); filter: drop-shadow(0 0 15px var(--verified-blue)); }
 
-        .v-tick { color: var(--verified-blue); font-size: 26px; filter: drop-shadow(0 0 10px rgba(29, 155, 240, 0.5)); }
-
-        /* CARDS & UI */
-        .aura-card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 32px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+        /* LUXURY INPUTS & OUTPUTS */
+        .lux-input {
+            background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px; padding: 25px; color: var(--lux-accent-cyan);
+            font-family: 'JetBrains Mono', monospace; font-size: 16px;
+            transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); resize: none;
+        }
+        .lux-input:focus { 
+            border-color: var(--lux-accent-blue); 
+            box-shadow: 0 0 30px rgba(74, 142, 255, 0.2); background: rgba(0, 0, 0, 0.5); 
         }
 
-        .aura-textarea {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 22px; color: var(--p-accent);
-            font-family: 'JetBrains Mono', monospace;
-            transition: 0.3s;
-        }
-
-        .aura-output {
-            background: rgba(0, 242, 255, 0.02);
-            border: 1px dashed rgba(0, 242, 255, 0.2);
-            border-radius: 24px; min-height: 200px; padding: 25px;
+        .lux-output {
+            background: rgba(0, 255, 242, 0.02);
+            border: 1px dashed rgba(0, 255, 242, 0.2);
+            border-radius: 28px; min-height: 220px; padding: 30px;
             display: flex; align-items: center; justify-content: center;
-            text-align: center; font-size: 22px; font-weight: 800;
-            color: var(--p-accent); font-family: 'JetBrains Mono', monospace;
+            text-align: center; font-size: 26px; font-weight: 700;
+            color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace;
         }
 
-        /* PANIC FAB */
+        /* BUTTONS & INTERACTIVE ELEMENTS */
+        .lux-btn {
+            background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue));
+            color: #000; font-weight: 800; border-radius: 24px; padding: 20px;
+            text-transform: uppercase; letter-spacing: 3px; font-size: 14px;
+            box-shadow: 0 20px 40px rgba(0, 255, 242, 0.3); transition: 0.5s;
+        }
+        .lux-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 30px 60px rgba(74, 142, 255, 0.5); }
+
         .panic-fab {
-            position: fixed; bottom: 35px; right: 35px;
-            width: 70px; height: 70px;
-            background: var(--panic-red); border-radius: 24px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 15px 35px rgba(255, 59, 48, 0.4);
-            z-index: 2000; cursor: pointer; transition: 0.4s;
-            border: 3px solid white;
+            position: fixed; bottom: 40px; right: 40px; width: 70px; height: 70px;
+            background: var(--panic-red); border-radius: 24px; display: flex;
+            align-items: center; justify-content: center; z-index: 2000;
+            box-shadow: 0 20px 40px rgba(255, 59, 48, 0.4); border: 2px solid rgba(255,255,255,0.2);
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); cursor: pointer;
+        }
+        .panic-fab:active { transform: scale(0.85); }
+
+        /* PREMIUM MODALS */
+        #qr-modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(30px);
+        }
+        .qr-card {
+            background: rgba(10, 15, 25, 0.95); border: 1px solid var(--lux-accent-cyan);
+            padding: 40px; border-radius: 36px; text-align: center; max-width: 400px; width: 90%;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
         }
 
-        /* TERMINAL */
-        .status-terminal {
-            font-family: 'JetBrains Mono', monospace; font-size: 11px;
-            color: #4ade80; height: 90px; overflow-y: auto;
-            padding: 15px; border-radius: 20px; background: rgba(0,0,0,0.7);
-            border: 1px solid rgba(74, 222, 128, 0.1);
-        }
-
-        /* PAYMENT MODAL */
-        #support-modal {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(20px);
-        }
-        .support-card {
-            background: #111; border: 1px solid var(--p-accent);
-            padding: 25px; border-radius: 30px; text-align: center; width: 90%; max-width: 350px;
-        }
-
-        /* UNLOCK OVERLAY */
-        #unlock-overlay {
-            position: fixed; inset: 0; background: var(--p-deep); z-index: 5000;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .p-btn {
-            background: linear-gradient(135deg, #00f2ff 0%, #0077ff 100%);
-            color: #000; font-weight: 800; border-radius: 20px;
-            padding: 16px; text-transform: uppercase; letter-spacing: 2px;
-        }
-
-        #stealth-ui { display: none; background: #fff; color: #1a1a1a; padding: 40px; text-align: left; min-height: 100vh; }
+        #stealth-ui { display: none; background: #fff; color: #1a1a1a; min-height: 100vh; padding: 60px 10%; }
     </style>
 </head>
 <body>
 
-    <div id="unlock-overlay">
-        <button onclick="unlockSystem()" class="p-btn px-12">Initialize Swarg Core</button>
+    <div id="boot-screen">
+        <div class="loader-ring mb-8"></div>
+        <h2 class="text-2xl font-black tracking-[8px] uppercase swarg-logo-lux text-[3rem]">Swarg</h2>
+        <p class="text-slate-500 text-sm tracking-[4px] mt-4">INITIALIZING QUANTUM CORE...</p>
+        <button onclick="bootSystem()" class="mt-12 px-12 py-4 bg-white/5 border border-white/10 rounded-full text-sm font-bold tracking-[4px] hover:bg-cyan-400/10 hover:border-cyan-400 transition uppercase">Tap to Access</button>
     </div>
 
-    <div id="app-root">
-        <div id="neural-bg"></div>
+    <div id="app-interface" style="opacity: 0; transition: opacity 1s ease;">
+        <div id="cosmos-bg">
+            </div>
         
-        <div class="panic-fab" onclick="shadowActivate()">
-            <i class="fas fa-biohazard text-white text-2xl"></i>
+        <div class="panic-fab" onclick="activateShadow()" title="Security Lock">
+            <i class="fas fa-shield-halved text-white text-2xl"></i>
         </div>
 
-        <audio id="snd-click" preload="auto" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
-        <audio id="snd-verify" preload="auto" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
+        <audio id="snd-type" preload="auto" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
+        <audio id="snd-done" preload="auto" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
+        <audio id="snd-boot" preload="auto" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
 
-        <div class="max-w-4xl mx-auto px-6 py-8">
-            <header class="text-center mb-10">
-                <h1 class="swarg-title">Swarg</h1>
-                <div class="flex items-center justify-center gap-4 mt-4">
-                    <span class="amar-identity">Amar Kumar</span>
-                    <i class="fas fa-circle-check v-tick"></i>
+        <div class="max-w-4xl mx-auto px-6 py-12">
+            <header class="text-center mb-16">
+                <h1 class="swarg-logo-lux">Swarg</h1>
+                <div class="flex items-center justify-center gap-4 mt-2">
+                    <span class="amar-brand">Amar Kumar <i class="fas fa-certificate v-tick"></i></span>
                 </div>
                 
-                <div class="mt-8">
-                    <button onclick="toggleSupport()" class="px-6 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] font-black uppercase tracking-[3px] text-cyan-400 hover:bg-cyan-400 hover:text-black transition">
-                        <i class="fas fa-coffee mr-2"></i> Support Developer
+                <div class="mt-10">
+                    <button onclick="showQR()" class="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-[11px] font-black uppercase tracking-[4px] hover:bg-white/10 transition group">
+                        <i class="fas fa-gem text-cyan-400 mr-3 group-hover:rotate-12 transition"></i> Premium Support
                     </button>
-                </div>
-
-                <div class="mt-8 status-terminal text-left max-w-lg mx-auto" id="log-feed">
-                    <div>> System Online...</div>
-                    <div>> Encryption Engine Active.</div>
                 </div>
             </header>
 
-            <main class="aura-card p-6 md:p-12">
-                <nav class="flex justify-center space-x-10 mb-10 border-b border-white/5">
-                    <button onclick="tab('enc')" id="t-enc" class="text-cyan-400 font-black border-b-4 border-cyan-400 pb-2 text-sm">ENCODE</button>
-                    <button onclick="tab('dec')" id="t-dec" class="text-slate-500 font-black pb-2 hover:text-white transition text-sm">DECODE</button>
+            <main class="luxury-glass p-10 md:p-16">
+                <nav class="flex justify-center space-x-12 mb-14 border-b border-white/5">
+                    <button onclick="tab('enc')" id="t-enc" class="text-cyan-400 font-black border-b-4 border-cyan-400 pb-4 text-sm tracking-[3px]">ENCODE</button>
+                    <button onclick="tab('dec')" id="t-dec" class="text-slate-500 font-black pb-4 hover:text-white transition text-sm tracking-[3px]">DECODE</button>
                 </nav>
 
-                <div id="v-enc" class="space-y-8">
-                    <textarea id="i-enc" placeholder="Enter message..." class="aura-textarea h-44 w-full" oninput="clicker()"></textarea>
-                    <div id="o-enc" class="aura-output">
-                        <span class="opacity-20 text-sm">Waiting...</span>
+                <div id="v-enc" class="space-y-10">
+                    <textarea id="i-enc" placeholder="Enter sensitive data..." class="lux-input h-52 w-full" oninput="typeSnd()"></textarea>
+                    <div id="o-enc" class="lux-output">
+                        <span class="opacity-30 text-sm uppercase tracking-widest">Awaiting Input...</span>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="run('encrypt')" class="p-btn w-full">Protect</button>
-                        <button onclick="copy('o-enc')" class="bg-white/5 py-4 rounded-2xl font-bold uppercase text-[10px] tracking-[3px]">Copy</button>
+                    <div class="grid grid-cols-2 gap-5">
+                        <button onclick="run('encrypt')" class="lux-btn w-full">Secure Data</button>
+                        <button onclick="copy('o-enc')" class="bg-white/5 py-5 rounded-3xl font-bold uppercase text-[11px] tracking-[4px] border border-white/10 hover:bg-white/10 transition">Copy</button>
                     </div>
                 </div>
 
-                <div id="v-dec" class="hidden space-y-8">
-                    <textarea id="i-dec" placeholder="Paste symbols..." class="aura-textarea h-44 w-full" oninput="clicker()"></textarea>
-                    <div id="o-dec" class="aura-output !text-emerald-400">
-                        <span class="opacity-20 text-sm">Awaiting Oracle...</span>
+                <div id="v-dec" class="hidden space-y-10">
+                    <textarea id="i-dec" placeholder="Paste encrypted tokens..." class="lux-input h-52 w-full" oninput="typeSnd()"></textarea>
+                    <div id="o-dec" class="lux-output !text-emerald-400 !border-emerald-500/10">
+                        <span class="opacity-30 text-sm uppercase tracking-widest">Waiting for Oracle...</span>
                     </div>
-                    <button onclick="run('decrypt')" class="p-btn !from-emerald-400 !to-blue-600 w-full">Reveal</button>
+                    <button onclick="run('decrypt')" class="lux-btn !from-emerald-400 !to-blue-600 w-full">Reveal Truth</button>
                 </div>
             </main>
 
-            <footer class="mt-12 text-center opacity-20 text-[9px] tracking-[12px] font-bold uppercase">
-                &copy; 2026 Amar Kumar
+            <footer class="mt-20 text-center opacity-30 text-[10px] tracking-[12px] font-bold uppercase">
+                &copy; 2026 Amar Kumar Elite Systems
             </footer>
         </div>
     </div>
 
-    <div id="support-modal" onclick="toggleSupport()">
-        <div class="support-card" onclick="event.stopPropagation()">
-            <h2 class="text-xl font-black mb-2 uppercase tracking-widest text-white">Support Amar</h2>
-            <p class="text-[9px] text-slate-400 mb-6 uppercase tracking-[2px]">Scan to pay via UPI</p>
+    <div id="qr-modal" onclick="showQR()">
+        <div class="qr-card" onclick="event.stopPropagation()">
+            <i class="fas fa-diamond text-4xl text-cyan-400 mb-6"></i>
+            <h2 class="text-2xl font-black mb-4 uppercase tracking-widest text-white">Premium Support</h2>
+            <p class="text-xs text-slate-400 mb-8 uppercase tracking-[3px]">Scan via any UPI App</p>
             
-            <img src="1000080928.jpg" class="mx-auto mb-6 rounded-2xl w-full border-4 border-white shadow-2xl">
+            <img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=upi://pay?pa=AmarKumarr@fam&pn=Amar%20Kumar&choe=UTF-8" class="mx-auto mb-8 rounded-3xl w-64 border-4 border-white/10 shadow-2xl p-2 bg-white">
             
-            <div class="bg-white/5 p-3 rounded-xl mb-6">
-                <p class="text-cyan-400 font-mono text-sm">amarkumarr@fam</p>
+            <div class="bg-white/5 p-4 rounded-2xl mb-6 border border-white/10">
+                <p class="text-cyan-400 font-mono text-sm tracking-widest">amarkumarr@fam</p>
             </div>
             
-            <button onclick="copyToClip('amarkumarr@fam')" class="w-full bg-cyan-400 text-black py-3 rounded-xl font-bold uppercase text-[10px]">Copy UPI ID</button>
+            <button onclick="copyUPI()" class="w-full bg-cyan-400 text-black py-4 rounded-2xl font-bold uppercase text-[11px] tracking-[4px] hover:bg-cyan-300 transition">Copy UPI ID</button>
         </div>
     </div>
 
     <div id="stealth-ui">
-        <h1>Geography of India - Wikipedia</h1>
-        <p>India is a country of great physical diversity. The main land comprises four regions: the great mountain zone, plains of the Ganga and the Indus, the desert region and the southern peninsula...</p>
+        <h1 style="font-family: 'Georgia', serif; font-size: 32px; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 30px;">Geography of India - Wikipedia</h1>
+        <p style="font-family: 'Georgia', serif; font-size: 18px; line-height: 1.6; margin-bottom: 20px;">India is a country of great physical diversity. The main land comprises four regions: the great mountain zone, plains of the Ganga and the Indus, the desert region, and the southern peninsula.</p>
+        <p style="font-family: 'Georgia', serif; font-size: 18px; line-height: 1.6;">The Himalayan range is the highest mountain range in the world, acting as a natural barrier in the north.</p>
     </div>
 
     <script>
-        const MAP = { 'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', ',':'¬', '!':'¡', '?':'¿' };
+        // --- INITIALIZATION ---
+        const bg = document.getElementById('cosmos-bg');
+        for(let i=0; i<50; i++) {
+            const p = document.createElement('div');
+            p.className = 'neural-particle';
+            p.style.left = Math.random()*100+'vw';
+            p.style.top = Math.random()*100+'vh';
+            p.style.animationDelay = Math.random()*20+'s';
+            bg.appendChild(p);
+        }
+
+        function bootSystem() {
+            document.getElementById('snd-boot').play();
+            document.getElementById('boot-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('boot-screen').style.display = 'none';
+                document.getElementById('app-interface').style.opacity = '1';
+            }, 1000);
+        }
+
+        // --- LOGIC ENGINE ---
+        const MAP = { 'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', ',':'¬', '!':'¡', '?':'¿', '@':'∂' };
         const REV = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
-        const glitch = "ABCDEF0123456789";
+        const glitch = "ABCDEF0123456789XMZ";
 
-        function unlockSystem() {
-            document.getElementById('unlock-overlay').style.display = 'none';
-            clicker(); // Unlocks audio context
-        }
-
-        function clicker() {
-            const snd = document.getElementById('snd-click');
-            snd.currentTime = 0;
-            snd.play().catch(()=>{});
-        }
+        function typeSnd() { const s=document.getElementById('snd-type'); s.currentTime=0; s.play().catch(()=>{}); }
 
         function tab(m) {
             document.getElementById('v-enc').classList.toggle('hidden', m === 'dec');
             document.getElementById('v-dec').classList.toggle('hidden', m === 'enc');
-            document.getElementById('t-enc').className = m === 'enc' ? 'text-cyan-400 font-black border-b-4 border-cyan-400 pb-2 text-sm' : 'text-slate-500 font-black pb-2 text-sm';
-            document.getElementById('t-dec').className = m === 'dec' ? 'text-emerald-400 font-black border-b-4 border-emerald-400 pb-2 text-sm' : 'text-slate-500 font-black pb-2 text-sm';
+            document.getElementById('t-enc').className = m === 'enc' ? 'text-cyan-400 font-black border-b-4 border-cyan-400 pb-4 text-sm tracking-[3px]' : 'text-slate-500 font-black pb-4 tracking-[3px]';
+            document.getElementById('t-dec').className = m === 'dec' ? 'text-emerald-400 font-black border-b-4 border-emerald-400 pb-4 text-sm tracking-[3px]' : 'text-slate-500 font-black pb-4 tracking-[3px]';
         }
 
-        function toggleSupport() {
-            const m = document.getElementById('support-modal');
+        function showQR() {
+            const m = document.getElementById('qr-modal');
             m.style.display = (m.style.display === 'flex' ? 'none' : 'flex');
         }
 
-        function shadowActivate() {
-            document.getElementById('app-root').style.display = 'none';
+        function activateShadow() {
+            document.getElementById('app-interface').style.display = 'none';
             document.getElementById('stealth-ui').style.display = 'block';
             document.body.style.backgroundColor = "white";
         }
 
-        // SUPREME ENGINE (FIXED UNDEFINED BUG)
         function run(type) {
             const input = document.getElementById(type === 'encrypt' ? 'i-enc' : 'i-dec').value.toLowerCase();
             const out = document.getElementById(type === 'encrypt' ? 'o-enc' : 'o-dec');
             if(!input) return;
 
-            let result = "";
+            let res = "";
             for(let char of input) {
-                if(type === 'encrypt') result += MAP[char] || char; // No undefined
-                else result += REV[char] || char;
+                if(type === 'encrypt') res += MAP[char] || char;
+                else res += REV[char] || char;
             }
 
             out.innerHTML = "";
             let idx = 0;
             const timer = setInterval(() => {
-                if(idx < result.length) {
-                    let fCount = 0;
+                if(idx < res.length) {
+                    let fc = 0;
                     const flicker = setInterval(() => {
                         out.innerHTML = out.innerHTML.slice(0, idx) + glitch[Math.floor(Math.random()*glitch.length)];
-                        fCount++;
-                        if(fCount > 4) {
+                        fc++;
+                        if(fc > 4) {
                             clearInterval(flicker);
-                            if(result[idx] !== undefined) {
-                                out.innerHTML = out.innerHTML.slice(0, idx) + result[idx];
-                            }
-                            idx++;
-                            clicker();
+                            if(res[idx] !== undefined) out.innerHTML = out.innerHTML.slice(0, idx) + res[idx];
+                            idx++; typeSnd();
                         }
                     }, 10);
                 } else {
                     clearInterval(timer);
-                    document.getElementById('snd-verify').play();
+                    document.getElementById('snd-done').play();
+                    if(navigator.vibrate) navigator.vibrate(50);
                 }
-            }, 55);
+            }, 60);
         }
 
         function copy(id) {
             const t = document.getElementById(id).innerText;
-            if(!t.includes('..')) navigator.clipboard.writeText(t).then(()=>alert("Protected!"));
+            if(!t.includes('..')) navigator.clipboard.writeText(t).then(()=>alert("Secured into Clipboard."));
         }
 
-        function copyToClip(t) {
-            navigator.clipboard.writeText(t).then(()=>alert("UPI ID Copied!"));
+        function copyUPI() {
+            navigator.clipboard.writeText("amarkumarr@fam").then(()=>alert("UPI ID Copied."));
         }
     </script>
 </body>
-                          </html>
-  
+    </html>
+    
