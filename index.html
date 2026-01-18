@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swarg | Ultra-Premium Suite</title>
+    <title>Swarg | Shield Edition Pro Max</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#020406">
@@ -14,9 +14,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
     <style>
-        /* =========================================
-           ULTRA-LUXURY THEME VARIABLES
-        ========================================= */
         :root {
             --lux-bg: #020406;
             --lux-accent-cyan: #00fff2;
@@ -30,27 +27,14 @@
             --panic-red: #ff3b30;
         }
 
-        body {
-            font-family: 'Satoshi', sans-serif;
-            background-color: var(--lux-bg);
-            color: #ffffff;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
+        body { font-family: 'Satoshi', sans-serif; background-color: var(--lux-bg); color: #ffffff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 
-        /* BACKGROUND PARTICLES */
+        /* COSMOS PARTICLES BACKGROUND */
         #cosmos-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 30%, #1a2238 0%, #030508 80%); overflow: hidden; }
         .neural-particle { position: absolute; width: 3px; height: 3px; background: var(--lux-accent-cyan); border-radius: 50%; box-shadow: 0 0 15px var(--lux-accent-cyan); opacity: 0; animation: flyUp linear infinite; }
         @keyframes flyUp { 0% { transform: translateY(110vh) scale(0.5); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-10vh) scale(1.5); opacity: 0; } }
 
-        /* HEADER CONTAINER */
-        .header-container {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; text-align: center;
-            margin-bottom: 4rem; position: relative;
-        }
-
-        /* SWARG TITLE */
+        /* TITLES & BRANDING */
         .swarg-title-platinum {
             font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: 900;
             font-size: clamp(4.5rem, 18vw, 8.5rem); letter-spacing: -4px; line-height: 1.1;
@@ -59,57 +43,32 @@
             filter: drop-shadow(0 25px 50px rgba(0,0,0,0.8)); padding-bottom: 10px; width: 100%;
         }
 
-        /* AMAR KUMAR GOLD BADGE */
-        .amar-gold-badge {
-            display: inline-flex; align-items: center; gap: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px 24px; border-radius: 50px;
-            border: 1px solid rgba(255, 215, 0, 0.1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            margin-top: 1.5rem; 
-            z-index: 10; backdrop-filter: blur(10px);
-        }
-
-        /* CONTINUOUS SHINE ANIMATION */
+        .amar-gold-badge { display: inline-flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.03); padding: 12px 24px; border-radius: 50px; border: 1px solid rgba(255, 215, 0, 0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 1.5rem; z-index: 10; backdrop-filter: blur(10px); }
+        
         .amar-text-gold {
-            font-family: 'Montserrat', sans-serif; font-weight: 800;
-            font-size: 18px; letter-spacing: 3px; text-transform: uppercase;
-            background: linear-gradient(
-                120deg,
-                var(--premium-gold-start) 0%,
-                var(--premium-gold-mid) 25%,
-                var(--premium-gold-end) 45%,
-                var(--premium-gold-mid) 55%,
-                var(--premium-gold-start) 80%
-            );
-            background-size: 200% auto;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: 3px; text-transform: uppercase;
+            background: linear-gradient(120deg, var(--premium-gold-start) 0%, var(--premium-gold-mid) 25%, var(--premium-gold-end) 45%, var(--premium-gold-mid) 55%, var(--premium-gold-start) 80%);
+            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 2px 10px rgba(212, 175, 55, 0.3));
             animation: continuousShine 2.5s linear infinite;
         }
-
-        @keyframes continuousShine {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
-        }
-
+        @keyframes continuousShine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+        
         .v-tick-premium { color: var(--verified-blue); font-size: 22px; filter: drop-shadow(0 0 12px var(--verified-blue)); }
 
-        /* UI CARDS & INPUTS */
+        /* UI ELEMENTS */
         .luxury-glass-deep { background: var(--lux-glass-surface); backdrop-filter: blur(60px) saturate(180%); border: 1px solid var(--lux-glass-border); box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.02), 0 30px 80px rgba(0, 0, 0, 0.9); border-radius: 40px; position: relative; overflow: hidden; }
-        .lux-output { background: rgba(0, 255, 242, 0.02); border: 1px dashed rgba(0, 255, 242, 0.2); border-radius: 28px; min-height: 220px; padding: 30px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 24px; font-weight: 700; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; word-break: break-all; overflow-wrap: break-word; }
+        .lux-output { background: rgba(0, 255, 242, 0.02); border: 1px dashed rgba(0, 255, 242, 0.2); border-radius: 28px; min-height: 220px; padding: 30px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 24px; font-weight: 700; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; word-break: break-all; }
         .lux-input { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 28px; padding: 25px; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; font-size: 16px; transition: 0.4s; resize: none; }
         .lux-input:focus { border-color: var(--lux-accent-blue); background: rgba(0,0,0,0.6); box-shadow: 0 0 40px rgba(0, 242, 255, 0.15); }
 
-        /* BUTTONS & PANIC */
-        .lux-btn { background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue)); color: #000; font-weight: 800; border-radius: 24px; padding: 20px; text-transform: uppercase; letter-spacing: 3px; font-size: 14px; box-shadow: 0 20px 40px rgba(0, 255, 242, 0.3); transition: 0.5s; }
+        .lux-btn { background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue)); color: #000; font-weight: 800; border-radius: 24px; padding: 20px; text-transform: uppercase; letter-spacing: 3px; font-size: 14px; box-shadow: 0 20px 40px rgba(0, 255, 242, 0.3); transition: 0.5s; cursor: pointer; }
         .lux-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 30px 60px rgba(74, 142, 255, 0.5); }
+        
         .panic-fab { position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px; background: var(--panic-red); border-radius: 20px; display: flex; align-items: center; justify-content: center; z-index: 2000; box-shadow: 0 20px 40px rgba(255, 59, 48, 0.4); border: 2px solid rgba(255,255,255,0.2); transition: 0.4s; cursor: pointer; }
-        .panic-fab:active { transform: scale(0.95); }
 
-        /* MODALS */
         #support-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(30px); }
-        .support-card { background: #0a0f19; border: 1px solid var(--lux-accent-blue); padding: 40px; border-radius: 36px; text-align: center; max-width: 350px; width: 90%; box-shadow: 0 50px 100px #000; }
+        .support-card { background: #0a0f19; border: 1px solid var(--lux-accent-blue); padding: 40px; border-radius: 36px; text-align: center; max-width: 350px; width: 90%; }
         #about-ui { display: none; background: #0a0f1d; color: #fff; min-height: 100vh; padding: 80px 10%; }
     </style>
 </head>
@@ -126,8 +85,7 @@
         <audio id="snd-done" preload="auto" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
 
         <div class="max-w-4xl mx-auto px-6 py-12">
-            
-            <header class="header-container">
+            <header class="flex flex-col items-center text-center mb-16 relative">
                 <h1 class="swarg-title-platinum">Swarg</h1>
                 
                 <div class="amar-gold-badge">
@@ -136,8 +94,8 @@
                 </div>
                 
                 <div class="mt-12">
-                    <button onclick="toggleSupport()" class="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold uppercase tracking-[3px] hover:bg-cyan-400/10 hover:border-cyan-400 transition group">
-                        <i class="fas fa-coffee text-cyan-400 mr-3 group-hover:rotate-12 transition"></i> Support Developer
+                    <button onclick="toggleSupport()" class="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold uppercase tracking-[3px] hover:bg-cyan-400/10 transition group">
+                        <i class="fas fa-coffee text-cyan-400 mr-3"></i> Support Developer
                     </button>
                 </div>
             </header>
@@ -150,9 +108,7 @@
 
                 <div id="v-enc" class="space-y-10">
                     <textarea id="i-enc" placeholder="Enter sensitive data..." class="lux-input h-52 w-full" oninput="typeSnd()"></textarea>
-                    <div id="o-enc" class="lux-output">
-                        <span class="opacity-30 text-sm uppercase tracking-widest">System Ready...</span>
-                    </div>
+                    <div id="o-enc" class="lux-output"><span class="opacity-30 text-sm uppercase tracking-widest">System Ready...</span></div>
                     <div class="grid grid-cols-2 gap-5">
                         <button onclick="run('encrypt')" class="lux-btn w-full">Secure Data</button>
                         <button onclick="copy('o-enc')" class="bg-white/5 py-5 rounded-3xl font-bold uppercase text-[11px] tracking-[4px] border border-white/10 hover:bg-white/10 transition">Copy</button>
@@ -161,9 +117,7 @@
 
                 <div id="v-dec" class="hidden space-y-10">
                     <textarea id="i-dec" placeholder="Paste encrypted tokens..." class="lux-input h-52 w-full" oninput="typeSnd()"></textarea>
-                    <div id="o-dec" class="lux-output !text-emerald-400 !border-emerald-500/10">
-                        <span class="opacity-30 text-sm uppercase tracking-widest">Awaiting Input...</span>
-                    </div>
+                    <div id="o-dec" class="lux-output !text-emerald-400">Awaiting Input...</div>
                     <button onclick="run('decrypt')" class="lux-btn !from-emerald-400 !to-blue-600 w-full">Reveal Truth</button>
                 </div>
             </main>
@@ -177,36 +131,37 @@
     <div id="support-modal" onclick="toggleSupport()">
         <div class="support-card" onclick="event.stopPropagation()">
             <i class="fas fa-heart text-3xl text-cyan-400 mb-6"></i>
-            <h2 class="text-xl font-black mb-4 uppercase tracking-widest text-white">Support Development</h2>
+            <h2 class="text-xl font-black mb-4 uppercase text-white">Support Developer</h2>
             <div class="bg-blue-500/10 p-5 rounded-2xl mb-8 border border-blue-500/30">
-                <p class="text-cyan-400 font-mono text-lg font-bold tracking-widest">amarkumarr@fam</p>
+                <p class="text-cyan-400 font-mono text-lg font-bold">amarkumarr@fam</p>
             </div>
-            <button onclick="copyUPI()" class="w-full bg-cyan-400 text-black py-4 rounded-2xl font-bold uppercase tracking-widest hover:bg-cyan-300 transition">Copy UPI ID</button>
+            <button onclick="copyUPI()" class="w-full bg-cyan-400 text-black py-4 rounded-2xl font-bold uppercase tracking-widest">Copy UPI ID</button>
         </div>
     </div>
 
     <div id="about-ui">
-        <h1 class="text-4xl font-black mb-10 text-cyan-400 uppercase tracking-widest">About Swarg</h1>
-        <p class="text-lg leading-relaxed text-slate-300 mb-6">Swarg is an enterprise-grade polymorphic encryption engine designed for secure data transmission in high-risk environments.</p>
-        <p class="text-lg leading-relaxed text-slate-300">Developed by <span class="text-white font-bold">Amar Kumar Systems</span>.</p>
-        <hr style="margin: 40px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
-        <p style="font-size: 13px; color: #777;">Version 7.0.3 (Stable) | Executive Edition.</p>
-        <button onclick="location.reload()" class="mt-16 px-10 py-3 border border-white/20 rounded-full text-sm uppercase tracking-widest hover:bg-white/10 transition">Return to System</button>
+        <h1 class="text-4xl font-black mb-10 text-cyan-400 uppercase tracking-widest">About Swarg Shield</h1>
+        <p class="text-lg leading-relaxed text-slate-300 mb-6">Swarg is a 30-minute polymorphic encryption engine developed by <span class="text-white font-bold">Amar Kumar Systems</span>.</p>
+        <button onclick="location.reload()" class="mt-16 px-10 py-3 border border-white/20 rounded-full text-sm uppercase tracking-widest">Return to System</button>
     </div>
 
     <script>
+        // PARTICLES ANIMATION
         const bg = document.getElementById('cosmos-bg');
         for(let i=0; i<65; i++) {
-            const p = document.createElement('div');
-            p.className = 'neural-particle';
-            p.style.left = Math.random()*100+'vw';
-            p.style.animationDuration = (7 + Math.random()*12)+'s'; 
-            p.style.animationDelay = Math.random()*10+'s';
-            bg.appendChild(p);
+            const p = document.createElement('div'); p.className = 'neural-particle';
+            p.style.left = Math.random()*100+'vw'; p.style.animationDuration = (7 + Math.random()*12)+'s';
+            p.style.animationDelay = Math.random()*10+'s'; bg.appendChild(p);
         }
-        document.body.addEventListener('click', () => { document.getElementById('snd-type').play().catch(()=>{}); document.getElementById('snd-type').pause(); }, { once: true });
 
-        const MAP = { 'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', ',':'¬', '!':'¡', '?':'¿', '@':'∂' };
+        // --- ENCRYPTION MAP (Fixed C, J, P) ---
+        const MAP = { 
+            'a':'†', 'b':'∆', 'c':'₵', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 
+            'i':'‡', 'j':'ʝ', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'₱', 
+            'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 
+            'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', 
+            '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', ',':'¬', '!':'¡'
+        };
         const REV = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
         const glitch = "XYZ0123456789";
 
@@ -220,34 +175,53 @@
         function toggleSupport() { const m = document.getElementById('support-modal'); m.style.display = (m.style.display === 'flex' ? 'none' : 'flex'); }
         function activateAboutPage() { document.getElementById('app-interface').style.display = 'none'; document.getElementById('about-ui').style.display = 'block'; }
 
+        // --- CORE ENGINE (30m Expiry & Glitch) ---
         function run(type) {
-            const input = document.getElementById(type === 'encrypt' ? 'i-enc' : 'i-dec').value.toLowerCase();
+            const inputField = document.getElementById(type === 'encrypt' ? 'i-enc' : 'i-dec');
             const out = document.getElementById(type === 'encrypt' ? 'o-enc' : 'o-dec');
+            let input = inputField.value.toLowerCase();
             if(!input) return;
-            let res = "";
-            for(let char of input) { type === 'encrypt' ? res += MAP[char] || char : res += REV[char] || char; }
+
+            let resultFinal = "";
+            if(type === 'encrypt') {
+                let res = ""; 
+                for(let char of input) { res += MAP[char] || char; }
+                let timestamp = btoa(Date.now().toString()).substring(0, 8);
+                resultFinal = timestamp + "::" + res;
+            } else {
+                try {
+                    let parts = input.split("::");
+                    if(parts.length < 2) { out.innerText = "INVALID FORMAT"; return; }
+                    let timeStored = parseInt(atob(parts[0] + "==").match(/\d+/)[0]);
+                    if(Date.now() - timeStored > 1800000) {
+                        out.innerText = "🛑 CODE EXPIRED (30m limit)";
+                        out.style.color = "#ff3b30";
+                        return;
+                    }
+                    out.style.color = "#00fff2";
+                    for(let char of parts[1]) { resultFinal += REV[char] || char; }
+                } catch(e) { out.innerText = "DECODE ERROR"; return; }
+            }
+
+            // GLITCH ANIMATION LOOP
             out.innerText = ""; let currentText = ""; let idx = 0;
             const timer = setInterval(() => {
-                if(idx < res.length) {
+                if(idx < resultFinal.length) {
                     let fc = 0;
                     const flicker = setInterval(() => {
                         out.innerText = currentText + glitch[Math.floor(Math.random()*glitch.length)];
-                        fc++;
-                        if(fc > 3) { clearInterval(flicker); currentText += res[idx]; out.innerText = currentText; idx++; typeSnd(); }
-                    }, 15);
-                } else { clearInterval(timer); out.innerText = res; document.getElementById('snd-done').play(); if(navigator.vibrate) navigator.vibrate(60); }
-            }, 60);
+                        fc++; if(fc > 2) { clearInterval(flicker); currentText += resultFinal[idx]; out.innerText = currentText; idx++; typeSnd(); }
+                    }, 10);
+                } else { clearInterval(timer); out.innerText = resultFinal; document.getElementById('snd-done').play(); if(navigator.vibrate) navigator.vibrate(60); }
+            }, 50);
         }
+
         function copy(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>alert("Copied.")); }
         function copyUPI() { navigator.clipboard.writeText("amarkumarr@fam").then(()=>alert("UPI ID Copied.")); }
-    </script>
-
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js');
-        });
-      }
+        
+        // PWA REGISTRATION
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
     </script>
 </body>
-</html>
+    </html>
+    
