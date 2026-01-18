@@ -1,0 +1,15 @@
+{
+  "name": "Swarg Ultra-Premium",
+  "short_name": "Swarg",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#020406",
+  "theme_color": "#020406",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/944/944948.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
