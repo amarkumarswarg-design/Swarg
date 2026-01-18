@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swarg | Supreme Industrial Suite</title>
+    <title>Swarg | Absolute Industrial Suite</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#020406">
@@ -14,9 +14,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
     <style>
-        /* =========================================
-           ULTRA-LUXURY THEME SYSTEM
-        ========================================= */
         :root {
             --lux-bg: #020406;
             --lux-accent-cyan: #00fff2;
@@ -26,28 +23,18 @@
             --premium-gold-end: #aa771c;
             --verified-blue: #1d9bf0;
             --lux-glass-border: rgba(255, 255, 255, 0.08);
-            --lux-glass-surface: rgba(10, 15, 25, 0.9);
+            --lux-glass-surface: rgba(10, 15, 25, 0.95);
             --panic-red: #ff3b30;
         }
 
-        body {
-            font-family: 'Satoshi', sans-serif;
-            background-color: var(--lux-bg);
-            color: #ffffff;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
+        body { font-family: 'Satoshi', sans-serif; background-color: var(--lux-bg); color: #ffffff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 
-        /* NEURAL COSMOS BACKGROUND ENGINE */
+        /* NEURAL COSMOS BACKGROUND */
         #cosmos-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 30%, #1a2238 0%, #030508 80%); overflow: hidden; }
         .neural-particle { position: absolute; width: 3px; height: 3px; background: var(--lux-accent-cyan); border-radius: 50%; box-shadow: 0 0 15px var(--lux-accent-cyan); opacity: 0; animation: flyUp linear infinite; }
-        @keyframes flyUp { 
-            0% { transform: translateY(110vh) scale(0.5); opacity: 0; } 
-            20% { opacity: 0.8; } 
-            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; } 
-        }
+        @keyframes flyUp { 0% { transform: translateY(110vh) scale(0.5); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-10vh) scale(1.5); opacity: 0; } }
 
-        /* AMAR KUMAR BRANDING SYSTEM */
+        /* BRANDING & TITLES */
         .swarg-title-platinum {
             font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: 900;
             font-size: clamp(4.5rem, 18vw, 8.5rem); letter-spacing: -4px; line-height: 1.1;
@@ -56,14 +43,7 @@
             filter: drop-shadow(0 25px 50px rgba(0,0,0,0.8)); padding-bottom: 10px; width: 100%;
         }
 
-        .amar-gold-badge { 
-            display: inline-flex; align-items: center; gap: 12px; 
-            background: rgba(255, 255, 255, 0.03); padding: 12px 24px; 
-            border-radius: 50px; border: 1px solid rgba(255, 215, 0, 0.1); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 1.5rem; 
-            z-index: 10; backdrop-filter: blur(10px); 
-        }
-
+        .amar-gold-badge { display: inline-flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.03); padding: 12px 24px; border-radius: 50px; border: 1px solid rgba(255, 215, 0, 0.1); margin-top: 1.5rem; z-index: 10; backdrop-filter: blur(10px); }
         .amar-text-gold {
             font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: 3px; text-transform: uppercase;
             background: linear-gradient(120deg, var(--premium-gold-start) 0%, var(--premium-gold-mid) 25%, var(--premium-gold-end) 45%, var(--premium-gold-mid) 55%, var(--premium-gold-start) 80%);
@@ -73,55 +53,24 @@
         @keyframes continuousShine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
         .v-tick-premium { color: var(--verified-blue); font-size: 22px; filter: drop-shadow(0 0 12px var(--verified-blue)); }
 
-        /* INDUSTRIAL GLASS INTERFACE */
-        .luxury-glass-deep { 
-            background: var(--lux-glass-surface); backdrop-filter: blur(60px) saturate(180%); 
-            border: 1px solid var(--lux-glass-border); border-radius: 40px; 
-            position: relative; overflow: hidden; 
-        }
-        .lux-output { 
-            background: rgba(0, 255, 242, 0.02); border: 1px dashed rgba(0, 255, 242, 0.2); 
-            border-radius: 28px; min-height: 220px; padding: 30px; 
-            display: flex; align-items: center; justify-content: center; text-align: center; 
-            font-size: 24px; font-weight: 700; color: var(--lux-accent-cyan); 
-            font-family: 'JetBrains Mono', monospace; word-break: break-all; 
-        }
-        .lux-input { 
-            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 28px; padding: 25px; color: var(--lux-accent-cyan); 
-            font-family: 'JetBrains Mono', monospace; font-size: 16px; 
-            transition: 0.4s; resize: none; width: 100%; outline: none; 
-        }
-        .lux-input:focus { border-color: var(--lux-accent-cyan); background: rgba(0,0,0,0.6); }
-
-        /* INDUSTRIAL CONTROLS */
-        .lux-btn { 
-            background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue)); 
-            color: #000; font-weight: 800; border-radius: 24px; padding: 20px; 
-            text-transform: uppercase; letter-spacing: 3px; font-size: 14px; 
-            box-shadow: 0 20px 40px rgba(0, 255, 242, 0.3); transition: 0.5s; 
-            cursor: pointer; width: 100%; border: none; 
-        }
-        .lux-btn:hover { transform: translateY(-5px); box-shadow: 0 30px 60px rgba(0, 255, 242, 0.5); }
+        /* UI ELEMENTS */
+        .luxury-glass-deep { background: var(--lux-glass-surface); backdrop-filter: blur(60px) saturate(180%); border: 1px solid var(--lux-glass-border); border-radius: 40px; position: relative; overflow: hidden; }
+        .lux-output { background: rgba(0, 255, 242, 0.02); border: 1px dashed rgba(0, 255, 242, 0.2); border-radius: 28px; min-height: 220px; padding: 30px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 24px; font-weight: 700; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; word-break: break-all; }
+        .lux-input { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 28px; padding: 25px; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; font-size: 16px; transition: 0.4s; resize: none; width: 100%; outline: none; }
         
-        .panic-fab { 
-            position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px; 
-            background: var(--panic-red); border-radius: 20px; 
-            display: flex; align-items: center; justify-content: center; z-index: 2000; 
-            box-shadow: 0 20px 40px rgba(255, 59, 48, 0.4); border: 2px solid rgba(255,255,255,0.2); 
-            transition: 0.4s; cursor: pointer; 
-        }
+        .lux-btn { background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue)); color: #000; font-weight: 800; border-radius: 24px; padding: 20px; text-transform: uppercase; letter-spacing: 3px; font-size: 14px; box-shadow: 0 20px 40px rgba(0, 255, 242, 0.3); transition: 0.5s; cursor: pointer; width: 100%; border: none; }
+        .panic-fab { position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px; background: var(--panic-red); border-radius: 20px; display: flex; align-items: center; justify-content: center; z-index: 2000; box-shadow: 0 20px 40px rgba(255, 59, 48, 0.4); border: 2px solid rgba(255,255,255,0.2); transition: 0.4s; cursor: pointer; }
 
-        /* TOAST SYSTEM */
+        /* TOASTS */
         #toast-container { position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%); z-index: 6000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { background: rgba(0, 255, 242, 0.15); border: 1px solid var(--lux-accent-cyan); backdrop-filter: blur(20px); color: white; padding: 15px 30px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; animation: slideUp 0.4s forwards; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* MODALS ENGINE */
+        /* MODALS */
         .support-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(30px); }
         #about-ui { display: none; background: #030508; color: #fff; min-height: 100vh; padding: 80px 10%; position: fixed; inset: 0; z-index: 5000; overflow-y: auto; }
 
-        /* INDUSTRIAL SCANNING FX */
+        /* SCAN FX */
         .scan-line { position: absolute; left: 0; top: 0; width: 100%; height: 2px; background: var(--lux-accent-cyan); box-shadow: 0 0 20px var(--lux-accent-cyan); display: none; z-index: 100; animation: scanMove 1s linear infinite; }
         @keyframes scanMove { from { top: 0%; } to { top: 100%; } }
     </style>
@@ -138,7 +87,6 @@
         <audio id="snd-done" preload="auto" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
 
         <div class="max-w-4xl mx-auto px-6 py-12">
-            
             <header class="flex flex-col items-center text-center mb-16 relative">
                 <h1 class="swarg-title-platinum">Swarg</h1>
                 <div class="amar-gold-badge">
@@ -156,7 +104,7 @@
                 <div id="scan-fx" class="scan-line"></div>
                 
                 <div class="mb-10 space-y-4">
-                    <label class="block text-center text-[10px] font-black tracking-[5px] opacity-40 uppercase">Industrial Master Key</label>
+                    <label class="block text-center text-[10px] font-black tracking-[5px] opacity-40 uppercase">Master Key</label>
                     <input type="password" id="m-key" placeholder="••••" class="lux-input text-center font-black tracking-[5px] border-cyan-500/30" oninput="typeSnd()">
                 </div>
 
@@ -166,7 +114,7 @@
                 </nav>
 
                 <div id="v-enc" class="space-y-10">
-                    <textarea id="i-enc" placeholder="Target Sensitive Data..." class="lux-input h-48" oninput="typeSnd()"></textarea>
+                    <textarea id="i-enc" placeholder="Target Data..." class="lux-input h-48" oninput="typeSnd()"></textarea>
                     <div id="o-enc" class="lux-output"><span class="opacity-30 text-[10px] uppercase tracking-[5px]">Core Ready...</span></div>
                     <div class="grid grid-cols-2 gap-5">
                         <button onclick="secureAction('encrypt')" class="lux-btn">Secure</button>
@@ -175,26 +123,22 @@
                 </div>
 
                 <div id="v-dec" class="hidden space-y-10">
-                    <textarea id="i-dec" placeholder="Paste Industrial Token..." class="lux-input h-48" oninput="typeSnd()"></textarea>
+                    <textarea id="i-dec" placeholder="Paste Token..." class="lux-input h-48" oninput="typeSnd()"></textarea>
                     <div id="o-dec" class="lux-output !text-emerald-400">Reveal Pending...</div>
-                    <button onclick="secureAction('decrypt')" class="lux-btn !from-emerald-400 !to-blue-600">Reveal Truth</button>
+                    <button onclick="secureAction('decrypt')" class="lux-btn !from-emerald-400 !to-blue-600">Reveal</button>
                 </div>
                 
                 <div class="mt-12 pt-8 border-t border-white/5">
                     <div class="flex items-center gap-3 mb-4">
                         <span class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
-                        <span class="text-[9px] font-black uppercase tracking-[3px] opacity-40">Security Audit Log</span>
+                        <span class="text-[9px] font-black uppercase tracking-[3px] opacity-40">Audit Trail</span>
                     </div>
                     <div id="audit-log" class="font-mono text-[10px] text-slate-500 space-y-2">
-                        <div>> Initializing Supreme Suite V9.5... [OK]</div>
-                        <div>> Verified User: Amar Kumar... [AUTH]</div>
+                        <div>> Swarg V10.0 Online... [OK]</div>
                     </div>
                 </div>
             </main>
-
-            <footer class="mt-24 text-center opacity-30 text-[10px] tracking-[15px] font-bold uppercase">
-                &copy; 2026 Amar Kumar Systems
-            </footer>
+            <footer class="mt-24 text-center opacity-30 text-[10px] tracking-[15px] font-bold uppercase">&copy; 2026 Amar Kumar Systems</footer>
         </div>
     </div>
 
@@ -203,31 +147,21 @@
             <i class="fas fa-heart text-cyan-400 text-3xl mb-6"></i>
             <h2 class="text-white font-black uppercase tracking-widest mb-4">Elite Support</h2>
             <div class="bg-black/50 p-6 rounded-2xl mb-8 border border-white/10">
-                <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-2">Developer UPI ID</p>
                 <p class="text-cyan-400 font-mono text-lg font-bold">amarkumarr@fam</p>
             </div>
-            <button onclick="copyUPI()" class="w-full bg-cyan-400 text-black py-4 rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition">Copy UPI ID</button>
-            <button onclick="toggleSupport()" class="mt-6 text-[10px] opacity-40 uppercase font-bold">Close Portal</button>
+            <button onclick="copyUPI()" class="w-full bg-cyan-400 text-black py-4 rounded-2xl font-black uppercase tracking-widest">Copy UPI ID</button>
+            <button onclick="toggleSupport()" class="mt-6 text-[10px] opacity-40 uppercase font-bold">Close</button>
         </div>
     </div>
 
     <div id="about-ui">
-        <h1 class="text-4xl font-black mb-10 text-cyan-400 uppercase tracking-widest">Supreme Industrial Architecture</h1>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
-            <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
-                <h3 class="text-white font-black uppercase text-xs tracking-widest mb-4">Cryptographic Core</h3>
-                <p class="text-slate-400 text-sm">Industrial AES-Inspired mapping with Master Key hash verification layer.</p>
-            </div>
-            <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
-                <h3 class="text-white font-black uppercase text-xs tracking-widest mb-4">Integrity Monitoring</h3>
-                <p class="text-slate-400 text-sm">30-minute token lifecycle with real-time security audit trails.</p>
-            </div>
-        </div>
-        <button onclick="location.reload()" class="px-12 py-4 border border-white/20 rounded-full text-[10px] font-black uppercase tracking-[5px]">Exit Architecture</button>
+        <h1 class="text-4xl font-black mb-10 text-cyan-400 uppercase tracking-widest">About</h1>
+        <p class="text-slate-400 mb-10 leading-loose">Swarg Shield V10.0 Industrial Suite. Developed by Amar Kumar Systems.</p>
+        <button onclick="location.reload()" class="px-12 py-4 border border-white/20 rounded-full text-[10px] uppercase">Exit</button>
     </div>
 
     <script>
-        // --- RESTORED COSMOS PARTICLES ENGINE ---
+        // PARTICLES ENGINE (RE-FIXED)
         const bg = document.getElementById('cosmos-bg');
         for(let i=0; i<65; i++) {
             const p = document.createElement('div'); p.className = 'neural-particle';
@@ -235,18 +169,17 @@
             p.style.animationDelay = Math.random()*10+'s'; bg.appendChild(p);
         }
 
-        // --- STABLE INDUSTRIAL MAP ---
-        const BASE_MAP = { 
+        // STABLE MAP
+        const MAP = { 
             'a':'†', 'b':'∆', 'c':'©', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 
             'i':'‡', 'j':'ʝ', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'℗', 
             'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 
             'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', 
             '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', ',':'¬', '!':'¡'
         };
-        const REV_MAP = Object.fromEntries(Object.entries(BASE_MAP).map(([k,v]) => [v, k]));
+        const REV = Object.fromEntries(Object.entries(MAP).map(([k,v]) => [v, k]));
         const glitch = "0123456789ABCDEF";
 
-        // --- UTILITY FUNCTIONS ---
         function typeSnd() { const s=document.getElementById('snd-type'); s.currentTime=0; s.play().catch(()=>{}); }
         function showToast(msg) {
             const t = document.createElement('div'); t.className = 'toast'; t.innerText = msg;
@@ -267,16 +200,11 @@
         }
 
         function toggleSupport() { const m = document.getElementById('support-modal'); m.style.display = (m.style.display === 'flex' ? 'none' : 'flex'); }
-        function panicMode() {
-            document.getElementById('i-enc').value = ""; document.getElementById('i-dec').value = "";
-            document.getElementById('o-enc').innerText = ""; document.getElementById('o-dec').innerText = "";
-            showToast("Panic Protocol: Buffer Wiped");
-            document.getElementById('app-interface').style.display = 'none'; document.getElementById('about-ui').style.display = 'block';
-        }
+        function panicMode() { document.getElementById('app-interface').style.display = 'none'; document.getElementById('about-ui').style.display = 'block'; }
 
-        // --- THE SUPREME SECURE CORE (FIXED) ---
+        // --- ABSOLUTE FIXED CORE ---
         async function secureAction(type) {
-            const key = document.getElementById('m-key').value;
+            const key = document.getElementById('m-key').value.trim();
             const inputField = document.getElementById(type === 'encrypt' ? 'i-enc' : 'i-dec');
             const out = document.getElementById(type === 'encrypt' ? 'o-enc' : 'o-dec');
             let input = inputField.value.trim().toLowerCase();
@@ -284,85 +212,61 @@
             if(!key) { showToast("Master Key Required"); return; }
             if(!input) return;
 
-            // Scanning Animation Trigger
             const scan = document.getElementById('scan-fx');
             scan.style.display = 'block';
-            addLog(`Analyzing Protocol: ${type.toUpperCase()}`);
+            addLog(`Analyzing: ${type.toUpperCase()}`);
             await new Promise(r => setTimeout(r, 800));
             scan.style.display = 'none';
 
             let resultFinal = "";
             if(type === 'encrypt') {
-                let res = ""; 
-                for(let char of input) { res += BASE_MAP[char] || char; }
-                
+                let res = ""; for(let char of input) { res += MAP[char] || char; }
                 let ts = btoa(Date.now().toString());
-                let kh = btoa(unescape(encodeURIComponent(key))).substring(0, 8); // Robust Hashing
+                let kh = btoa(key).replace(/=/g, ""); // FIXED: Removing padding to prevent mismatch
                 resultFinal = `${ts}_${kh}_${res}`;
-                
-                showToast("Data Secured Successfully");
-                addLog("Object Encrypted & Sealed");
+                showToast("Data Sealed");
+                addLog("Object Encrypted");
             } else {
                 try {
                     let parts = input.split("_");
-                    if(parts.length < 3) { showToast("Invalid Industrial Token"); return; }
+                    if(parts.length < 3) { showToast("Invalid Token"); return; }
                     
                     let ts = parts[0];
                     let pkh = parts[1];
-                    let ckh = btoa(unescape(encodeURIComponent(key))).substring(0, 8); // Matching Robust Hashing
+                    let ckh = btoa(key).replace(/=/g, ""); // FIXED: Consistent hash checking
 
-                    // THE CRITICAL FIX: Direct hash comparison
                     if(pkh !== ckh) { 
-                        showToast("Authentication Failed: Access Denied"); 
+                        showToast("Denied: Invalid Key"); 
                         out.innerText = "ACCESS DENIED"; 
-                        addLog("Critical: Unauthorized Attempt Blocked"); 
+                        addLog("Unauthorized Attempt Blocked"); 
                         return; 
                     }
 
-                    // Token Expiry Audit
                     let timeStored = parseInt(atob(ts));
-                    if(Date.now() - timeStored > 1800000) { 
-                        showToast("Security Breach: Token Expired"); 
-                        out.innerText = "🛑 EXPIRED TOKEN"; 
-                        return; 
-                    }
+                    if(Date.now() - timeStored > 1800000) { showToast("Expired"); out.innerText = "🛑 EXPIRED"; return; }
 
-                    for(let char of parts[2]) { resultFinal += REV_MAP[char] || char; }
-                    showToast("Identity Verified: Revealed");
-                    addLog("Object Decrypted Successfully");
-                } catch(e) { showToast("Kernel Decryption Failed"); return; }
+                    for(let char of parts[2]) { resultFinal += REV[char] || char; }
+                    showToast("Verified: Truth Revealed");
+                    addLog("Object Decrypted");
+                } catch(e) { showToast("System Error"); return; }
             }
 
-            // High-End Glitch Sequencer
             out.innerText = ""; let currentText = ""; let idx = 0;
             const timer = setInterval(() => {
                 if(idx < resultFinal.length) {
                     let fc = 0;
                     const flicker = setInterval(() => {
                         out.innerText = currentText + glitch[Math.floor(Math.random()*glitch.length)];
-                        fc++; 
-                        if(fc > 2) { 
-                            clearInterval(flicker); 
-                            currentText += resultFinal[idx]; 
-                            out.innerText = currentText; 
-                            idx++; 
-                            typeSnd(); 
-                        }
+                        fc++; if(fc > 2) { clearInterval(flicker); currentText += resultFinal[idx]; out.innerText = currentText; idx++; typeSnd(); }
                     }, 10);
-                } else { 
-                    clearInterval(timer); 
-                    out.innerText = resultFinal; 
-                    document.getElementById('snd-done').play(); 
-                }
+                } else { clearInterval(timer); out.innerText = resultFinal; document.getElementById('snd-done').play(); }
             }, 45);
         }
 
-        function copy(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => showToast("Buffer Copied")); }
-        function copyUPI() { navigator.clipboard.writeText("amarkumarr@fam").then(()=>showToast("UPI Address Copied")); }
-        
-        // PWA SERVICE WORKER REGISTRATION
+        function copy(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => showToast("Copied")); }
+        function copyUPI() { navigator.clipboard.writeText("amarkumarr@fam").then(()=>showToast("UPI Copied")); }
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
     </script>
 </body>
-</html>
-                   
+    </html>
+    
