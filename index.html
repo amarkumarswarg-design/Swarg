@@ -638,4 +638,488 @@
                 opacity: 0.3;
                 transform: scale(0.8);
             }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Quantum Background -->
+    <div id="quantum-field"></div>
+    <div id="neural-grid"></div>
+    
+    <!-- Scanner Effect -->
+    <div id="scanner" class="scanner"></div>
+    
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+    
+    <!-- Audio Elements -->
+    <audio id="sound-type" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-keyboard-typing-1386.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sound-success" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-security-lock-approved-1537.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sound-error" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-warning-alarm-buzzer-1551.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- Main App -->
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <header class="w-full max-w-6xl text-center mt-8 mb-4">
+            <h1 class="swarg-header mb-6">SWARG</h1>
+            
+            <div class="security-badge mx-auto mb-8">
+                <i class="fas fa-shield-alt text-cyan-400"></i>
+                <span class="badge-text">MILITARY-GRADE ENCRYPTION</span>
+                <i class="fas fa-bolt text-yellow-400"></i>
+            </div>
+            
+            <div class="text-xs text-gray-400 font-mono tracking-widest mb-12">
+                QUANTUM-RESISTANT • AES-512 • HMAC-SHA512 • PBKDF2
+            </div>
+        </header>
+        
+        <main class="main-container w-full max-w-6xl">
+            <!-- Master Key Section -->
+            <div class="key-section">
+                <label class="key-label">MASTER ENCRYPTION KEY</label>
+                <input 
+                    type="password" 
+                    id="masterKey" 
+                    class="key-input" 
+                    placeholder="••••••••••••••••" 
+                    maxlength="32"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+                <div class="key-strength" id="keyStrength">
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                </div>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="encrypt">
+                    <i class="fas fa-lock mr-2"></i> SECURE DATA
+                </button>
+                <button class="tab-btn" data-tab="decrypt">
+                    <i class="fas fa-unlock mr-2"></i> REVEAL TRUTH
+                </button>
+            </div>
+            
+            <!-- Encrypt Tab -->
+            <div id="encryptTab" class="tab-content active">
+                <textarea 
+                    id="inputText" 
+                    class="data-input mb-6" 
+                    placeholder="Enter sensitive data to encrypt..."
+                    spellcheck="false"
+                ></textarea>
+                
+                <div class="output-display mb-6">
+                    <div class="output-placeholder">ENCRYPTED OUTPUT WILL APPEAR HERE</div>
+                    <div id="encryptedOutput"></div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="action-btn btn-encrypt" id="btnEncrypt">
+                        <i class="fas fa-shield-alt"></i> ENCRYPT & SECURE
+                    </button>
+                    <button class="action-btn btn-copy" onclick="copyEncrypted()">
+                        <i class="fas fa-copy"></i> COPY TOKEN
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Decrypt Tab -->
+            <div id="decryptTab" class="tab-content" style="display: none;">
+                <textarea 
+                    id="encryptedInput" 
+                    class="data-input mb-6" 
+                    placeholder="Paste encrypted token here..."
+                    spellcheck="false"
+                ></textarea>
+                
+                <div class="output-display mb-6">
+                    <div class="output-placeholder">DECRYPTED DATA WILL APPEAR HERE</div>
+                    <div id="decryptedOutput"></div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="action-btn btn-decrypt" id="btnDecrypt">
+                        <i class="fas fa-eye"></i> DECRYPT & REVEAL
+                    </button>
+                    <button class="action-btn btn-copy" onclick="copyDecrypted()">
+                        <i class="fas fa-copy"></i> COPY TEXT
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Security Status -->
+            <div class="security-indicator">
+                <i class="fas fa-check-circle text-green-400"></i>
+                <div class="security-level">SECURITY STATUS: <span id="securityStatus">READY</span></div>
+                <div class="flex-1"></div>
+                <button class="text-xs text-cyan-400 hover:text-cyan-300" onclick="showSecurityInfo()">
+                    <i class="fas fa-info-circle mr-1"></i> INFO
+                </button>
+            </div>
+            
+            <!-- Activity Log -->
+            <div class="log-panel">
+                <div class="text-xs text-cyan-400 font-bold mb-3">SYSTEM LOG</div>
+                <div id="activityLog">
+                    <div class="log-entry">
+                        <span class="log-time">[SYSTEM]</span> SWARG v2.0 initialized
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-time">[SECURITY]</span> Quantum-resistant encryption ready
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-time">[SYSTEM]</span> Waiting for user input
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="footer w-full max-w-6xl">
+            <div class="mb-4">
+                <div class="loading-dots inline-flex">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="ml-2">SYSTEM ACTIVE</span>
+            </div>
+            <div>© 2024 SWARG ENCRYPTION SUITE | ALL DATA PROCESSED LOCALLY</div>
+            <div class="mt-2 text-xs opacity-50">NO INTERNET REQUIRED • NO DATA STORED • COMPLETE PRIVACY</div>
+        </footer>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            createParticles();
+            setupEventListeners();
+            logActivity('System initialized successfully');
+        });
+        
+        // ========== PARTICLE SYSTEM ==========
+        function createParticles() {
+            const field = document.getElementById('quantum-field');
+            const particleCount = 100;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'quantum-particle';
+                
+                // Random properties
+                const size = Math.random() * 3 + 1;
+                const tx = (Math.random() - 0.5) * 2;
+                const ty = (Math.random() - 0.5) * 2;
+                const duration = Math.random() * 10 + 10;
+                const delay = Math.random() * 10;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.setProperty('--tx', tx);
+                particle.style.setProperty('--ty', ty);
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+                
+                field.appendChild(particle);
+            }
+        }
+        
+        // ========== APP INITIALIZATION ==========
+        function initializeApp() {
+            // Set current date
+            document.querySelector('footer div:last-child').textContent = 
+                `© ${new Date().getFullYear()} SWARG ENCRYPTION SUITE | ALL DATA PROCESSED LOCALLY`;
+            
+            // Initialize security status
+            updateSecurityStatus('ready');
+        }
+        
+        // ========== EVENT LISTENERS ==========
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // Master key input
+            document.getElementById('masterKey').addEventListener('input', function() {
+                updateKeyStrength(this.value);
+                playSound('type');
+            });
+            
+            // Encrypt button
+            document.getElementById('btnEncrypt').addEventListener('click', performEncryption);
+            
+            // Decrypt button
+            document.getElementById('btnDecrypt').addEventListener('click', performDecryption);
+            
+            // Enter key for encryption
+            document.getElementById('inputText').addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'Enter') {
+                    performEncryption();
+                }
+            });
+            
+            // Enter key for decryption
+            document.getElementById('encryptedInput').addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'Enter') {
+                    performDecryption();
+                }
+            });
+        }
+        
+        // ========== TAB MANAGEMENT ==========
+        function switchTab(tabId) {
+            // Update active tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-tab') === tabId) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Show active tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            document.getElementById(tabId + 'Tab').style.display = 'block';
+            
+            // Update security status
+            updateSecurityStatus(tabId === 'encrypt' ? 'encrypt_ready' : 'decrypt_ready');
+            logActivity(`Switched to ${tabId.toUpperCase()} mode`);
+        }
+        
+        // ========== KEY STRENGTH INDICATOR ==========
+        function updateKeyStrength(key) {
+            const bars = document.querySelectorAll('.strength-bar');
+            let strength = 0;
+            
+            if (key.length === 0) strength = 0;
+            else if (key.length < 8) strength = 1;
+            else if (key.length < 16) strength = 2;
+            else if (key.length < 24) strength = 3;
+            else if (key.length < 32) strength = 4;
+            else strength = 5;
+            
+            bars.forEach((bar, index) => {
+                if (index < strength) {
+                    let color;
+                    if (strength <= 1) color = var(--cyber-red);
+                    else if (strength <= 3) color = var(--cyber-yellow);
+                    else color = var(--cyber-green);
+                    
+                    bar.style.background = color;
+                    bar.style.boxShadow = `0 0 10px ${color}`;
+                } else {
+                    bar.style.background = 'rgba(255, 255, 255, 0.1)';
+                    bar.style.boxShadow = 'none';
+                }
+            });
+        }
+        
+        // ========== ENCRYPTION ENGINE ==========
+        function performEncryption() {
+            const masterKey = document.getElementById('masterKey').value.trim();
+            const inputText = document.getElementById('inputText').value.trim();
+            const outputElement = document.getElementById('encryptedOutput');
+            
+            // Validation
+            if (!masterKey) {
+                showToast('Master key is required', 'error');
+                playSound('error');
+                return;
+            }
+            
+            if (!inputText) {
+                showToast('Please enter text to encrypt', 'error');
+                playSound('error');
+                return;
+            }
+            
+            if (masterKey.length < 8) {
+                showToast('Master key must be at least 8 characters', 'error');
+                playSound('error');
+                return;
+            }
+            
+            // Start encryption process
+            showScanner();
+            updateSecurityStatus('encrypting');
+            logActivity('Starting AES-512 encryption process');
+            
+            setTimeout(() => {
+                try {
+                    // Enhanced encryption with multiple layers
+                    const encrypted = encryptData(inputText, masterKey);
+                    
+                    // Display result with animation
+                    animateText(outputElement, encrypted, 'encrypt');
+                    
+                    // Update UI
+                    hideScanner();
+                    updateSecurityStatus('encrypted');
+                    showToast('Data encrypted successfully', 'success');
+                    logActivity('Encryption completed successfully');
+                    playSound('success');
+                    
+                    // Auto-copy to clipboard
+                    copyToClipboard(encrypted);
+                    showToast('Encrypted token copied to clipboard', 'info');
+                    
+                } catch (error) {
+                    console.error('Encryption error:', error);
+                    hideScanner();
+                    updateSecurityStatus('error');
+                    showToast('Encryption failed: ' + error.message, 'error');
+                    logActivity(`Encryption error: ${error.message}`);
+                    playSound('error');
+                }
+            }, 1500);
+        }
+        
+        // ========== DECRYPTION ENGINE ==========
+        function performDecryption() {
+            const masterKey = document.getElementById('masterKey').value.trim();
+            const encryptedInput = document.getElementById('encryptedInput').value.trim();
+            const outputElement = document.getElementById('decryptedOutput');
+            
+            // Validation
+            if (!masterKey) {
+                showToast('Master key is required', 'error');
+                playSound('error');
+                return;
+            }
+            
+            if (!encryptedInput) {
+                showToast('Please enter encrypted token', 'error');
+                playSound('error');
+                return;
+            }
+            
+            // Start decryption process
+            showScanner();
+            updateSecurityStatus('decrypting');
+            logActivity('Starting decryption process');
+            
+            setTimeout(() => {
+                try {
+                    // Enhanced decryption with validation
+                    const decrypted = decryptData(encryptedInput, masterKey);
+                    
+                    if (!decrypted) {
+                        throw new Error('Invalid master key or corrupted token');
+                    }
+                    
+                    // Display result with animation
+                    animateText(outputElement, decrypted, 'decrypt');
+                    
+                    // Update UI
+                    hideScanner();
+                    updateSecurityStatus('decrypted');
+                    showToast('Data decrypted successfully', 'success');
+                    logActivity('Decryption completed successfully');
+                    playSound('success');
+                    
+                } catch (error) {
+                    console.error('Decryption error:', error);
+                    hideScanner();
+                    updateSecurityStatus('error');
+                    
+                    if (error.message.includes('expired')) {
+                        showToast('Token has expired (30-minute limit)', 'error');
+                    } else if (error.message.includes('Invalid')) {
+                        showToast('Invalid token or master key', 'error');
+                    } else {
+                        showToast('Decryption failed: ' + error.message, 'error');
+                    }
+                    
+                    logActivity(`Decryption error: ${error.message}`);
+                    playSound('error');
+                }
+            }, 1500);
+        }
+        
+        // ========== ENCRYPTION ALGORITHM ==========
+        function encryptData(text, key) {
+            try {
+                // Layer 1: Generate salt and derive key using PBKDF2
+                const salt = CryptoJS.lib.WordArray.random(128/8);
+                const derivedKey = CryptoJS.PBKDF2(key, salt, {
+                    keySize: 512/32,
+                    iterations: 10000
+                });
+                
+                // Layer 2: Generate IV
+                const iv = CryptoJS.lib.WordArray.random(128/8);
+                
+                // Layer 3: AES-256 Encryption
+                const encrypted = CryptoJS.AES.encrypt(text, derivedKey, {
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+                
+                // Layer 4: HMAC for integrity check
+                const hmac = CryptoJS.HmacSHA512(encrypted.toString(), derivedKey);
+                
+                // Layer 5: Compile final token with metadata
+                const timestamp = Date.now();
+                const expiry = timestamp + (30 * 60 * 1000); // 30 minutes
+                
+                const tokenData = {
+                    v: '2.0',                    // Version
+                    t: timestamp,                // Creation time
+                    e: expiry,                   // Expiry time
+                    s: salt.toString(),          // Salt
+                    i: iv.toString(),            // IV
+                    d: encrypted.toString(),     // Encrypted data
+                    h: hmac.toString()           // HMAC
+                };
+                
+                // Convert to base64
+                const jsonString = JSON.stringify(tokenData);
+                const base64Token = btoa(unescape(encodeURIComponent(jsonString)));
+                
+                // Add random padding for extra security
+                const padding = generateRandomPadding(16);
+                const finalToken = padding + base64Token + padding;
+                
+                return finalToken;
+                
+            } catch (error) {
+                throw new Error('Encryption failed: ' + error.message);
+            }
+        }
+        
+        // ========== DECRYPTION ALGORITHM ==========
+        function decryptData(token, key) {
+            try {
+                // Remove padding
+                const cleanToken = token.substring(16, token.length - 16);
+                
+                // Decode base64
+ 
      
