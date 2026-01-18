@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swarg | Final Titan V21</title>
+    <title>Swarg | Final Titan V22</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#020406">
@@ -30,22 +30,24 @@
 
         body { font-family: 'Satoshi', sans-serif; background-color: var(--lux-bg); color: #ffffff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 
-        /* NEURAL COSMOS PARTICLES */
+        /* NEURAL COSMOS PARTICLES ENGINE */
         #cosmos-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 30%, #1a2238 0%, #030508 80%); overflow: hidden; }
         .neural-particle { position: absolute; width: 3px; height: 3px; background: var(--lux-accent-cyan); border-radius: 50%; box-shadow: 0 0 15px var(--lux-accent-cyan); opacity: 0; animation: flyUp linear infinite; z-index: 0; }
         @keyframes flyUp { 0% { transform: translateY(110vh) scale(0.5); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-10vh) scale(1.5); opacity: 0; } }
 
+        /* SWARG TITAN PLATINUM LOOK */
         .swarg-title-platinum {
             font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: 900;
-            font-size: clamp(4rem, 16vw, 8rem); letter-spacing: -4px; line-height: 1.1;
+            font-size: clamp(3.5rem, 14vw, 7rem); letter-spacing: -4px; line-height: 1.1;
             background: linear-gradient(180deg, #ffffff 20%, #8a9fb8 60%, #1a2238 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 25px 50px rgba(0,0,0,0.9)); text-align: center;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9)); text-align: center;
         }
 
-        .amar-gold-badge { display: inline-flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.03); padding: 10px 20px; border-radius: 50px; border: 1px solid rgba(255, 215, 0, 0.1); backdrop-filter: blur(15px); margin-top: 1rem; }
+        /* AMAR KUMAR GOLD BADGE */
+        .amar-gold-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.03); padding: 8px 18px; border-radius: 50px; border: 1px solid rgba(255, 215, 0, 0.1); backdrop-filter: blur(15px); margin-top: 1rem; }
         .amar-text-gold {
-            font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 14px; letter-spacing: 2px; text-transform: uppercase;
+            font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
             background: linear-gradient(120deg, var(--premium-gold-start) 0%, var(--premium-gold-mid) 25%, var(--premium-gold-end) 45%, var(--premium-gold-mid) 55%, var(--premium-gold-start) 80%);
             background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: continuousShine 2.5s linear infinite;
@@ -53,25 +55,24 @@
         @keyframes continuousShine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
         .v-tick-premium { color: var(--verified-blue); font-size: 16px; filter: drop-shadow(0 0 10px var(--verified-blue)); }
 
+        /* INDUSTRIAL INTERFACE */
         .luxury-glass-deep { background: var(--lux-glass-surface); backdrop-filter: blur(60px) saturate(180%); border: 1px solid var(--lux-glass-border); border-radius: 35px; position: relative; overflow: hidden; z-index: 10; }
-        .lux-output { background: rgba(0, 255, 242, 0.02); border: 1px dashed rgba(0, 255, 242, 0.2); border-radius: 24px; min-height: 160px; padding: 25px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 18px; font-weight: 700; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; word-break: break-all; }
+        .lux-output { background: rgba(0, 255, 242, 0.02); border: 1px dashed rgba(0, 255, 242, 0.2); border-radius: 24px; min-height: 150px; padding: 25px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 18px; font-weight: 700; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; word-break: break-all; }
         .lux-input { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 20px; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; font-size: 15px; width: 100%; outline: none; }
         
-        .lux-btn { background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue)); color: #000; font-weight: 800; border-radius: 20px; padding: 16px; text-transform: uppercase; letter-spacing: 2px; font-size: 11px; cursor: pointer; border: none; transition: 0.4s; }
-
-        .panic-fab { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background: var(--panic-red); border-radius: 18px; display: flex; align-items: center; justify-content: center; z-index: 1000; cursor: pointer; box-shadow: 0 15px 30px rgba(255, 59, 48, 0.4); }
+        .lux-btn { background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue)); color: #000; font-weight: 800; border-radius: 20px; padding: 15px; text-transform: uppercase; letter-spacing: 2px; font-size: 11px; cursor: pointer; border: none; transition: 0.4s; width: 100%; }
+        
+        .panic-fab { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background: var(--panic-red); border-radius: 18px; display: flex; align-items: center; justify-content: center; z-index: 1000; cursor: pointer; box-shadow: 0 15px 30px rgba(255, 59, 48, 0.4); border: 2px solid rgba(255,255,255,0.1); }
 
         #toast-container { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
         .toast { background: rgba(0, 255, 242, 0.2); border: 1px solid var(--lux-accent-cyan); backdrop-filter: blur(10px); color: white; padding: 10px 20px; border-radius: 50px; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; animation: fadeInUp 0.4s forwards; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* SCAN FX */
-        .scan-line { position: absolute; left: 0; top: 0; width: 100%; height: 2px; background: var(--lux-accent-cyan); box-shadow: 0 0 20px var(--lux-accent-cyan); display: none; z-index: 100; animation: scanning 1s linear infinite; }
-        @keyframes scanning { from { top: 0%; } to { top: 100%; } }
-
-        /* FIXED ANDROID MODAL (ABOUT) */
+        /* FIXED MOBILE MODAL */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 5000; align-items: center; justify-content: center; backdrop-filter: blur(25px); padding: 20px; }
-        .modal-scrollable { background: #0a0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 35px; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 30px; position: relative; }
+        .modal-scrollable { background: #0a0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 35px; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 25px; position: relative; }
+        
+        .audit-log { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #64748b; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-top: 25px; }
     </style>
 </head>
 <body>
@@ -85,8 +86,8 @@
         <audio id="s-type" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
         <audio id="s-done" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
 
-        <div class="max-w-4xl mx-auto px-5 py-8">
-            <header class="flex flex-col items-center mb-8">
+        <div class="max-w-4xl mx-auto px-5 py-6">
+            <header class="flex flex-col items-center mb-6">
                 <h1 class="swarg-title-platinum">Swarg</h1>
                 <div class="amar-gold-badge">
                     <span class="amar-text-gold">Amar Kumar</span>
@@ -95,10 +96,9 @@
             </header>
 
             <main class="luxury-glass-deep p-6 md:p-12 relative">
-                <div id="scan-fx" class="scan-line"></div>
                 
                 <div class="mb-10">
-                    <label class="block text-[8px] font-black tracking-[4px] opacity-30 uppercase text-center mb-4">Master Encryption Key (AES-256 Seed)</label>
+                    <label class="block text-[8px] font-black tracking-[4px] opacity-30 uppercase text-center mb-4">Industrial Encryption Master Key</label>
                     <input type="password" id="m-key" placeholder="••••" class="lux-input text-center font-black tracking-[10px]" oninput="playType()">
                 </div>
 
@@ -107,32 +107,31 @@
                     <button onclick="tab('dec')" id="btn-d" class="text-slate-500 font-black pb-4 text-xs tracking-[2px]">REVEAL TRUTH</button>
                 </nav>
 
-                <div id="tab-e" class="space-y-8">
-                    <textarea id="i-raw" placeholder="Plaintext Information..." class="lux-input h-36" oninput="playType()"></textarea>
-                    <div id="out-e" class="lux-output"><span class="opacity-20 text-[9px] tracking-[4px]">Core Idle...</span></div>
+                <div id="tab-e" class="space-y-6">
+                    <textarea id="i-raw" placeholder="Plaintext Data..." class="lux-input h-32" oninput="playType()"></textarea>
+                    <div id="out-e" class="lux-output"><span class="opacity-20 text-[9px] tracking-[4px]">System Idle...</span></div>
                     <div class="grid grid-cols-2 gap-4">
-                        <button onclick="action('enc')" class="lux-btn">Initialize</button>
+                        <button onclick="action('enc')" class="lux-btn">Secure</button>
                         <button onclick="copy('out-e')" class="bg-white/5 py-4 rounded-2xl font-bold uppercase text-[9px] tracking-[3px] border border-white/10">Copy</button>
                     </div>
                 </div>
 
-                <div id="tab-d" class="hidden space-y-8">
-                    <textarea id="i-enc" placeholder="Paste Swarg Titan Token..." class="lux-input h-36" oninput="playType()"></textarea>
-                    <div id="out-d" class="lux-output !text-emerald-400">Reveal Authorized?</div>
-                    <button onclick="action('dec')" class="lux-btn !from-emerald-400 !to-blue-600">Reveal</button>
+                <div id="tab-d" class="hidden space-y-6">
+                    <textarea id="i-enc" placeholder="Industrial Token..." class="lux-input h-32" oninput="playType()"></textarea>
+                    <div id="out-d" class="lux-output !text-emerald-400">Authorization Pending...</div>
+                    <button onclick="action('dec')" class="lux-btn !from-emerald-400 !to-blue-600">Authorize Reveal</button>
                 </div>
 
-                <div class="mt-10 pt-6 border-t border-white/5">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                        <span class="text-[8px] font-black uppercase tracking-[3px] opacity-40">Industrial Security Audit Trail</span>
+                <div class="audit-log">
+                    <div class="flex items-center gap-2 mb-2 text-cyan-400 font-black text-[8px] uppercase">
+                        <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></span> Security Audit Trail
                     </div>
-                    <div id="log" class="font-mono text-[9px] text-slate-500 space-y-1 uppercase">
-                        <div>> Titan V21.0 Online... [STABLE]</div>
+                    <div id="log-content" class="space-y-1 uppercase">
+                        <div>> Swarg Titan V22.0 Master Suite... [OK]</div>
                     </div>
                 </div>
             </main>
-            <footer class="mt-16 text-center opacity-20 text-[9px] tracking-[12px] font-bold uppercase">&copy; 2026 Amar Kumar Systems</footer>
+            <footer class="mt-12 text-center opacity-20 text-[9px] tracking-[15px] font-bold uppercase">&copy; 2026 Amar Kumar Systems</footer>
         </div>
     </div>
 
@@ -140,22 +139,21 @@
         <div class="modal-scrollable" onclick="event.stopPropagation()">
             <h1 class="text-xl font-black mb-6 text-cyan-400 uppercase tracking-widest text-center">Industrial Architecture</h1>
             
-            <div class="space-y-4 mb-8">
+            <div class="space-y-4 mb-6">
                 <div class="bg-white/5 p-5 rounded-3xl border border-white/5">
-                    <h3 class="text-white font-black uppercase text-[9px] tracking-widest mb-2">Technical Engine</h3>
-                    <p class="text-slate-400 text-[10px] leading-relaxed">Industrial AES-256-CBC Encryption. Key Derivation: PBKDF2 with session-random IV.</p>
+                    <h3 class="text-white font-black uppercase text-[9px] tracking-widest mb-2">Technical Disclosure</h3>
+                    <p class="text-slate-400 text-[10px] leading-relaxed">Algorithm: <b>AES-256-CBC</b>. Key: <b>PBKDF2-Derived</b>. Initialization Vector: <b>Randomized IV</b> per buffer.</p>
                 </div>
                 <div class="bg-white/5 p-5 rounded-3xl border border-white/5">
-                    <h3 class="text-white font-black uppercase text-[9px] tracking-widest mb-2">Privacy Protocol</h3>
-                    <p class="text-slate-400 text-[10px] leading-relaxed">Strict 30-minute token lifecycle. Zero server-side persistence. Local-only processing.</p>
+                    <h3 class="text-white font-black uppercase text-[9px] tracking-widest mb-2">Data Sovereignty</h3>
+                    <p class="text-slate-400 text-[10px] leading-relaxed">Strict <b>30-minute</b> lifecycle. 100% Client-side. Zero server persistence.</p>
                 </div>
                 <div class="bg-white/5 p-5 rounded-3xl border border-white/5">
                     <h3 class="text-white font-black uppercase text-[9px] tracking-widest mb-2">Integrity Proof</h3>
-                    <p class="text-slate-400 text-[10px] leading-relaxed">Bijective 65-symbol mapping ensures 1:1 Base64 data integrity during symbol wrap.</p>
+                    <p class="text-slate-400 text-[10px] leading-relaxed"><b>Bijective 65-Symbol Mapping</b> ensures 1:1 Base64 wrap integrity. No network access required.</p>
                 </div>
-                <div class="bg-white/5 p-5 rounded-3xl border border-white/5">
-                    <h3 class="text-white font-black uppercase text-[9px] tracking-widest mb-2">Developer</h3>
-                    <p class="text-slate-400 text-[10px] leading-relaxed">Verified by Amar Kumar Systems &bull; Elite Grade Security Tool.</p>
+                <div class="bg-white/5 p-5 rounded-3xl border border-white/5 text-center">
+                    <p class="text-slate-500 text-[9px] uppercase tracking-widest">Verified Developer: <b>Amar Kumar Systems</b></p>
                 </div>
             </div>
 
@@ -171,7 +169,7 @@
             p.style.animationDelay = Math.random()*10+'s'; bg.appendChild(p);
         }
 
-        // --- THE FIXED 65-SYMBOL BIJECTIVE MAP (THE DEFINITIVE CURE) ---
+        // --- DEFINITIVE BIJECTIVE MAP (THE CURE) ---
         const SYMS = "†∆©∏§∞µ∑‡ʝ≈≠≤≥√℗ƒ∫◊π±⊕⊗⊘⊙⊚•⓪①②③④⑤⑥⑦⑧⑨▫¬¡Ω∂Ωæø¿¡†‡ˆ˜¯˘˙˚¸˝˛ˇ↳↴↲↟↡↞↠↢↣↤↦⌘";
         const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
@@ -180,7 +178,7 @@
 
         function playType() { const s=document.getElementById('s-type'); s.currentTime=0; s.play().catch(()=>{}); }
         function toast(m) { const t=document.createElement('div'); t.className='toast'; t.innerText=m; document.getElementById('toast-container').appendChild(t); setTimeout(()=>t.remove(), 2500); }
-        function addLog(m) { const l=document.getElementById('log'); const d=document.createElement('div'); d.innerText=`> ${m} [${new Date().toLocaleTimeString()}]`; l.prepend(d); if(l.children.length > 5) l.lastChild.remove(); }
+        function addLog(m) { const l=document.getElementById('log-content'); const d=document.createElement('div'); d.innerText=`> ${m} [${new Date().toLocaleTimeString()}]`; l.prepend(d); if(l.children.length > 5) l.lastChild.remove(); }
         
         function tab(t) { 
             document.getElementById('tab-e').classList.toggle('hidden', t==='dec'); 
@@ -193,56 +191,62 @@
         function panicMode() { 
             document.getElementById('i-raw').value=""; document.getElementById('i-enc').value=""; 
             document.getElementById('out-e').innerText="WIPED"; document.getElementById('out-d').innerText="WIPED";
-            toast("PANIC: DATA WIPED"); document.getElementById('about-ui').style.display = 'flex'; 
+            toast("PANIC: BUFFERS FLUSHED"); document.getElementById('about-ui').style.display = 'flex'; 
         }
 
+        // --- THE UNBREAKABLE TITAN CORE ---
         async function action(mode) {
             const k = document.getElementById('m-key').value.trim();
             const inputField = document.getElementById(mode==='enc'?'i-raw':'i-enc');
             const out = document.getElementById(mode==='enc'?'out-e':'out-d');
             let inp = inputField.value.trim();
 
-            if(!k) { toast("ERROR: KEY REQUIRED"); return; }
+            if(!k) { toast("ERROR: MASTER KEY REQUIRED"); return; }
             if(!inp) return;
 
-            const scan = document.getElementById('scan-fx'); scan.style.display='block';
             addLog(`ANALYZING: AES-256-${mode.toUpperCase()}...`);
-            await new Promise(r => setTimeout(r, 1200)); scan.style.display='none';
+            await new Promise(r => setTimeout(r, 1000));
 
-            let result = "";
+            let finalResult = "";
             if(mode === 'enc') {
                 try {
                     const encrypted = CryptoJS.AES.encrypt(inp, k).toString();
                     const symbols = toSym(encrypted);
                     const ts = btoa(Date.now().toString());
-                    result = `${ts}_${symbols}`;
-                    toast("SUCCESS: DATA SEALED"); addLog("TITAN: ENCRYPTION SUCCESSFUL");
+                    finalResult = `${ts}_${symbols}`;
+                    toast("SUCCESS: DATA SEALED"); addLog("TITAN: SEAL SUCCESSFUL");
                 } catch(e) { toast("KERNEL ERROR"); return; }
             } else {
                 try {
                     const parts = inp.split("_");
                     if(parts.length < 2) { toast("INVALID TOKEN"); return; }
+                    
+                    // Expiry check
                     if(Date.now() - parseInt(atob(parts[0])) > 1800000) { toast("EXPIRED (30M)"); out.innerText = "🛑 EXPIRED"; return; }
 
                     const b64Text = fromSym(parts[1]);
                     const bytes = CryptoJS.AES.decrypt(b64Text, k);
                     const decrypted = bytes.toString(CryptoJS.enc.Utf8);
                     
-                    if(!decrypted) { toast("DENIED: WRONG KEY"); out.innerText = "ACCESS DENIED"; addLog("SECURITY: BREACH BLOCKED"); return; }
-                    result = decrypted;
-                    toast("AUTH: VERIFIED"); addLog("TITAN: DECRYPTION SUCCESSFUL");
+                    if(!decrypted || decrypted === "") { 
+                        toast("DENIED: INCORRECT KEY"); 
+                        out.innerText = "ACCESS DENIED"; 
+                        addLog("SECURITY: BREACH BLOCKED"); return; 
+                    }
+                    finalResult = decrypted;
+                    toast("AUTH: VERIFIED"); addLog("TITAN: TRUTH REVEALED");
                 } catch(e) { toast("ERROR: DECRYPT FAILED"); return; }
             }
 
             out.innerText = ""; let cur = ""; let idx = 0;
             const timer = setInterval(() => {
-                if(idx < result.length) {
+                if(idx < finalResult.length) {
                     let fc = 0;
                     const flk = setInterval(() => {
                         out.innerText = cur + "0123456789ABCDEF"[Math.floor(Math.random()*16)];
-                        fc++; if(fc > 2) { clearInterval(flk); cur += result[idx]; out.innerText = cur; idx++; playType(); }
+                        fc++; if(fc > 2) { clearInterval(flk); cur += finalResult[idx]; out.innerText = cur; idx++; playType(); }
                     }, 8);
-                } else { clearInterval(timer); out.innerText = result; document.getElementById('s-done').play(); }
+                } else { clearInterval(timer); out.innerText = finalResult; document.getElementById('s-done').play(); }
             }, 40);
         }
 
