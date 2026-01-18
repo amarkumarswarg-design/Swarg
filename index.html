@@ -1,1 +1,602 @@
-a
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SWARG | Quantum Encryption Suite</title>
+    
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            cyan: '#00f3ff',
+                            blue: '#0066ff',
+                            purple: '#9d00ff',
+                            red: '#ff003c',
+                            green: '#00ff88',
+                            yellow: '#ffcc00'
+                        }
+                    },
+                    animation: {
+                        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'scan': 'scan 2s linear infinite',
+                        'neon': 'neon 1.5s ease-in-out infinite alternate',
+                        'matrix': 'matrix 10s linear infinite',
+                        'gradient': 'gradient 3s ease infinite',
+                        'shimmer': 'shimmer 2s infinite'
+                    },
+                    keyframes: {
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 0.3, transform: 'scale(1)' },
+                            '50%': { opacity: 1, transform: 'scale(1.05)' }
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        'scan': {
+                            '0%': { top: '0%' },
+                            '100%': { top: '100%' }
+                        },
+                        'neon': {
+                            '0%': { textShadow: '0 0 10px #00f3ff, 0 0 20px #00f3ff' },
+                            '100%': { textShadow: '0 0 20px #00f3ff, 0 0 40px #00f3ff' }
+                        },
+                        'matrix': {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' }
+                        },
+                        'gradient': {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' }
+                        },
+                        'shimmer': {
+                            '0%': { backgroundPosition: '-1000px 0' },
+                            '100%': { backgroundPosition: '1000px 0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- CryptoJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js-sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js-hmac-sha512.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js-pbkdf2.min.js"></script>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&family=JetBrains+Mono:wght@300,400,500,600,700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS - 1500+ Lines -->
+    <style>
+        /* ========== CSS RESET ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ========== VARIABLES ========== */
+        :root {
+            --deep-space: #000000;
+            --void-black: #050810;
+            --nebula-dark: #0a0f1a;
+            --quantum-cyan: #00f3ff;
+            --quantum-blue: #0066ff;
+            --quantum-purple: #9d00ff;
+            --quantum-green: #00ff88;
+            --quantum-red: #ff003c;
+            --quantum-yellow: #ffcc00;
+            --hologram-teal: #00ffcc;
+            --plasma-pink: #ff00ff;
+            --neon-white: #ffffff;
+            --dark-matter: #001122;
+            --star-dust: #1a1a2e;
+            --glass-bg: rgba(0, 5, 15, 0.85);
+            --glass-border: rgba(0, 243, 255, 0.15);
+            --glass-blur: blur(40px);
+            --shadow-deep: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --shadow-neon: 0 0 30px rgba(0, 243, 255, 0.3);
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-medium: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ========== BODY & BACKGROUND ========== */
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background: var(--deep-space);
+            color: var(--neon-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ========== QUANTUM MATRIX BACKGROUND ========== */
+        #quantum-matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            background: 
+                radial-gradient(circle at 20% 30%, #001122 0%, transparent 70%),
+                radial-gradient(circle at 80% 70%, #110033 0%, transparent 70%),
+                radial-gradient(circle at 40% 80%, #002211 0%, transparent 70%);
+            opacity: 0.8;
+        }
+
+        /* ========== DIGITAL RAIN EFFECT ========== */
+        .digital-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: grid-pulse 20s linear infinite;
+        }
+
+        @keyframes grid-pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* ========== FLOATING PARTICLES ========== */
+        .particle {
+            position: absolute;
+            background: var(--quantum-cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* ========== MAIN HEADER ========== */
+        .main-header {
+            text-align: center;
+            padding: 2rem 1rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .swarg-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: clamp(3.5rem, 15vw, 6rem);
+            background: linear-gradient(135deg, 
+                #ffffff 0%, 
+                var(--quantum-cyan) 25%, 
+                var(--quantum-blue) 50%, 
+                var(--quantum-purple) 75%, 
+                #ffffff 100%);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradient 5s ease infinite;
+            line-height: 1;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+        }
+
+        /* ========== AMAR KUMAR BADGE ========== */
+        .amar-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 100px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+            margin: 1.5rem auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .amar-badge::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                transparent 0%, 
+                var(--quantum-cyan) 25%, 
+                transparent 50%, 
+                var(--quantum-purple) 75%, 
+                transparent 100%);
+            background-size: 300% 300%;
+            border-radius: 102px;
+            z-index: -1;
+            animation: border-glow 3s linear infinite;
+            opacity: 0.5;
+        }
+
+        .badge-name {
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, 
+                var(--quantum-cyan) 0%, 
+                #ffffff 50%, 
+                var(--quantum-purple) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .verified-icon {
+            color: var(--quantum-cyan);
+            font-size: 1.5rem;
+            filter: drop-shadow(0 0 10px var(--quantum-cyan));
+        }
+
+        /* ========== MAIN CONTAINER ========== */
+        .main-container {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            margin: 2rem auto;
+            max-width: 900px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 0 0 1px rgba(0, 243, 255, 0.1),
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .main-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--quantum-cyan) 50%, 
+                transparent 100%);
+        }
+
+        /* ========== MASTER KEY SECTION ========== */
+        .key-section {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .key-label {
+            display: block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--quantum-cyan);
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .key-input-container {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .key-input {
+            width: 100%;
+            padding: 1.25rem 2rem;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            border-radius: 1rem;
+            color: var(--quantum-cyan);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.125rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-align: center;
+            outline: none;
+            transition: all var(--transition-fast);
+        }
+
+        .key-input:focus {
+            border-color: var(--quantum-cyan);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.4);
+        }
+
+        .key-strength {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .strength-bar {
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            transition: all var(--transition-fast);
+        }
+
+        /* ========== TAB NAVIGATION ========== */
+        .tab-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        .tab-button {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            position: relative;
+            transition: all var(--transition-fast);
+        }
+
+        .tab-button.active {
+            color: var(--quantum-cyan);
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--quantum-cyan);
+            border-radius: 3px;
+            box-shadow: 0 0 10px var(--quantum-cyan);
+        }
+
+        /* ========== TEXT AREAS ========== */
+        .text-area-container {
+            margin-bottom: 2rem;
+        }
+
+        .text-area {
+            width: 100%;
+            min-height: 200px;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 243, 255, 0.2);
+            border-radius: 1rem;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: all var(--transition-fast);
+        }
+
+        .text-area:focus {
+            border-color: var(--quantum-cyan);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+        }
+
+        /* ========== OUTPUT DISPLAY ========== */
+        .output-display {
+            min-height: 200px;
+            padding: 1.5rem;
+            background: rgba(0, 20, 40, 0.3);
+            border: 2px dashed rgba(0, 243, 255, 0.3);
+            border-radius: 1rem;
+            color: var(--quantum-green);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            word-break: break-all;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .output-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(0, 243, 255, 0.3);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-align: center;
+        }
+
+        /* ========== BUTTONS ========== */
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-button {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .action-button:hover::before {
+            left: 100%;
+        }
+
+        .encrypt-button {
+            background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-blue));
+            color: #000000;
+        }
+
+        .decrypt-button {
+            background: linear-gradient(135deg, var(--quantum-purple), var(--quantum-blue));
+            color: #ffffff;
+        }
+
+        .copy-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.3);
+        }
+
+        /* ========== SCANNER EFFECT ========== */
+        .scanner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--quantum-cyan) 50%, 
+                transparent 100%);
+            box-shadow: 0 0 20px var(--quantum-cyan);
+            z-index: 10;
+            display: none;
+            animation: scan 2s linear infinite;
+        }
+
+        /* ========== TOAST NOTIFICATIONS ========== */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .toast {
+            padding: 1rem 1.5rem;
+            background: rgba(0, 10, 20, 0.95);
+            border: 1px solid var(--quantum-cyan);
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            animation: toast-in 0.3s ease-out;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--quantum-cyan);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes toast-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== ACTIVITY LOG ========== */
+        .activity-log {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-header {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--quantum-cyan);
+            margin-bottom
