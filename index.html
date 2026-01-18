@@ -270,4 +270,23 @@
                     }
                     finalOutput = plainText;
                     notify("AUTH VERIFIED: REVEALING TRUTH"); log("TITAN: DATA OBJECT REVEALED");
-                } catch(e) { notify("ERROR: DECRYPTION CORE FAIL
+                } catch(e) { notify("ERROR: DECRYPTION CORE FAILURE"); return; }
+            }
+
+            /* SUPREME GLITCH REVEAL ANIMATION */
+            outputField.innerText = ""; let currentStr = ""; let charIdx = 0;
+            const revealTimer = setInterval(() => {
+                if(charIdx < finalOutput.length) {
+                    let flickerCount = 0;
+                    const flicker = setInterval(() => {
+                        outputField.innerText = currentStr + "0123456789ABCDEF"[Math.floor(Math.random()*16)];
+                        flickerCount++; if(flickerCount > 2) { clearInterval(flicker); currentStr += finalOutput[charIdx]; outputField.innerText = currentStr; charIdx++; playSnd('type'); }
+                    }, 15);
+                } else { clearInterval(revealTimer); outputField.innerText = finalOutput; document.getElementById('snd-seal').play(); }
+            }, 50);
+        }
+
+        function copyData(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>notify("BUFFER COPIED TO CLIPBOARD")); }
+    </script>
+</body>
+</html>
