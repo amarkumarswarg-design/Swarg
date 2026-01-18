@@ -1642,4 +1642,237 @@
             
             if (typeColors[type]) {
                 toast.style.borderColor = typeColors[type];
-                toast.style.boxShadow = `0 5px 20px ${typeColors[
+                toast.style.boxShadow = `0 5px 20px ${typeColors[type]}40`;
+            }
+            
+            container.appendChild(toast);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                toast.style.animation = 'toast-in 0.3s ease-out reverse';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        // ========== AUDIO FUNCTIONS ==========
+        function preloadAudio() {
+            const sounds = ['sound-type', 'sound-success', 'sound-error'];
+            sounds.forEach(id => {
+                const audio = document.getElementById(id);
+                audio.volume = 0.3;
+                audio.load();
+            });
+        }
+        
+        function playSound(type) {
+            const audioMap = {
+                'type': document.getElementById('sound-type'),
+                'success': document.getElementById('sound-success'),
+                'error': document.getElementById('sound-error')
+            };
+            
+            if (audioMap[type]) {
+                try {
+                    audioMap[type].currentTime = 0;
+                    audioMap[type].play().catch(e => {
+                        console.log('Audio play failed:', e);
+                        // Fallback to Web Audio API
+                        playFallbackSound(type);
+                    });
+                } catch (e) {
+                    console.log('Audio error:', e);
+                }
+            }
+        }
+        
+        function playFallbackSound(type) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                if (type === 'type') {
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.05);
+                } else if (type === 'success') {
+                    oscillator.frequency.value = 1000;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                }
+            } catch (e) {
+                console.log('Web Audio API not supported');
+            }
+        }
+        
+        // ========== CLIPBOARD FUNCTIONS ==========
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent.trim();
+            
+            if (!text) {
+                showToast('Nothing to copy', 'error');
+                playSound('error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard', 'success');
+                playSound('success');
+                logActivity(`Copied ${elementId.replace('Output', '')} to clipboard`);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                // Fallback method
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('Copied to clipboard', 'success');
+                playSound('success');
+            });
+        }
+        
+        // ========== HELPER FUNCTIONS ==========
+        function generateRandomKey() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+            let key = '';
+            for (let i = 0; i < 24; i++) {
+                key += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('masterKey').value = key;
+            updateKeyStrength();
+            showToast('Random key generated', 'success');
+            playSound('success');
+            logActivity('Generated random encryption key');
+        }
+        
+        function clearEncryptFields() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('encryptedOutput').innerHTML = '';
+            document.getElementById('encryptPlaceholder').style.display = 'block';
+            showToast('Fields cleared', 'info');
+            playSound('type');
+            logActivity('Cleared encryption fields');
+        }
+        
+        function updateCurrentYear() {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        }
+        
+        function openAbout() {
+            document.getElementById('aboutModal').style.display = 'flex';
+        }
+        
+        function closeAbout() {
+            document.getElementById('aboutModal').style.display = 'none';
+        }
+        
+        // ========== KEYBOARD SHORTCUTS ==========
+        function handleKeyboardShortcuts(e) {
+            // Ctrl/Cmd + E to encrypt
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                e.preventDefault();
+                performEncryption();
+            }
+            
+            // Ctrl/Cmd + D to decrypt
+            if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+                e.preventDefault();
+                performDecryption();
+            }
+            
+            // Ctrl/Cmd + K to generate random key
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                generateRandomKey();
+            }
+            
+            // Ctrl/Cmd + L to clear fields
+            if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+                e.preventDefault();
+                clearEncryptFields();
+            }
+            
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                closeAbout();
+            }
+        }
+        
+        // ========== AUTO-CLEANUP ==========
+        setInterval(() => {
+            const now = Date.now();
+            const lastActivity = window.lastActivityTime || now;
+            
+            // Clear input fields after 10 minutes of inactivity
+            if (now - lastActivity > 10 * 60 * 1000) {
+                document.getElementById('inputText').value = '';
+                document.getElementById('encryptedInput').value = '';
+                document.getElementById('masterKey').value = '';
+                updateKeyStrength();
+                logActivity('Auto-cleanup: cleared sensitive data');
+            }
+        }, 60000);
+        
+        // Update last activity on user interaction
+        ['click', 'keypress', 'scroll', 'mousemove', 'touchstart'].forEach(event => {
+            document.addEventListener(event, () => {
+                window.lastActivityTime = Date.now();
+            });
+        });
+        
+        // Initialize last activity time
+        window.lastActivityTime = Date.now();
+        
+        // ========== PWA FUNCTIONALITY ==========
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(
+                    registration => {
+                        console.log('ServiceWorker registered:', registration);
+                        logActivity('Service Worker registered');
+                    },
+                    error => {
+                        console.log('ServiceWorker registration failed:', error);
+                        logActivity('Service Worker registration failed');
+                    }
+                );
+            });
+        }
+        
+        // ========== ERROR HANDLING ==========
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+            logActivity(`Error: ${e.message}`);
+            showToast('An error occurred', 'error');
+        });
+        
+        // ========== CONSOLE LOGO ==========
+        console.log(`
+        ░██████╗░██╗░░░░░░░██╗░█████╗░██████╗░░██████╗
+        ██╔════╝░██║░░██╗░░██║██╔══██╗██╔══██╗██╔════╝
+        ╚█████╗░░╚██╗████╗██╔╝███████║██████╔╝╚█████╗░
+        ░╚═══██╗░░████╔═████║░██╔══██║██╔══██╗░╚═══██╗
+        ██████╔╝░░╚██╔╝░╚██╔╝░██║░░██║██║░░██║██████╔╝
+        ╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝░░╚═╝╚═╝░░╚═╝╚═════╝░
+        QUANTUM ENCRYPTION SUITE v3.0
+        © 2026 SWARG | ALL RIGHTS RESERVED
+        `);
+    </script>
+</body>
+</html>
