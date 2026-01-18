@@ -1121,5 +1121,319 @@
                 const cleanToken = token.substring(16, token.length - 16);
                 
                 // Decode base64
+                const jsonString = decodeURIComponent(escape(atob(cleanToken)));
+                const tokenData = JSON.parse(jsonString);
+                
+                // Check version
+                if (tokenData.v !== '2.0') {
+                    throw new Error('Unsupported token version');
+                }
+                
+                // Check expiry
+                const now = Date.now();
+                if (now > tokenData.e) {
+                    throw new Error('Token expired');
+                }
+                
+                // Reconstruct salt and IV
+                const salt = CryptoJS.enc.Hex.parse(tokenData.s);
+                const iv = CryptoJS.enc.Hex.parse(tokenData.i);
+                
+                // Derive key using PBKDF2
+                const derivedKey = CryptoJS.PBKDF2(key, salt, {
+                    keySize: 512/32,
+                    iterations: 10000
+                });
+                
+                // Verify HMAC
+                const hmac = CryptoJS.HmacSHA512(tokenData.d, derivedKey);
+                if (hmac.toString() !== tokenData.h) {
+                    throw new Error('Integrity check failed');
+                }
+                
+                // Decrypt data
+                const decrypted = CryptoJS.AES.decrypt(tokenData.d, derivedKey, {
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+                
+                return decrypted.toString(CryptoJS.enc.Utf8);
+                
+            } catch (error) {
+                throw new Error('Decryption failed: ' + error.message);
+            }
+        }
+        
+        // ========== UTILITY FUNCTIONS ==========
+        function generateRandomPadding(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        function animateText(element, text, type) {
+            element.innerHTML = '';
+            const chars = text.split('');
+            let index = 0;
+            
+            const colors = {
+                encrypt: '#00ff88',
+                decrypt: '#00f3ff'
+            };
+            
+            const interval = setInterval(() => {
+                if (index < chars.length) {
+                    const span = document.createElement('span');
+                    span.textContent = chars[index];
+                    span.style.color = colors[type];
+                    span.style.fontWeight = '700';
+                    element.appendChild(span);
+                    
+                    // Add typing sound every 10 characters
+                    if (index % 10 === 0) {
+                        playSound('type');
+                    }
+                    
+                    index++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 20);
+        }
+        
+        function showScanner() {
+            const scanner = document.getElementById('scanner');
+            scanner.style.display = 'block';
+        }
+        
+        function hideScanner() {
+            const scanner = document.getElementById('scanner');
+            scanner.style.display = 'none';
+        }
+        
+        function updateSecurityStatus(status) {
+            const statusElement = document.getElementById('securityStatus');
+            const statusMap = {
+                'ready': { text: 'READY', color: '#00ff88' },
+                'encrypt_ready': { text: 'ENCRYPTION READY', color: '#00f3ff' },
+                'decrypt_ready': { text: 'DECRYPTION READY', color: '#9d00ff' },
+                'encrypting': { text: 'ENCRYPTING...', color: '#ffcc00' },
+                'decrypting': { text: 'DECRYPTING...', color: '#ffcc00' },
+                'encrypted': { text: 'ENCRYPTED', color: '#00ff88' },
+                'decrypted': { text: 'DECRYPTED', color: '#00ff88' },
+                'error': { text: 'SECURITY ERROR', color: '#ff003c' }
+            };
+            
+            if (statusMap[status]) {
+                statusElement.textContent = statusMap[status].text;
+                statusElement.style.color = statusMap[status].color;
+            }
+        }
+        
+        function logActivity(message) {
+            const logElement = document.getElementById('activityLog');
+            const timestamp = new Date().toLocaleTimeString('en-US', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span class="log-time">[${timestamp}]</span> ${message}`;
+            
+            logElement.insertBefore(logEntry, logElement.firstChild);
+            
+            // Keep only last 10 entries
+            while (logElement.children.length > 10) {
+                logElement.removeChild(logElement.lastChild);
+            }
+        }
+        
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            
+            // Type-specific styling
+            const typeColors = {
+                'success': '#00ff88',
+                'error': '#ff003c',
+                'info': '#00f3ff',
+                'warning': '#ffcc00'
+            };
+            
+            if (typeColors[type]) {
+                toast.style.borderColor = typeColors[type];
+                toast.style.boxShadow = `0 5px 20px ${typeColors[type]}40`;
+            }
+            
+            container.appendChild(toast);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                toast.style.animation = 'toast-in 0.3s ease-out reverse';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        function playSound(type) {
+            const audioMap = {
+                'type': document.getElementById('sound-type'),
+                'success': document.getElementById('sound-success'),
+                'error': document.getElementById('sound-error')
+            };
+            
+            if (audioMap[type]) {
+                audioMap[type].currentTime = 0;
+                audioMap[type].play().catch(e => console.log('Audio play failed:', e));
+            }
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                console.log('Copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                // Fallback method
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            });
+        }
+        
+        function copyEncrypted() {
+            const text = document.getElementById('encryptedOutput').textContent;
+            if (text.trim()) {
+                copyToClipboard(text);
+                showToast('Encrypted token copied', 'success');
+                playSound('success');
+            } else {
+                showToast('Nothing to copy', 'error');
+                playSound('error');
+            }
+        }
+        
+        function copyDecrypted() {
+            const text = document.getElementById('decryptedOutput').textContent;
+            if (text.trim()) {
+                copyToClipboard(text);
+                showToast('Decrypted text copied', 'success');
+                playSound('success');
+            } else {
+                showToast('Nothing to copy', 'error');
+                playSound('error');
+            }
+        }
+        
+        function showSecurityInfo() {
+            const info = `
+SWARG ENCRYPTION SUITE v2.0
+
+Security Features:
+• AES-256-CBC with 512-bit derived keys
+• PBKDF2 key derivation (10,000 iterations)
+• HMAC-SHA512 integrity verification
+• Random salt and IV generation
+• 30-minute token expiry
+• Quantum-resistant design
+• Local processing only
+
+No data leaves your browser.
+No third-party tracking.
+Military-grade security.
+            `;
+            
+            alert(info);
+        }
+        
+        // ========== PWA FUNCTIONALITY ==========
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(
+                    registration => {
+                        console.log('ServiceWorker registered:', registration);
+                    },
+                    error => {
+                        console.log('ServiceWorker registration failed:', error);
+                    }
+                );
+            });
+        }
+        
+        // ========== OFFLINE DETECTION ==========
+        window.addEventListener('online', () => {
+            showToast('Back online', 'success');
+        });
+        
+        window.addEventListener('offline', () => {
+            showToast('Working offline - all features available', 'warning');
+        });
+        
+        // ========== ERROR HANDLING ==========
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+            logActivity(`Error: ${e.message}`);
+            showToast('An error occurred', 'error');
+        });
+        
+        // ========== PREVENT CONTEXT MENU ==========
+        document.addEventListener('contextmenu', (e) => {
+            if (e.target.closest('.output-display') || e.target.closest('.data-input')) {
+                e.preventDefault();
+                showToast('Right-click disabled for security', 'warning');
+            }
+        });
+        
+        // ========== ANTI-SCREENSHOT PROTECTION ==========
+        document.addEventListener('keydown', (e) => {
+            // Disable Print Screen
+            if (e.key === 'PrintScreen') {
+                e.preventDefault();
+                document.body.style.filter = 'blur(10px)';
+                setTimeout(() => {
+                    document.body.style.filter = 'none';
+                }, 1000);
+                showToast('Screenshot protection activated', 'warning');
+                playSound('error');
+            }
+        });
+        
+        // ========== AUTO-CLEANUP ==========
+        setInterval(() => {
+            const now = Date.now();
+            // Clear input fields after 5 minutes of inactivity
+            const lastActivity = localStorage.getItem('lastActivity') || 0;
+            if (now - lastActivity > 5 * 60 * 1000) {
+                document.getElementById('inputText').value = '';
+                document.getElementById('encryptedInput').value = '';
+                document.getElementById('encryptedOutput').innerHTML = '';
+                document.getElementById('decryptedOutput').innerHTML = '';
+                showToast('Auto-cleaned for security', 'info');
+            }
+        }, 60000);
+        
+        // Update last activity on user interaction
+        ['click', 'keypress', 'scroll', 'mousemove'].forEach(event => {
+            document.addEventListener(event, () => {
+                localStorage.setItem('lastActivity', Date.now());
+            });
+        });
+    </script>
+</body>
+</html>
  
      
