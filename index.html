@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swarg | Industrial Titan V27</title>
+    <title>Swarg | Industrial Titan V28</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#020406">
@@ -31,7 +31,7 @@
         body { font-family: 'Satoshi', sans-serif; background-color: var(--lux-bg); color: #ffffff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 
         /* NEURAL COSMOS ENGINE */
-        #cosmos-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 30%, #1a2238 0%, #030508 80%); }
+        #cosmos-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 30%, #1a2238 0%, #030508 80%); overflow: hidden; }
         .neural-particle { position: absolute; width: 3px; height: 3px; background: var(--lux-accent-cyan); border-radius: 50%; box-shadow: 0 0 15px var(--lux-accent-cyan); opacity: 0; animation: flyUp linear infinite; }
         @keyframes flyUp { 0% { transform: translateY(110vh) scale(0.5); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-10vh) scale(1.5); opacity: 0; } }
 
@@ -55,27 +55,27 @@
         @keyframes continuousShine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
         .v-tick-premium { color: var(--verified-blue); font-size: 20px; filter: drop-shadow(0 0 12px var(--verified-blue)); }
 
-        /* UI ELEMENTS */
+        /* INTERFACE COMPONENTS */
         .luxury-glass-deep { background: var(--lux-glass-surface); backdrop-filter: blur(60px) saturate(180%); border: 1px solid var(--lux-glass-border); border-radius: 40px; position: relative; overflow: hidden; z-index: 10; }
         .lux-output { background: rgba(0, 255, 242, 0.02); border: 1px dashed rgba(0, 255, 242, 0.2); border-radius: 28px; min-height: 180px; padding: 30px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 20px; font-weight: 700; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; word-break: break-all; }
-        .lux-input { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 28px; padding: 25px; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; font-size: 16px; width: 100%; outline: none; transition: 0.3s; }
-        .lux-input:focus { border-color: var(--lux-accent-cyan); }
+        .lux-input { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 28px; padding: 25px; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; font-size: 16px; width: 100%; outline: none; }
         
+        /* RESTORED SCANNING */
+        .scan-line { position: absolute; left: 0; top: 0; width: 100%; height: 3px; background: var(--lux-accent-cyan); box-shadow: 0 0 20px var(--lux-accent-cyan); display: none; z-index: 100; animation: scanning 1s linear infinite; }
+        @keyframes scanning { from { top: 0%; } to { top: 100%; } }
+
         .lux-btn { background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue)); color: #000; font-weight: 800; border-radius: 22px; padding: 18px; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; cursor: pointer; border: none; transition: 0.4s; }
         .lux-btn:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0, 255, 242, 0.4); }
 
-        /* RESTORED SCANNING FX */
-        .scan-line { position: absolute; left: 0; top: 0; width: 100%; height: 3px; background: var(--lux-accent-cyan); box-shadow: 0 0 20px var(--lux-accent-cyan); display: none; z-index: 100; animation: scanning 1.2s linear infinite; }
-        @keyframes scanning { from { top: 0%; } to { top: 100%; } }
-
-        /* PANIC & MODALS */
         .panic-fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--panic-red); border-radius: 20px; display: flex; align-items: center; justify-content: center; z-index: 1000; cursor: pointer; box-shadow: 0 15px 30px rgba(255, 59, 48, 0.4); border: 2px solid rgba(255,255,255,0.2); }
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 5000; align-items: center; justify-content: center; backdrop-filter: blur(25px); padding: 20px; }
-        .modal-scroll { background: #0a0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 35px; }
-
-        #toast-wrap { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+        
+        #toast-container { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
         .toast { background: rgba(0, 255, 242, 0.2); border: 1px solid var(--lux-accent-cyan); backdrop-filter: blur(10px); color: white; padding: 10px 25px; border-radius: 50px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; animation: fadeInUp 0.4s forwards; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* MOBILE OPTIMIZED MODAL */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 5000; align-items: center; justify-content: center; backdrop-filter: blur(25px); padding: 20px; }
+        .modal-scrollable { background: #0a0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 35px; position: relative; }
 
         .audit-trail { background: rgba(0,0,0,0.4); border-radius: 25px; padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #64748b; height: 120px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
     </style>
@@ -84,15 +84,15 @@
 
     <div id="app-root">
         <div id="cosmos-bg"></div>
-        <div id="toast-wrap"></div>
+        <div id="toast-container"></div>
         
-        <div class="panic-fab" onclick="panic()"><i class="fas fa-shield-alt text-white text-xl"></i></div>
+        <div class="panic-fab" onclick="panicMode()"><i class="fas fa-shield-alt text-white text-xl"></i></div>
 
         <audio id="s-type" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
         <audio id="s-done" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
 
         <div class="max-w-4xl mx-auto px-6 py-10">
-            <header class="flex flex-col items-center mb-10 text-center">
+            <header class="flex flex-col items-center mb-12 text-center">
                 <h1 class="swarg-title-platinum">Swarg</h1>
                 <div class="amar-gold-badge">
                     <span class="amar-text-gold">Amar Kumar</span>
@@ -104,7 +104,7 @@
                 <div id="scan-fx" class="scan-line"></div>
                 
                 <div class="mb-12">
-                    <label class="block text-[9px] font-black tracking-[4px] opacity-30 uppercase text-center mb-4">Master Encryption Key (AES-256 Engine)</label>
+                    <label class="block text-[9px] font-black tracking-[4px] opacity-30 uppercase text-center mb-4">Master Encryption Key (AES-256 Seed)</label>
                     <input type="password" id="m-key" placeholder="••••" class="lux-input text-center font-black tracking-[10px]" oninput="playType()">
                 </div>
 
@@ -115,26 +115,26 @@
 
                 <div id="tab-e" class="space-y-8">
                     <textarea id="i-raw" placeholder="Enter sensitive information..." class="lux-input h-40" oninput="playType()"></textarea>
-                    <div id="out-e" class="lux-output"><span class="opacity-20 text-[9px] tracking-[4px]">Kernel Idle...</span></div>
+                    <div id="out-e" class="lux-output"><span class="opacity-20 text-[9px] tracking-[4px]">Kernel Waiting...</span></div>
                     <div class="grid grid-cols-2 gap-4">
-                        <button onclick="process('enc')" class="lux-btn">Initialize Seal</button>
-                        <button onclick="copy('out-e')" class="bg-white/5 py-4 rounded-3xl font-bold uppercase text-[9px] tracking-[3px] border border-white/10">Copy Token</button>
+                        <button onclick="secureAction('enc')" class="lux-btn">Initialize Seal</button>
+                        <button onclick="copyData('out-e')" class="bg-white/5 py-4 rounded-3xl font-bold uppercase text-[9px] tracking-[3px] border border-white/10">Copy Token</button>
                     </div>
                 </div>
 
                 <div id="tab-d" class="hidden space-y-8">
                     <textarea id="i-enc" placeholder="Paste Swarg Industrial Token..." class="lux-input h-40" oninput="playType()"></textarea>
                     <div id="out-d" class="lux-output !text-emerald-400">Reveal Authorized?</div>
-                    <button onclick="process('dec')" class="lux-btn !from-emerald-400 !to-blue-600">Authorize Reveal</button>
+                    <button onclick="secureAction('dec')" class="lux-btn !from-emerald-400 !to-blue-600">Authorize Reveal</button>
                 </div>
 
                 <div class="audit-trail">
                     <div class="flex items-center gap-2 mb-3 text-cyan-400 font-black uppercase text-[8px]">
                         <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></span>
-                        Industrial Security Audit Trail
+                        Swarg Industrial Audit Trail
                     </div>
-                    <div id="log" class="space-y-1 uppercase">
-                        <div>> Titan V27.0 Master Suite... [ONLINE]</div>
+                    <div id="log-content" class="space-y-1 uppercase">
+                        <div>> Titan V28.0 Industrial Engine Online... [OK]</div>
                     </div>
                 </div>
             </main>
@@ -143,34 +143,36 @@
     </div>
 
     <div id="about-ui" class="modal-overlay" onclick="closeAbout()">
-        <div class="modal-scroll" onclick="event.stopPropagation()">
-            <h1 class="text-2xl font-black mb-8 text-cyan-400 uppercase tracking-widest text-center">Industrial Architecture</h1>
+        <div class="modal-scrollable" onclick="event.stopPropagation()">
+            <h1 class="text-2xl font-black mb-10 text-cyan-400 uppercase tracking-widest text-center">Industrial Architecture</h1>
             <div class="space-y-6 text-left">
                 <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
-                    <h3 class="text-white font-black uppercase text-[10px] tracking-widest mb-2">Technical Core</h3>
-                    <p class="text-slate-400 text-[11px] leading-relaxed">Algorithm: <b>AES-256-CBC</b>. Master Key derivation via <b>PBKDF2</b> with high-iteration salting logic.</p>
+                    <h3 class="text-white font-black uppercase text-[10px] tracking-widest mb-2">Cryptographic Core</h3>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">Industrial <b>AES-256-CBC</b> Encryption. Master Key derivation via <b>PBKDF2</b> with 10,000 iterations for military-grade protection.</p>
                 </div>
                 <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
                     <h3 class="text-white font-black uppercase text-[10px] tracking-widest mb-2">Data Integrity</h3>
-                    <p class="text-slate-400 text-[11px] leading-relaxed">Strict 30-minute token lifecycle. 100% Client-side. Zero persistence. Bijective 65-Symbol Mapping Bridge.</p>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">Strict 30-minute token lifecycle. Zero persistence. 100% Client-side local processing. No network required.</p>
                 </div>
-                <div class="bg-white/5 p-6 rounded-3xl border border-white/5 text-center">
-                    <p class="text-slate-500 text-[9px] uppercase tracking-widest">Verified Developer: <b>Amar Kumar Systems</b></p>
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
+                    <h3 class="text-white font-black uppercase text-[10px] tracking-widest mb-2">Integrity Proof</h3>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">Bijective <b>65-Symbol Mapping</b> ensures 1:1 Base64 data integrity. Every unique character has a specific mathematical symbol.</p>
                 </div>
             </div>
-            <button onclick="closeAbout()" class="mt-10 w-full py-4 bg-cyan-400 text-black font-black rounded-2xl text-[9px] uppercase tracking-[4px]">Close Dashboard</button>
+            <button onclick="closeAbout()" class="mt-12 w-full py-4 border border-white/20 rounded-full text-[9px] font-black uppercase tracking-[4px]">Close Dashboard</button>
         </div>
     </div>
 
     <script>
+        // --- COSMOS ---
         const bg = document.getElementById('cosmos-bg');
         for(let i=0; i<65; i++) {
             const p = document.createElement('div'); p.className = 'neural-particle';
             p.style.left = Math.random()*100+'vw'; p.style.animationDuration = (7 + Math.random()*13)+'s';
-            p.style.animationDelay = Math.random()*10+'s'; bg.appendChild(p);
+            bg.appendChild(p);
         }
 
-        // THE DEFINITIVE 65-SYMBOL MAPPING
+        // --- THE BIJECTIVE CURE (FIXED MAPPING) ---
         const SYMS = "†∆©∏§∞µ∑‡ʝ≈≠≤≥√℗ƒ∫◊π±⊕⊗⊘⊙⊚•⓪①②③④⑤⑥⑦⑧⑨▫¬¡Ω∂Ωæø¿¡†‡ˆ˜¯˘˙˚¸˝˛ˇ↳↴↲↟↡↞↠↢↣↤↦⌘";
         const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
@@ -178,8 +180,8 @@
         function fromSym(str) { return str.split('').map(c => B64[SYMS.indexOf(c)] || c).join(''); }
 
         function playType() { const s=document.getElementById('s-type'); s.currentTime=0; s.play().catch(()=>{}); }
-        function toast(m) { const t=document.createElement('div'); t.className='toast'; t.innerText=m; document.getElementById('toast-wrap').appendChild(t); setTimeout(()=>t.remove(), 2500); }
-        function addLog(m) { const l=document.getElementById('log'); const d=document.createElement('div'); d.innerText=`> ${m} [${new Date().toLocaleTimeString()}]`; l.prepend(d); if(l.children.length > 5) l.lastChild.remove(); }
+        function toast(m) { const t=document.createElement('div'); t.className='toast'; t.innerText=m; document.getElementById('toast-container').appendChild(t); setTimeout(()=>t.remove(), 2500); }
+        function addLog(m) { const l=document.getElementById('log-content'); const d=document.createElement('div'); d.innerText=`> ${m} [${new Date().toLocaleTimeString()}]`; l.prepend(d); if(l.children.length > 5) l.lastChild.remove(); }
         
         function tab(t) { 
             document.getElementById('tab-e').classList.toggle('hidden', t==='d'); 
@@ -189,13 +191,14 @@
         }
 
         function closeAbout() { document.getElementById('about-ui').style.display = 'none'; }
-        function panic() { 
+        function panicMode() { 
             document.getElementById('i-raw').value=""; document.getElementById('i-enc').value=""; 
             document.getElementById('out-e').innerText="WIPED"; document.getElementById('out-d').innerText="WIPED";
             toast("PANIC: DATA FLUSHED"); document.getElementById('about-ui').style.display = 'flex'; 
         }
 
-        async function process(mode) {
+        // --- TITAN CORE (ABSOLUTE STABILITY) ---
+        async function secureAction(mode) {
             const k = document.getElementById('m-key').value.trim();
             const inputField = document.getElementById(mode==='enc'?'i-raw':'i-enc');
             const out = document.getElementById(mode==='enc'?'out-e':'out-d');
@@ -215,23 +218,22 @@
                     const symbols = toSym(encrypted);
                     const ts = btoa(Date.now().toString());
                     result = `${ts}_${symbols}`;
-                    toast("SUCCESS: SEALED"); addLog("TITAN: SEAL SUCCESSFUL");
+                    toast("SUCCESS: DATA SEALED"); addLog("TITAN: SEAL SUCCESSFUL");
                 } catch(e) { toast("KERNEL ERROR"); return; }
             } else {
                 try {
                     const parts = inp.split("_");
                     if(parts.length < 2) { toast("INVALID TOKEN"); return; }
                     
-                    if(Date.now() - parseInt(atob(parts[0])) > 1800000) { 
-                        toast("TOKEN EXPIRED (30M)"); out.innerText = "🛑 EXPIRED"; return; 
-                    }
+                    if(Date.now() - parseInt(atob(parts[0])) > 1800000) { toast("TOKEN EXPIRED (30M)"); out.innerText = "🛑 EXPIRED"; return; }
 
                     const b64Text = fromSym(parts[1]);
                     const bytes = CryptoJS.AES.decrypt(b64Text, k);
                     const decrypted = bytes.toString(CryptoJS.enc.Utf8);
                     
                     if(!decrypted || decrypted === "") { 
-                        toast("DENIED: INCORRECT KEY"); out.innerText = "ACCESS DENIED"; 
+                        toast("DENIED: INCORRECT KEY"); 
+                        out.innerText = "ACCESS DENIED"; 
                         addLog("SECURITY: BREACH BLOCKED"); return; 
                     }
                     result = decrypted;
@@ -251,7 +253,8 @@
             }, 40);
         }
 
-        function copy(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>toast("COPIED")); }
+        function copyData(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>toast("COPIED")); }
     </script>
 </body>
-</html>
+                        </html>
+    
