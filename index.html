@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Swarg | Ultra-Premium Suite</title>
-
+    
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#020406">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -14,15 +15,14 @@
 
     <style>
         /* =========================================
-           ULTRA-LUXURY THEME VARIABLES (आपका पुराना कोड वैसा ही है)
+           ULTRA-LUXURY THEME VARIABLES
         ========================================= */
         :root {
             --lux-bg: #020406;
             --lux-accent-cyan: #00fff2;
             --lux-accent-blue: #3b82f6;
-            /* Richer Gold Palette for continuous shine */
             --premium-gold-start: #bf953f;
-            --premium-gold-mid: #fffac9; /* Brighter middle for pop */
+            --premium-gold-mid: #fffac9; 
             --premium-gold-end: #aa771c;
             --verified-blue: #1d9bf0;
             --lux-glass-border: rgba(255, 255, 255, 0.08);
@@ -38,7 +38,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* BACKGROUND PARTICLES (UNCHANGED) */
+        /* BACKGROUND PARTICLES */
         #cosmos-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 30%, #1a2238 0%, #030508 80%); overflow: hidden; }
         .neural-particle { position: absolute; width: 3px; height: 3px; background: var(--lux-accent-cyan); border-radius: 50%; box-shadow: 0 0 15px var(--lux-accent-cyan); opacity: 0; animation: flyUp linear infinite; }
         @keyframes flyUp { 0% { transform: translateY(110vh) scale(0.5); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-10vh) scale(1.5); opacity: 0; } }
@@ -50,7 +50,7 @@
             margin-bottom: 4rem; position: relative;
         }
 
-        /* SWARG TITLE (UNCHANGED) */
+        /* SWARG TITLE */
         .swarg-title-platinum {
             font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: 900;
             font-size: clamp(4.5rem, 18vw, 8.5rem); letter-spacing: -4px; line-height: 1.1;
@@ -59,7 +59,7 @@
             filter: drop-shadow(0 25px 50px rgba(0,0,0,0.8)); padding-bottom: 10px; width: 100%;
         }
 
-        /* SPACING FIXED HERE (UNCHANGED) */
+        /* AMAR KUMAR GOLD BADGE */
         .amar-gold-badge {
             display: inline-flex; align-items: center; gap: 12px;
             background: rgba(255, 255, 255, 0.03);
@@ -70,7 +70,7 @@
             z-index: 10; backdrop-filter: blur(10px);
         }
 
-        /* CONTINUOUS SHINE ANIMATION (UNCHANGED) */
+        /* CONTINUOUS SHINE ANIMATION */
         .amar-text-gold {
             font-family: 'Montserrat', sans-serif; font-weight: 800;
             font-size: 18px; letter-spacing: 3px; text-transform: uppercase;
@@ -95,19 +95,19 @@
 
         .v-tick-premium { color: var(--verified-blue); font-size: 22px; filter: drop-shadow(0 0 12px var(--verified-blue)); }
 
-        /* UI CARDS & INPUTS (UNCHANGED) */
+        /* UI CARDS & INPUTS */
         .luxury-glass-deep { background: var(--lux-glass-surface); backdrop-filter: blur(60px) saturate(180%); border: 1px solid var(--lux-glass-border); box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.02), 0 30px 80px rgba(0, 0, 0, 0.9); border-radius: 40px; position: relative; overflow: hidden; }
         .lux-output { background: rgba(0, 255, 242, 0.02); border: 1px dashed rgba(0, 255, 242, 0.2); border-radius: 28px; min-height: 220px; padding: 30px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 24px; font-weight: 700; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; word-break: break-all; overflow-wrap: break-word; }
         .lux-input { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 28px; padding: 25px; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; font-size: 16px; transition: 0.4s; resize: none; }
         .lux-input:focus { border-color: var(--lux-accent-blue); background: rgba(0,0,0,0.6); box-shadow: 0 0 40px rgba(0, 242, 255, 0.15); }
 
-        /* BUTTONS & PANIC (UNCHANGED) */
+        /* BUTTONS & PANIC */
         .lux-btn { background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue)); color: #000; font-weight: 800; border-radius: 24px; padding: 20px; text-transform: uppercase; letter-spacing: 3px; font-size: 14px; box-shadow: 0 20px 40px rgba(0, 255, 242, 0.3); transition: 0.5s; }
         .lux-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 30px 60px rgba(74, 142, 255, 0.5); }
         .panic-fab { position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px; background: var(--panic-red); border-radius: 20px; display: flex; align-items: center; justify-content: center; z-index: 2000; box-shadow: 0 20px 40px rgba(255, 59, 48, 0.4); border: 2px solid rgba(255,255,255,0.2); transition: 0.4s; cursor: pointer; }
         .panic-fab:active { transform: scale(0.95); }
 
-        /* MODALS (UNCHANGED) */
+        /* MODALS */
         #support-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(30px); }
         .support-card { background: #0a0f19; border: 1px solid var(--lux-accent-blue); padding: 40px; border-radius: 36px; text-align: center; max-width: 350px; width: 90%; box-shadow: 0 50px 100px #000; }
         #about-ui { display: none; background: #0a0f1d; color: #fff; min-height: 100vh; padding: 80px 10%; }
@@ -187,15 +187,14 @@
 
     <div id="about-ui">
         <h1 class="text-4xl font-black mb-10 text-cyan-400 uppercase tracking-widest">About Swarg</h1>
-        <p class="text-lg leading-relaxed text-slate-300 mb-6">Swarg is an enterprise-grade <span class="highlight text-cyan-400 font-bold">polymorphic encryption engine</span> designed for secure data transmission in high-risk environments.</p>
-        <p class="text-lg leading-relaxed text-slate-300">Developed by <span class="text-white font-bold">Amar Kumar Systems</span>, this tool ensures absolute security competence.</p>
+        <p class="text-lg leading-relaxed text-slate-300 mb-6">Swarg is an enterprise-grade polymorphic encryption engine designed for secure data transmission in high-risk environments.</p>
+        <p class="text-lg leading-relaxed text-slate-300">Developed by <span class="text-white font-bold">Amar Kumar Systems</span>.</p>
         <hr style="margin: 40px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
         <p style="font-size: 13px; color: #777;">Version 7.0.3 (Stable) | Executive Edition.</p>
         <button onclick="location.reload()" class="mt-16 px-10 py-3 border border-white/20 rounded-full text-sm uppercase tracking-widest hover:bg-white/10 transition">Return to System</button>
     </div>
 
     <script>
-        // PARTICLES (UNCHANGED)
         const bg = document.getElementById('cosmos-bg');
         for(let i=0; i<65; i++) {
             const p = document.createElement('div');
@@ -207,7 +206,6 @@
         }
         document.body.addEventListener('click', () => { document.getElementById('snd-type').play().catch(()=>{}); document.getElementById('snd-type').pause(); }, { once: true });
 
-        // LOGIC ENGINE (UNCHANGED)
         const MAP = { 'a':'†', 'b':'∆', 'c':'∑', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 'i':'‡', 'j':'Ω', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'∂', 'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', ',':'¬', '!':'¡', '?':'¿', '@':'∂' };
         const REV = Object.fromEntries(Object.entries(MAP).map(([k, v]) => [v, k]));
         const glitch = "XYZ0123456789";
@@ -222,7 +220,6 @@
         function toggleSupport() { const m = document.getElementById('support-modal'); m.style.display = (m.style.display === 'flex' ? 'none' : 'flex'); }
         function activateAboutPage() { document.getElementById('app-interface').style.display = 'none'; document.getElementById('about-ui').style.display = 'block'; }
 
-        // FIXED RUN FUNCTION (UNCHANGED)
         function run(type) {
             const input = document.getElementById(type === 'encrypt' ? 'i-enc' : 'i-dec').value.toLowerCase();
             const out = document.getElementById(type === 'encrypt' ? 'o-enc' : 'o-dec');
@@ -252,7 +249,5 @@
         });
       }
     </script>
-
 </body>
-                        </html>
-    
+</html>
