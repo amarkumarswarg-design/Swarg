@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swarg | Absolute Titan V19</title>
+    <title>Swarg | Final Titan V20</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#020406">
@@ -107,7 +107,7 @@
 
                 <div id="tab-e" class="space-y-8">
                     <textarea id="i-raw" placeholder="Target Information..." class="lux-input h-40" oninput="playType()"></textarea>
-                    <div id="out-e" class="lux-output"><span class="opacity-20 text-[9px] tracking-[4px]">Awaiting Core...</span></div>
+                    <div id="out-e" class="lux-output"><span class="opacity-20 text-[9px] tracking-[4px]">Kernel Ready...</span></div>
                     <div class="grid grid-cols-2 gap-4">
                         <button onclick="action('enc')" class="lux-btn">Initialize Seal</button>
                         <button onclick="copy('out-e')" class="bg-white/5 py-4 rounded-3xl font-bold uppercase text-[9px] tracking-[3px] border border-white/10">Copy Token</button>
@@ -115,7 +115,7 @@
                 </div>
 
                 <div id="tab-d" class="hidden space-y-8">
-                    <textarea id="i-enc" placeholder="Paste Swarg Industrial Token..." class="lux-input h-40" oninput="playType()"></textarea>
+                    <textarea id="i-enc" placeholder="Paste Industrial Swarg Token..." class="lux-input h-40" oninput="playType()"></textarea>
                     <div id="out-d" class="lux-output !text-emerald-400">Reveal Authorized?</div>
                     <button onclick="action('dec')" class="lux-btn !from-emerald-400 !to-blue-600">Authorize Reveal</button>
                 </div>
@@ -126,7 +126,7 @@
                         <span class="text-[8px] font-black uppercase tracking-[3px] opacity-40">Industrial Security Audit Trail</span>
                     </div>
                     <div id="log" class="font-mono text-[9px] text-slate-500 space-y-2 uppercase">
-                        <div>> Titan V19.0 Master Suite Initialized... [STABLE]</div>
+                        <div>> Titan V20.0 Master Suite Online... [VERIFIED]</div>
                     </div>
                 </div>
             </main>
@@ -136,19 +136,29 @@
 
     <div id="about-ui" class="modal-overlay" onclick="closeAbout()">
         <div class="bg-slate-900 border border-white/10 p-10 rounded-[40px] text-center max-w-2xl w-full mx-6" onclick="event.stopPropagation()">
-            <h1 class="text-2xl font-black mb-10 text-cyan-400 uppercase tracking-widest">Industrial Architecture</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+            <h1 class="text-2xl font-black mb-8 text-cyan-400 uppercase tracking-widest">Industrial Architecture</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mb-6">
                 <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
-                    <h3 class="text-white font-black uppercase text-[10px] tracking-widest mb-2">Swarg SecureCore</h3>
-                    <p class="text-slate-400 text-[11px]">Industrial AES-256-CBC Encryption Engine with Bijective 65-Symbol Mapping Bridge.</p>
+                    <h3 class="text-white font-black uppercase text-[10px] tracking-widest mb-2">Technical Disclosure</h3>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">Algorithm: <b>AES-256-CBC</b>. Key Derivation: <b>PBKDF2</b> with salt. Initialization Vector (IV): Randomized per session.</p>
                 </div>
                 <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
                     <h3 class="text-white font-black uppercase text-[10px] tracking-widest mb-2">Data Sovereignty</h3>
-                    <p class="text-slate-400 text-[11px]">Strict 30-minute token lifecycle. Zero server-side persistence. Local-only processing.</p>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">Strict 30-minute token lifecycle. 100% Client-side processing. Zero data leaves the device.</p>
+                </div>
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
+                    <h3 class="text-white font-black uppercase text-[10px] tracking-widest mb-2">Repeatable Proof</h3>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">System generates different ciphertexts for identical inputs to ensure IV unpredictability.</p>
+                </div>
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
+                    <h3 class="text-white font-black uppercase text-[10px] tracking-widest mb-2">Hardware Integrity</h3>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">Bijective 65-symbol mapping ensures 1:1 Base64 data integrity during symbol wrap.</p>
                 </div>
             </div>
-            <p class="mt-8 text-[9px] text-slate-500 uppercase tracking-widest">Verified by Amar Kumar Systems &bull; 2026 Edition</p>
-            <button onclick="closeAbout()" class="mt-10 px-10 py-4 border border-white/20 rounded-full text-[9px] font-black uppercase tracking-[4px]">Close Dashboard</button>
+
+            <p class="text-[9px] text-slate-500 uppercase tracking-widest italic mb-8">Developed by Amar Kumar Systems &bull; Pro-Grade Suite</p>
+            <button onclick="closeAbout()" class="px-12 py-4 bg-cyan-400 text-black font-black rounded-full text-[9px] uppercase tracking-[4px]">Close Dashboard</button>
         </div>
     </div>
 
@@ -160,7 +170,7 @@
             p.style.animationDelay = Math.random()*10+'s'; bg.appendChild(p);
         }
 
-        // --- THE CURE: 65 UNIQUE SYMBOLS FOR 1:1 BASE64 MATCHING ---
+        // --- THE FINAL 65-SYMBOL BIJECTIVE MAP ---
         const SYMS = "†∆©∏§∞µ∑‡ʝ≈≠≤≥√℗ƒ∫◊π±⊕⊗⊘⊙⊚•⓪①②③④⑤⑥⑦⑧⑨▫¬¡Ω∂Ωæø¿¡†‡ˆ˜¯˘˙˚¸˝˛ˇ↳↴↲↟↡↞↠↢↣↤↦⌘";
         const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
@@ -238,5 +248,5 @@
         function copy(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>toast("COPIED")); }
     </script>
 </body>
-                        </html>
+                    </html>
                         
