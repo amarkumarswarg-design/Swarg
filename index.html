@@ -1079,4 +1079,169 @@
                 toast.style.borderColor = '#00ff95';
                 toast.style.background = 'rgba(0, 255, 149, 0.1)';
             } else if (type === 'error') {
-                toast.style.borderColor = '#ff005 
+                toast.style.borderColor = '#ff0055';
+                toast.style.background = 'rgba(255, 0, 85, 0.1)';
+            } else if (type === 'info') {
+                toast.style.borderColor = '#0066ff';
+                toast.style.background = 'rgba(0, 102, 255, 0.1)';
+            }
+            
+            container.appendChild(toast);
+            
+            // Auto remove
+            setTimeout(() => {
+                toast.style.animation = 'toastIn 0.3s ease-out reverse forwards';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        function logActivity(message) {
+            const logDiv = document.getElementById('activity-log');
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = `[${time}] ${message}`;
+            logDiv.prepend(entry);
+            
+            // Keep only 5 entries
+            while (logDiv.children.length > 5) {
+                logDiv.removeChild(logDiv.lastChild);
+            }
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                console.log('Copied to clipboard');
+            }).catch(err => {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            });
+        }
+        
+        function copyOutput(type) {
+            const element = type === 'encrypt' ? 
+                document.getElementById('encrypt-output') : 
+                document.getElementById('decrypt-output');
+            
+            const text = element.textContent.trim();
+            
+            if (text) {
+                copyToClipboard(text);
+                showToast('Copied to clipboard', 'success');
+                playSuccessSound();
+            } else {
+                showToast('Nothing to copy', 'error');
+            }
+        }
+        
+        // ========== ABOUT MODAL ==========
+        function showAbout() {
+            document.getElementById('about-modal').style.display = 'flex';
+        }
+        
+        function closeAbout() {
+            document.getElementById('about-modal').style.display = 'none';
+        }
+        
+        // ========== EVENT LISTENERS ==========
+        function setupEventListeners() {
+            // Master key strength indicator
+            document.getElementById('masterKey').addEventListener('input', function() {
+                const key = this.value;
+                const strengthDiv = document.getElementById('key-strength');
+                
+                let strength = 'Weak';
+                let color = '#ff5555';
+                
+                if (key.length === 0) {
+                    strength = 'Enter password';
+                    color = '#666';
+                } else if (key.length < 4) {
+                    strength = 'Very Weak';
+                    color = '#ff5555';
+                } else if (key.length < 8) {
+                    strength = 'Weak';
+                    color = '#ffaa00';
+                } else if (key.length < 12) {
+                    strength = 'Good';
+                    color = '#55ff55';
+                } else if (key.length < 16) {
+                    strength = 'Strong';
+                    color = '#00aaff';
+                } else {
+                    strength = 'Very Strong';
+                    color = '#aa00ff';
+                }
+                
+                strengthDiv.innerHTML = `<span style="color: ${color}">${strength} • ${key.length} characters</span>`;
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl+E to encrypt
+                if (e.ctrlKey && e.key === 'e') {
+                    e.preventDefault();
+                    encryptData();
+                }
+                
+                // Ctrl+D to decrypt
+                if (e.ctrlKey && e.key === 'd') {
+                    e.preventDefault();
+                    decryptData();
+                }
+                
+                // Escape to close modal
+                if (e.key === 'Escape') {
+                    closeAbout();
+                }
+            });
+            
+            // Close modal when clicking outside
+            document.getElementById('about-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeAbout();
+                }
+            });
+        }
+        
+        // ========== AUTO-CLEANUP ==========
+        setInterval(() => {
+            // Clear fields after 15 minutes of inactivity
+            if (Date.now() - (window.lastActivity || 0) > 15 * 60 * 1000) {
+                document.getElementById('input-text').value = '';
+                document.getElementById('encrypted-input').value = '';
+                document.getElementById('masterKey').value = '';
+                logActivity('Auto-cleanup: cleared all fields');
+            }
+        }, 60000);
+        
+        // Track activity
+        ['click', 'keypress', 'mousemove', 'scroll'].forEach(event => {
+            document.addEventListener(event, () => {
+                window.lastActivity = Date.now();
+            });
+        });
+        
+        window.lastActivity = Date.now();
+        
+        // ========== PWA ==========
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(
+                    () => logActivity('Service Worker registered'),
+                    err => logActivity('Service Worker registration failed: ' + err)
+                );
+            });
+        }
+    </script>
+</body>
+</html>
