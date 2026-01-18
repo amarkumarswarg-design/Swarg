@@ -2,94 +2,226 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swarg</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Swarg | Supreme Shield Stable</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#020406">
 
 <script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
 <style>
-body{background:#020406;color:#fff;font-family:system-ui}
+:root{
+--bg:#020406;
+--cyan:#00fff2;
+--blue:#3b82f6;
+--glass:rgba(10,15,25,.8);
+--border:rgba(255,255,255,.08);
+--gold1:#bf953f;
+--gold2:#fffac9;
+--gold3:#aa771c;
+--verified:#1d9bf0;
+}
+body{
+margin:0;
+font-family:'Satoshi',sans-serif;
+background:var(--bg);
+color:#fff;
+overflow-x:hidden;
+}
+#cosmos{
+position:fixed;inset:0;z-index:-1;
+background:radial-gradient(circle at 50% 30%,#1a2238 0%,#030508 80%);
+overflow:hidden;
+}
+.particle{
+position:absolute;width:3px;height:3px;
+background:var(--cyan);
+border-radius:50%;
+box-shadow:0 0 15px var(--cyan);
+opacity:0;
+animation:fly linear infinite;
+}
+@keyframes fly{
+0%{transform:translateY(110vh) scale(.5);opacity:0}
+20%{opacity:.8}
+100%{transform:translateY(-10vh) scale(1.5);opacity:0}
+}
+.title{
+font-family:'Montserrat',sans-serif;
+font-style:italic;
+font-weight:900;
+font-size:clamp(4.5rem,18vw,8.5rem);
+background:linear-gradient(180deg,#fff 20%,#8a9fb8 60%,#1a2238 100%);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+.badge{
+margin-top:20px;
+display:flex;
+gap:12px;
+align-items:center;
+padding:12px 24px;
+border-radius:50px;
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,215,0,.1);
+backdrop-filter:blur(10px);
+}
+.badge span{
+font-family:'Montserrat',sans-serif;
+font-weight:800;
+letter-spacing:3px;
+text-transform:uppercase;
+background:linear-gradient(120deg,var(--gold1),var(--gold2),var(--gold3));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+.card{
+background:var(--glass);
+border:1px solid var(--border);
+border-radius:40px;
+padding:32px;
+backdrop-filter:blur(50px);
+}
+textarea{
+width:100%;
+background:rgba(0,0,0,.4);
+border:1px solid var(--border);
+border-radius:28px;
+padding:24px;
+color:var(--cyan);
+font-family:'JetBrains Mono',monospace;
+resize:none;
+outline:none;
+}
+.output{
+border:1px dashed rgba(0,255,242,.25);
+border-radius:28px;
+min-height:200px;
+padding:28px;
+display:flex;
+align-items:center;
+justify-content:center;
+word-break:break-all;
+font-family:'JetBrains Mono',monospace;
+color:var(--cyan);
+}
+.btn{
+background:linear-gradient(135deg,var(--cyan),var(--blue));
+color:#000;
+font-weight:800;
+padding:18px;
+border-radius:24px;
+width:100%;
+text-transform:uppercase;
+letter-spacing:3px;
+}
+.copy{
+background:rgba(255,255,255,.05);
+border:1px solid var(--border);
+border-radius:24px;
+padding:18px;
+font-weight:700;
+}
 .hidden{display:none}
-.box{background:#0a0f1d;border:1px solid #ffffff22;border-radius:24px;padding:20px}
-.btn{background:linear-gradient(135deg,#00fff2,#3b82f6);color:#000;
-font-weight:700;padding:14px;border-radius:16px;width:100%}
-.copy{background:#ffffff12;border:1px solid #ffffff22;padding:14px;border-radius:16px}
-textarea,input{background:#000;border:1px solid #ffffff22;
-border-radius:16px;padding:14px;color:#00fff2;width:100%}
 </style>
 </head>
 
-<body class="p-6 max-w-xl mx-auto">
+<body>
 
-<h1 class="text-5xl font-black italic text-center mb-2">Swarg</h1>
-<p class="text-center opacity-70 mb-6">Amar Kumar ✔</p>
+<div id="cosmos"></div>
 
-<input id="key" type="password" placeholder="Secret password" class="mb-4">
+<audio id="snd-type" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
+<audio id="snd-done" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
 
-<div class="flex justify-center gap-6 mb-6">
-<button onclick="showEnc()" class="font-bold">ENCODE</button>
-<button onclick="showDec()" class="font-bold">DECODE</button>
+<div class="max-w-4xl mx-auto px-6 py-12 text-center">
+<h1 class="title">Swarg</h1>
+<div class="badge mx-auto">
+<span>Amar Kumar</span>
+<i class="fas fa-circle-check" style="color:var(--verified)"></i>
 </div>
 
-<!-- ENCODE -->
-<div id="encBox" class="box">
-<textarea id="encInput" rows="4" placeholder="Enter text" oninput="typeSound()"></textarea>
-<div id="encOut" class="box mt-4 text-sm">Ready</div>
-<div class="grid grid-cols-2 gap-3 mt-4">
-<button class="btn" onclick="encrypt()">Secure Data</button>
+<div class="card mt-16">
+
+<div class="flex justify-center gap-12 mb-10 border-b border-white/10 pb-4">
+<button onclick="show('enc')" id="tab-enc" class="font-black text-cyan-400">ENCODE</button>
+<button onclick="show('dec')" id="tab-dec" class="font-black text-slate-400">DECODE</button>
+</div>
+
+<div id="enc">
+<textarea id="encIn" rows="4" placeholder="Enter sensitive data..." oninput="typeSnd()"></textarea>
+<div id="encOut" class="output mt-8">System Ready...</div>
+<div class="grid grid-cols-2 gap-6 mt-8">
+<button class="btn" onclick="run('enc')">Secure Data</button>
 <button class="copy" onclick="copyText('encOut')">Copy</button>
 </div>
 </div>
 
-<!-- DECODE -->
-<div id="decBox" class="box hidden">
-<textarea id="decInput" rows="4" placeholder="Paste code" oninput="typeSound()"></textarea>
-<div id="decOut" class="box mt-4 text-sm">Waiting</div>
-<div class="grid grid-cols-2 gap-3 mt-4">
-<button class="btn" onclick="decrypt()">Reveal Truth</button>
+<div id="dec" class="hidden">
+<textarea id="decIn" rows="4" placeholder="Paste encrypted code..." oninput="typeSnd()"></textarea>
+<div id="decOut" class="output mt-8">Awaiting Token...</div>
+<div class="grid grid-cols-2 gap-6 mt-8">
+<button class="btn" onclick="run('dec')">Reveal Truth</button>
 <button class="copy" onclick="copyText('decOut')">Copy</button>
 </div>
 </div>
 
-<audio id="type" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
+</div>
+</div>
 
 <script>
-function showEnc(){
-encBox.classList.remove("hidden");
-decBox.classList.add("hidden");
-}
-function showDec(){
-decBox.classList.remove("hidden");
-encBox.classList.add("hidden");
-}
-
-function typeSound(){
-let a=document.getElementById("type");
-a.currentTime=0;a.play().catch(()=>{});
+// particles
+for(let i=0;i<60;i++){
+const p=document.createElement("div");
+p.className="particle";
+p.style.left=Math.random()*100+"vw";
+p.style.animationDuration=(6+Math.random()*10)+"s";
+document.getElementById("cosmos").appendChild(p);
 }
 
+// sounds
+function typeSnd(){
+const s=document.getElementById("snd-type");
+s.currentTime=0;s.play().catch(()=>{});
+}
+
+// tabs
+function show(m){
+enc.classList.toggle("hidden",m!=="enc");
+dec.classList.toggle("hidden",m!=="dec");
+tab_enc.className=m==="enc"?"font-black text-cyan-400":"font-black text-slate-400";
+tab_dec.className=m==="dec"?"font-black text-cyan-400":"font-black text-slate-400";
+}
+
+// copy
 function copyText(id){
 navigator.clipboard.writeText(document.getElementById(id).innerText);
 alert("Copied");
 }
 
-/* SIMPLE STABLE ENCODING (WORKING) */
-function encrypt(){
-let t=encInput.value;
-let k=key.value;
-if(!t||!k){alert("Text + password needed");return;}
-encOut.innerText=btoa(k+"::"+t);
-}
+// MAP logic (clean & stable)
+const MAP={'a':'†','b':'∆','c':'©','d':'∏','e':'§','f':'∞','g':'µ','h':'∑','i':'‡','j':'ʝ','k':'≈','l':'≠','m':'≤','n':'≥','o':'√','p':'℗','q':'ƒ','r':'∫','s':'◊','t':'π','u':'±','v':'⊕','w':'⊗','x':'⊘','y':'⊙','z':'⊚',' ':'•'};
+const REV=Object.fromEntries(Object.entries(MAP).map(([k,v])=>[v,k]));
 
-function decrypt(){
+function run(type){
+if(type==="enc"){
+let t=encIn.value.toLowerCase();
+if(!t)return;
+let r="";
+for(let c of t)r+=MAP[c]||c;
+encOut.innerText=btoa(r);
+}else{
 try{
-let k=key.value;
-let raw=atob(decInput.value);
-if(!raw.startsWith(k+"::")) throw 0;
-decOut.innerText=raw.slice(k.length+2);
-}catch{
-decOut.innerText="❌ Wrong password / invalid code";
+let raw=atob(decIn.value);
+let r="";
+for(let c of raw)r+=REV[c]||c;
+decOut.innerText=r;
+}catch{decOut.innerText="INVALID CODE";}
 }
+document.getElementById("snd-done").play();
 }
 </script>
 
