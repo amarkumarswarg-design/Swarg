@@ -338,4 +338,31 @@
             const timer = setInterval(() => {
                 if(idx < resultFinal.length) {
                     let fc = 0;
+                    const flicker = setInterval(() => {
+                        out.innerText = currentText + glitch[Math.floor(Math.random()*glitch.length)];
+                        fc++; 
+                        if(fc > 2) { 
+                            clearInterval(flicker); 
+                            currentText += resultFinal[idx]; 
+                            out.innerText = currentText; 
+                            idx++; 
+                            typeSnd(); 
+                        }
+                    }, 10);
+                } else { 
+                    clearInterval(timer); 
+                    out.innerText = resultFinal; 
+                    document.getElementById('snd-done').play(); 
+                }
+            }, 45);
+        }
+
+        function copy(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => showToast("Buffer Copied")); }
+        function copyUPI() { navigator.clipboard.writeText("amarkumarr@fam").then(()=>showToast("UPI Address Copied")); }
+        
+        // PWA SERVICE WORKER REGISTRATION
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
+    </script>
+</body>
+</html>
                    
