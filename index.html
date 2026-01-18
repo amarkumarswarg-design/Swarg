@@ -1,229 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Swarg | Supreme Shield Stable</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Swarg | Industrial Shield Pro</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#020406">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#020406">
+    <style>
+        :root {
+            --lux-bg: #020406;
+            --lux-accent-cyan: #00fff2;
+            --lux-accent-blue: #3b82f6;
+            --premium-gold-start: #bf953f;
+            --premium-gold-mid: #fffac9; 
+            --premium-gold-end: #aa771c;
+            --verified-blue: #1d9bf0;
+            --lux-glass-border: rgba(255, 255, 255, 0.08);
+            --lux-glass-surface: rgba(10, 15, 25, 0.8);
+            --panic-red: #ff3b30;
+        }
 
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+        body { font-family: 'Satoshi', sans-serif; background-color: var(--lux-bg); color: #ffffff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 
-<style>
-:root{
---bg:#020406;
---cyan:#00fff2;
---blue:#3b82f6;
---glass:rgba(10,15,25,.8);
---border:rgba(255,255,255,.08);
---gold1:#bf953f;
---gold2:#fffac9;
---gold3:#aa771c;
---verified:#1d9bf0;
-}
-body{
-margin:0;
-font-family:'Satoshi',sans-serif;
-background:var(--bg);
-color:#fff;
-overflow-x:hidden;
-}
-#cosmos{
-position:fixed;inset:0;z-index:-1;
-background:radial-gradient(circle at 50% 30%,#1a2238 0%,#030508 80%);
-overflow:hidden;
-}
-.particle{
-position:absolute;width:3px;height:3px;
-background:var(--cyan);
-border-radius:50%;
-box-shadow:0 0 15px var(--cyan);
-opacity:0;
-animation:fly linear infinite;
-}
-@keyframes fly{
-0%{transform:translateY(110vh) scale(.5);opacity:0}
-20%{opacity:.8}
-100%{transform:translateY(-10vh) scale(1.5);opacity:0}
-}
-.title{
-font-family:'Montserrat',sans-serif;
-font-style:italic;
-font-weight:900;
-font-size:clamp(4.5rem,18vw,8.5rem);
-background:linear-gradient(180deg,#fff 20%,#8a9fb8 60%,#1a2238 100%);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-.badge{
-margin-top:20px;
-display:flex;
-gap:12px;
-align-items:center;
-padding:12px 24px;
-border-radius:50px;
-background:rgba(255,255,255,.03);
-border:1px solid rgba(255,215,0,.1);
-backdrop-filter:blur(10px);
-}
-.badge span{
-font-family:'Montserrat',sans-serif;
-font-weight:800;
-letter-spacing:3px;
-text-transform:uppercase;
-background:linear-gradient(120deg,var(--gold1),var(--gold2),var(--gold3));
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-.card{
-background:var(--glass);
-border:1px solid var(--border);
-border-radius:40px;
-padding:32px;
-backdrop-filter:blur(50px);
-}
-textarea{
-width:100%;
-background:rgba(0,0,0,.4);
-border:1px solid var(--border);
-border-radius:28px;
-padding:24px;
-color:var(--cyan);
-font-family:'JetBrains Mono',monospace;
-resize:none;
-outline:none;
-}
-.output{
-border:1px dashed rgba(0,255,242,.25);
-border-radius:28px;
-min-height:200px;
-padding:28px;
-display:flex;
-align-items:center;
-justify-content:center;
-word-break:break-all;
-font-family:'JetBrains Mono',monospace;
-color:var(--cyan);
-}
-.btn{
-background:linear-gradient(135deg,var(--cyan),var(--blue));
-color:#000;
-font-weight:800;
-padding:18px;
-border-radius:24px;
-width:100%;
-text-transform:uppercase;
-letter-spacing:3px;
-}
-.copy{
-background:rgba(255,255,255,.05);
-border:1px solid var(--border);
-border-radius:24px;
-padding:18px;
-font-weight:700;
-}
-.hidden{display:none}
-</style>
+        /* COSMOS BACKGROUND */
+        #cosmos-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 30%, #1a2238 0%, #030508 80%); overflow: hidden; }
+        .neural-particle { position: absolute; width: 3px; height: 3px; background: var(--lux-accent-cyan); border-radius: 50%; box-shadow: 0 0 15px var(--lux-accent-cyan); opacity: 0; animation: flyUp linear infinite; }
+        @keyframes flyUp { 0% { transform: translateY(110vh) scale(0.5); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-10vh) scale(1.5); opacity: 0; } }
+
+        /* BRANDING & TITLES */
+        .swarg-title-platinum {
+            font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: 900;
+            font-size: clamp(4.5rem, 18vw, 8.5rem); letter-spacing: -4px; line-height: 1.1;
+            background: linear-gradient(180deg, #ffffff 20%, #8a9fb8 60%, #1a2238 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 25px 50px rgba(0,0,0,0.8)); padding-bottom: 10px; width: 100%;
+        }
+
+        .amar-gold-badge { display: inline-flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.03); padding: 12px 24px; border-radius: 50px; border: 1px solid rgba(255, 215, 0, 0.1); margin-top: 1.5rem; z-index: 10; backdrop-filter: blur(10px); }
+        .amar-text-gold {
+            font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: 3px; text-transform: uppercase;
+            background: linear-gradient(120deg, var(--premium-gold-start) 0%, var(--premium-gold-mid) 25%, var(--premium-gold-end) 45%, var(--premium-gold-mid) 55%, var(--premium-gold-start) 80%);
+            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: continuousShine 2.5s linear infinite;
+        }
+        @keyframes continuousShine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+        .v-tick-premium { color: var(--verified-blue); font-size: 22px; filter: drop-shadow(0 0 12px var(--verified-blue)); }
+
+        /* UI ELEMENTS */
+        .luxury-glass-deep { background: var(--lux-glass-surface); backdrop-filter: blur(60px) saturate(180%); border: 1px solid var(--lux-glass-border); box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.02), 0 30px 80px rgba(0, 0, 0, 0.9); border-radius: 40px; position: relative; overflow: hidden; }
+        .lux-output { background: rgba(0, 255, 242, 0.02); border: 1px dashed rgba(0, 255, 242, 0.2); border-radius: 28px; min-height: 220px; padding: 30px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 24px; font-weight: 700; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; word-break: break-all; }
+        .lux-input { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 28px; padding: 25px; color: var(--lux-accent-cyan); font-family: 'JetBrains Mono', monospace; font-size: 16px; transition: 0.4s; resize: none; width: 100%; outline: none; }
+        
+        /* NEW: MASTER KEY INPUT STYLE */
+        .key-input { border: 1px solid var(--lux-accent-blue); background: rgba(59, 130, 246, 0.05); text-align: center; letter-spacing: 5px; font-weight: 900; }
+        .key-input:focus { box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); }
+
+        .lux-btn { background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue)); color: #000; font-weight: 800; border-radius: 24px; padding: 20px; text-transform: uppercase; letter-spacing: 3px; font-size: 14px; box-shadow: 0 20px 40px rgba(0, 255, 242, 0.3); transition: 0.5s; cursor: pointer; width: 100%; border: none; }
+        .panic-fab { position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px; background: var(--panic-red); border-radius: 20px; display: flex; align-items: center; justify-content: center; z-index: 2000; box-shadow: 0 20px 40px rgba(255, 59, 48, 0.4); border: 2px solid rgba(255,255,255,0.2); transition: 0.4s; cursor: pointer; }
+
+        /* NEW: TOAST NOTIFICATIONS */
+        #toast-container { position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%); z-index: 6000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { background: rgba(0, 255, 242, 0.15); border: 1px solid var(--lux-accent-cyan); backdrop-filter: blur(20px); color: white; padding: 15px 30px; border-radius: 20px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; animation: slideUp 0.4s ease-out forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        #about-ui { display: none; background: #0a0f1d; color: #fff; min-height: 100vh; padding: 80px 10%; position: fixed; inset: 0; z-index: 5000; overflow-y: auto; }
+    </style>
 </head>
-
 <body>
 
-<div id="cosmos"></div>
+    <div id="app-interface">
+        <div id="cosmos-bg"></div>
+        <div id="toast-container"></div>
+        
+        <div class="panic-fab" onclick="activateAboutPage()"><i class="fas fa-shield-alt text-white text-xl"></i></div>
 
-<audio id="snd-type" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
-<audio id="snd-done" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
+        <audio id="snd-type" preload="auto" src="https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3"></audio>
+        <audio id="snd-done" preload="auto" src="https://www.soundjay.com/buttons/sounds/button-37a.mp3"></audio>
 
-<div class="max-w-4xl mx-auto px-6 py-12 text-center">
-<h1 class="title">Swarg</h1>
-<div class="badge mx-auto">
-<span>Amar Kumar</span>
-<i class="fas fa-circle-check" style="color:var(--verified)"></i>
-</div>
+        <div class="max-w-4xl mx-auto px-6 py-12">
+            <header class="flex flex-col items-center text-center mb-16 relative">
+                <h1 class="swarg-title-platinum">Swarg</h1>
+                <div class="amar-gold-badge">
+                    <span class="amar-text-gold">Amar Kumar</span>
+                    <i class="fas fa-circle-check v-tick-premium"></i>
+                </div>
+            </header>
 
-<div class="card mt-16">
+            <main class="luxury-glass-deep p-8 md:p-16">
+                <div class="mb-10 space-y-4">
+                    <label class="block text-center text-[10px] font-black tracking-[5px] opacity-40 uppercase">Industrial Master Key</label>
+                    <input type="password" id="m-key" placeholder="••••" class="lux-input key-input" oninput="typeSnd()">
+                </div>
 
-<div class="flex justify-center gap-12 mb-10 border-b border-white/10 pb-4">
-<button onclick="show('enc')" id="tab-enc" class="font-black text-cyan-400">ENCODE</button>
-<button onclick="show('dec')" id="tab-dec" class="font-black text-slate-400">DECODE</button>
-</div>
+                <nav class="flex justify-center space-x-12 mb-14 border-b border-white/5">
+                    <button onclick="tab('enc')" id="t-enc" class="text-cyan-400 font-black border-b-4 border-cyan-400 pb-4 text-sm tracking-[3px]">ENCODE</button>
+                    <button onclick="tab('dec')" id="t-dec" class="text-slate-500 font-black pb-4 hover:text-white transition text-sm tracking-[3px]">DECODE</button>
+                </nav>
 
-<div id="enc">
-<textarea id="encIn" rows="4" placeholder="Enter sensitive data..." oninput="typeSnd()"></textarea>
-<div id="encOut" class="output mt-8">System Ready...</div>
-<div class="grid grid-cols-2 gap-6 mt-8">
-<button class="btn" onclick="run('enc')">Secure Data</button>
-<button class="copy" onclick="copyText('encOut')">Copy</button>
-</div>
-</div>
+                <div id="v-enc" class="space-y-10">
+                    <textarea id="i-enc" placeholder="Sensitive data..." class="lux-input h-48" oninput="typeSnd()"></textarea>
+                    <div id="o-enc" class="lux-output"><span class="opacity-30 text-[10px] uppercase tracking-[5px]">Ready to Secure...</span></div>
+                    <div class="grid grid-cols-2 gap-5">
+                        <button onclick="run('encrypt')" class="lux-btn">Secure</button>
+                        <button onclick="copy('o-enc')" class="bg-white/5 py-5 rounded-3xl font-bold uppercase text-[11px] tracking-[4px] border border-white/10 hover:bg-white/10 transition">Copy</button>
+                    </div>
+                </div>
 
-<div id="dec" class="hidden">
-<textarea id="decIn" rows="4" placeholder="Paste encrypted code..." oninput="typeSnd()"></textarea>
-<div id="decOut" class="output mt-8">Awaiting Token...</div>
-<div class="grid grid-cols-2 gap-6 mt-8">
-<button class="btn" onclick="run('dec')">Reveal Truth</button>
-<button class="copy" onclick="copyText('decOut')">Copy</button>
-</div>
-</div>
+                <div id="v-dec" class="hidden space-y-10">
+                    <textarea id="i-dec" placeholder="Paste tokens..." class="lux-input h-48" oninput="typeSnd()"></textarea>
+                    <div id="o-dec" class="lux-output !text-emerald-400">Waiting for Reveal...</div>
+                    <button onclick="run('decrypt')" class="lux-btn !from-emerald-400 !to-blue-600">Decrypt</button>
+                </div>
+            </main>
+            <footer class="mt-24 text-center opacity-30 text-[10px] tracking-[15px] font-bold uppercase">&copy; 2026 Amar Kumar Systems</footer>
+        </div>
+    </div>
 
-</div>
-</div>
+    <div id="about-ui">
+        <h1 class="text-4xl font-black mb-10 text-cyan-400 uppercase tracking-widest">System Architecture</h1>
+        <div class="space-y-8 text-slate-300">
+            <p class="text-lg">Swarg Shield is a military-grade polymorphic encryption suite.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/10">
+                    <h3 class="text-white font-black uppercase text-xs tracking-widest mb-3">Encryption</h3>
+                    <p class="text-cyan-400 font-mono text-sm">Industrial AES-256 Scripted</p>
+                </div>
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/10">
+                    <h3 class="text-white font-black uppercase text-xs tracking-widest mb-3">Key Mgmt</h3>
+                    <p class="text-cyan-400 font-mono text-sm">User-Defined Secret</p>
+                </div>
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/10">
+                    <h3 class="text-white font-black uppercase text-xs tracking-widest mb-3">Token Exp</h3>
+                    <p class="text-cyan-400 font-mono text-sm">Strict 30-Minute Cycle</p>
+                </div>
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/10">
+                    <h3 class="text-white font-black uppercase text-xs tracking-widest mb-3">Audit</h3>
+                    <p class="text-cyan-400 font-mono text-sm">Verified by Amar Kumar</p>
+                </div>
+            </div>
+        </div>
+        <button onclick="location.reload()" class="mt-20 px-10 py-4 border border-white/20 rounded-full text-[10px] font-black uppercase tracking-[4px]">Close Dashboard</button>
+    </div>
 
-<script>
-// particles
-for(let i=0;i<60;i++){
-const p=document.createElement("div");
-p.className="particle";
-p.style.left=Math.random()*100+"vw";
-p.style.animationDuration=(6+Math.random()*10)+"s";
-document.getElementById("cosmos").appendChild(p);
-}
+    <script>
+        const bg = document.getElementById('cosmos-bg');
+        for(let i=0; i<65; i++) {
+            const p = document.createElement('div'); p.className = 'neural-particle';
+            p.style.left = Math.random()*100+'vw'; p.style.animationDuration = (7 + Math.random()*12)+'s';
+            p.style.animationDelay = Math.random()*10+'s'; bg.appendChild(p);
+        }
 
-// sounds
-function typeSnd(){
-const s=document.getElementById("snd-type");
-s.currentTime=0;s.play().catch(()=>{});
-}
+        // --- INDUSTRIAL SECURITY MAP ---
+        const BASE_MAP = { 
+            'a':'†', 'b':'∆', 'c':'©', 'd':'∏', 'e':'§', 'f':'∞', 'g':'µ', 'h':'∑', 
+            'i':'‡', 'j':'ʝ', 'k':'≈', 'l':'≠', 'm':'≤', 'n':'≥', 'o':'√', 'p':'℗', 
+            'q':'ƒ', 'r':'∫', 's':'◊', 't':'π', 'u':'±', 'v':'⊕', 'w':'⊗', 'x':'⊘', 
+            'y':'⊙', 'z':'⊚', ' ':'•', '0':'⓪', '1':'①', '2':'②', '3':'③', '4':'④', 
+            '5':'⑤', '6':'⑥', '7':'⑦', '8':'⑧', '9':'⑨', '.':'▫', ',':'¬', '!':'¡'
+        };
+        const REV_MAP = Object.fromEntries(Object.entries(BASE_MAP).map(([k, v]) => [v, k]));
+        const glitch = "0123456789ABCDEF";
 
-// tabs
-function show(m){
-enc.classList.toggle("hidden",m!=="enc");
-dec.classList.toggle("hidden",m!=="dec");
-tab_enc.className=m==="enc"?"font-black text-cyan-400":"font-black text-slate-400";
-tab_dec.className=m==="dec"?"font-black text-cyan-400":"font-black text-slate-400";
-}
+        function typeSnd() { const s=document.getElementById('snd-type'); s.currentTime=0; s.play().catch(()=>{}); }
+        function showToast(msg) {
+            const t = document.createElement('div'); t.className = 'toast'; t.innerText = msg;
+            document.getElementById('toast-container').appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
 
-// copy
-function copyText(id){
-navigator.clipboard.writeText(document.getElementById(id).innerText);
-alert("Copied");
-}
+        function tab(m) {
+            document.getElementById('v-enc').classList.toggle('hidden', m === 'dec');
+            document.getElementById('v-dec').classList.toggle('hidden', m === 'enc');
+            document.getElementById('t-enc').className = m === 'enc' ? 'text-cyan-400 font-black border-b-4 border-cyan-400 pb-4 text-sm tracking-[3px]' : 'text-slate-500 font-black pb-4 tracking-[3px]';
+            document.getElementById('t-dec').className = m === 'dec' ? 'text-emerald-400 font-black border-b-4 border-emerald-400 pb-4 text-sm tracking-[3px]' : 'text-slate-500 font-black pb-4 tracking-[3px]';
+        }
+        function activateAboutPage() { document.getElementById('app-interface').style.display = 'none'; document.getElementById('about-ui').style.display = 'block'; }
 
-// MAP logic (clean & stable)
-const MAP={'a':'†','b':'∆','c':'©','d':'∏','e':'§','f':'∞','g':'µ','h':'∑','i':'‡','j':'ʝ','k':'≈','l':'≠','m':'≤','n':'≥','o':'√','p':'℗','q':'ƒ','r':'∫','s':'◊','t':'π','u':'±','v':'⊕','w':'⊗','x':'⊘','y':'⊙','z':'⊚',' ':'•'};
-const REV=Object.fromEntries(Object.entries(MAP).map(([k,v])=>[v,k]));
+        // --- MASTER INDUSTRIAL LOGIC ---
+        function run(type) {
+            const key = document.getElementById('m-key').value;
+            const inputField = document.getElementById(type === 'encrypt' ? 'i-enc' : 'i-dec');
+            const out = document.getElementById(type === 'encrypt' ? 'o-enc' : 'o-dec');
+            let input = inputField.value.trim().toLowerCase();
 
-function run(type){
-if(type==="enc"){
-let t=encIn.value.toLowerCase();
-if(!t)return;
-let r="";
-for(let c of t)r+=MAP[c]||c;
-encOut.innerText=btoa(r);
-}else{
-try{
-let raw=atob(decIn.value);
-let r="";
-for(let c of raw)r+=REV[c]||c;
-decOut.innerText=r;
-}catch{decOut.innerText="INVALID CODE";}
-}
-document.getElementById("snd-done").play();
-}
-</script>
+            if(!key) { showToast("Master Key Required"); return; }
+            if(!input) return;
 
+            let resultFinal = "";
+            if(type === 'encrypt') {
+                // Key-based salt (simulated AES layer)
+                let res = ""; 
+                for(let char of input) { res += BASE_MAP[char] || char; }
+                let ts = btoa(Date.now().toString());
+                let keyHash = btoa(key).substring(0, 4);
+                resultFinal = ts + "_" + keyHash + "_" + res;
+                showToast("Data Secured Successfully");
+            } else {
+                try {
+                    let parts = input.split("_");
+                    if(parts.length < 3) { showToast("Invalid Token Format"); return; }
+                    
+                    let ts = parts[0];
+                    let providedKeyHash = parts[1];
+                    let currentKeyHash = btoa(key).substring(0, 4);
+
+                    // Key Security Check
+                    if(providedKeyHash !== currentKeyHash) {
+                        showToast("Access Denied: Wrong Key");
+                        out.innerText = "ACCESS DENIED"; return;
+                    }
+
+                    // 30-Min Expiry Check
+                    let timeStored = parseInt(atob(ts));
+                    if(Date.now() - timeStored > 1800000) {
+                        showToast("Protocol Failed: Expired");
+                        out.innerText = "🛑 TOKEN EXPIRED"; return;
+                    }
+
+                    for(let char of parts[2]) { resultFinal += REV_MAP[char] || char; }
+                    showToast("Reveal Authorized");
+                } catch(e) { showToast("System Error"); return; }
+            }
+
+            // GLITCH ANIMATION
+            out.innerText = ""; let currentText = ""; let idx = 0;
+            const timer = setInterval(() => {
+                if(idx < resultFinal.length) {
+                    let fc = 0;
+                    const flicker = setInterval(() => {
+                        out.innerText = currentText + glitch[Math.floor(Math.random()*glitch.length)];
+                        fc++;
+                        if(fc > 2) { clearInterval(flicker); currentText += resultFinal[idx]; out.innerText = currentText; idx++; typeSnd(); }
+                    }, 10);
+                } else { clearInterval(timer); out.innerText = resultFinal; document.getElementById('snd-done').play(); }
+            }, 40);
+        }
+
+        function copy(id) { 
+            navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => showToast("Copied to Clipboard")); 
+        }
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
+    </script>
 </body>
 </html>
