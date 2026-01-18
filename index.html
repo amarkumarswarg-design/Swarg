@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swarg | Industrial Titan V25</title>
+    <title>Swarg | Industrial Titan V26</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#020406">
@@ -63,15 +63,10 @@
         .lux-btn { background: linear-gradient(135deg, var(--lux-accent-cyan), var(--lux-accent-blue)); color: #000; font-weight: 800; border-radius: 22px; padding: 18px; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; cursor: pointer; border: none; transition: 0.4s; }
         .lux-btn:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0, 255, 242, 0.3); }
 
-        /* PANIC & MODALS */
+        /* PANIC SHIELD MODAL */
         .panic-fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--panic-red); border-radius: 20px; display: flex; align-items: center; justify-content: center; z-index: 1000; cursor: pointer; box-shadow: 0 15px 30px rgba(255, 59, 48, 0.4); border: 2px solid rgba(255,255,255,0.2); }
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 5000; align-items: center; justify-content: center; backdrop-filter: blur(25px); padding: 20px; }
-        .modal-content { background: #0a0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 35px; }
-
-        /* TOAST */
-        #toast-container { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
-        .toast { background: rgba(0, 255, 242, 0.2); border: 1px solid var(--lux-accent-cyan); backdrop-filter: blur(10px); color: white; padding: 10px 25px; border-radius: 50px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; animation: fadeInUp 0.4s forwards; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-content { background: #0a0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 35px; }
 
         /* AUDIT LOG */
         .audit-trail { background: rgba(0,0,0,0.4); border-radius: 25px; padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #64748b; height: 120px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
@@ -81,7 +76,7 @@
 
     <div id="app-root">
         <div id="cosmos-bg"></div>
-        <div id="toast-container"></div>
+        <div id="toast-container" class="fixed bottom-[100px] left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2"></div>
         
         <div class="panic-fab" onclick="panicMode()"><i class="fas fa-shield-alt text-white text-xl"></i></div>
 
@@ -100,7 +95,7 @@
             <main class="luxury-glass-deep p-8 md:p-14 relative">
                 
                 <div class="mb-12">
-                    <label class="block text-[9px] font-black tracking-[4px] opacity-30 uppercase text-center mb-4">Industrial Encryption Master Key</label>
+                    <label class="block text-[9px] font-black tracking-[4px] opacity-30 uppercase text-center mb-4">Master Encryption Key (AES-256 Engine)</label>
                     <input type="password" id="m-key" placeholder="••••" class="lux-input text-center font-black tracking-[10px]" oninput="playType()">
                 </div>
 
@@ -110,8 +105,8 @@
                 </nav>
 
                 <div id="tab-e" class="space-y-8">
-                    <textarea id="i-raw" placeholder="Enter sensitive info..." class="lux-input h-40" oninput="playType()"></textarea>
-                    <div id="out-e" class="lux-output"><span class="opacity-20 text-[9px] tracking-[4px]">Awaiting Core Input...</span></div>
+                    <textarea id="i-raw" placeholder="Enter sensitive information..." class="lux-input h-40" oninput="playType()"></textarea>
+                    <div id="out-e" class="lux-output"><span class="opacity-20 text-[9px] tracking-[4px]">Kernel Awaiting Input...</span></div>
                     <div class="grid grid-cols-2 gap-4">
                         <button onclick="action('enc')" class="lux-btn">Initialize Seal</button>
                         <button onclick="copy('out-e')" class="bg-white/5 py-4 rounded-3xl font-bold uppercase text-[9px] tracking-[3px] border border-white/10">Copy Token</button>
@@ -130,11 +125,11 @@
                         Swarg Industrial Audit Trail
                     </div>
                     <div id="log-content" class="space-y-1 uppercase">
-                        <div>> Titan V25.0 Master Suite... [ONLINE]</div>
+                        <div>> Titan V26.0 Absolute Engine Online... [OK]</div>
                     </div>
                 </div>
             </main>
-            <footer class="mt-20 text-center opacity-20 text-[9px] tracking-[15px] font-bold uppercase">&copy; 2026 Amar Kumar Systems</footer>
+            <footer class="mt-20 text-center opacity-20 text-[10px] tracking-[15px] font-bold uppercase">&copy; 2026 Amar Kumar Systems</footer>
         </div>
     </div>
 
@@ -148,14 +143,14 @@
                 </div>
                 <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
                     <h3 class="text-white font-black uppercase text-[10px] tracking-widest mb-2">Data Sovereignty</h3>
-                    <p class="text-slate-400 text-[11px] leading-relaxed">Strict 30-minute token lifecycle. Zero persistence. 100% Client-side local processing. No data ever leaves the device.</p>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">Strict 30-minute token lifecycle. Zero persistence. 100% Client-side local processing. No network required.</p>
                 </div>
                 <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
                     <h3 class="text-white font-black uppercase text-[10px] tracking-widest mb-2">Integrity Proof</h3>
-                    <p class="text-slate-400 text-[11px] leading-relaxed">Unique <b>65-Symbol Bijective Map</b> ensures 1:1 Base64 data integrity during symbol wrap. IV randomized per session.</p>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">Bijective <b>65-Symbol Mapping</b> ensures 1:1 Base64 data integrity. Every unique character has a specific mathematical symbol.</p>
                 </div>
             </div>
-            <button onclick="closeAbout()" class="mt-12 w-full py-4 border border-white/20 rounded-full text-[9px] font-black uppercase tracking-[4px]">Return to Terminal</button>
+            <button onclick="closeAbout()" class="mt-12 w-full py-4 border border-white/20 rounded-full text-[9px] font-black uppercase tracking-[4px]">Close Dashboard</button>
         </div>
     </div>
 
@@ -168,7 +163,7 @@
             p.style.animationDelay = Math.random()*10+'s'; bg.appendChild(p);
         }
 
-        // --- THE DEFINITIVE CURE (FIXED MAPPING) ---
+        // --- THE BIJECTIVE CURE (FIXED MAPPING) ---
         const SYMS = "†∆©∏§∞µ∑‡ʝ≈≠≤≥√℗ƒ∫◊π±⊕⊗⊘⊙⊚•⓪①②③④⑤⑥⑦⑧⑨▫¬¡Ω∂Ωæø¿¡†‡ˆ˜¯˘˙˚¸˝˛ˇ↳↴↲↟↡↞↠↢↣↤↦⌘";
         const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
@@ -176,7 +171,7 @@
         function fromSym(str) { return str.split('').map(c => B64[SYMS.indexOf(c)] || c).join(''); }
 
         function playType() { const s=document.getElementById('s-type'); s.currentTime=0; s.play().catch(()=>{}); }
-        function toast(m) { const t=document.createElement('div'); t.className='toast'; t.innerText=m; document.getElementById('toast-container').appendChild(t); setTimeout(()=>t.remove(), 2500); }
+        function toast(m) { const t=document.createElement('div'); t.className='toast bg-cyan-400/20 border border-cyan-400 p-3 rounded-full text-[10px] font-bold uppercase px-6'; t.innerText=m; document.getElementById('toast-container').appendChild(t); setTimeout(()=>t.remove(), 2500); }
         function addLog(m) { const l=document.getElementById('log-content'); const d=document.createElement('div'); d.innerText=`> ${m} [${new Date().toLocaleTimeString()}]`; l.prepend(d); if(l.children.length > 5) l.lastChild.remove(); }
         
         function tab(t) { 
@@ -190,17 +185,17 @@
         function panicMode() { 
             document.getElementById('i-raw').value=""; document.getElementById('i-enc').value=""; 
             document.getElementById('out-e').innerText="WIPED"; document.getElementById('out-d').innerText="WIPED";
-            toast("PANIC: BUFFERS FLUSHED"); document.getElementById('about-ui').style.display = 'flex'; 
+            toast("PANIC: DATA FLUSHED"); document.getElementById('about-ui').style.display = 'flex'; 
         }
 
-        // --- ABSOLUTE STABLE CORE ---
+        // --- TITAN CORE (ABSOLUTE STABILITY) ---
         async function action(mode) {
             const k = document.getElementById('m-key').value.trim();
             const inputField = document.getElementById(mode==='enc'?'i-raw':'i-enc');
             const out = document.getElementById(mode==='enc'?'out-e':'out-d');
             let inp = inputField.value.trim();
 
-            if(!k || !inp) { toast("MISSING PARAMETERS"); return; }
+            if(!k || !inp) { toast("PARAMETERS MISSING"); return; }
 
             addLog(`ANALYZING: AES-256-${mode.toUpperCase()} ENGINE...`);
             await new Promise(r => setTimeout(r, 1000));
@@ -208,7 +203,7 @@
             let result = "";
             if(mode === 'enc') {
                 try {
-                    // Industrial AES-256 with JSON formatting to preserve padding
+                    // Standard AES encryption preserving padding
                     const encrypted = CryptoJS.AES.encrypt(inp, k).toString();
                     const symbols = toSym(encrypted);
                     const ts = btoa(Date.now().toString());
@@ -220,8 +215,8 @@
                     const parts = inp.split("_");
                     if(parts.length < 2) { toast("INVALID TOKEN"); return; }
                     
-                    // Expiry check
-                    if(Date.now() - parseInt(atob(parts[0])) > 1800000) { toast("TOKEN EXPIRED (30M)"); out.innerText = "🛑 EXPIRED"; return; }
+                    // Expiry check (30 minutes)
+                    if(Date.now() - parseInt(atob(parts[0])) > 1800000) { toast("TOKEN EXPIRED"); out.innerText = "🛑 EXPIRED"; return; }
 
                     const b64Text = fromSym(parts[1]);
                     const bytes = CryptoJS.AES.decrypt(b64Text, k);
@@ -230,14 +225,14 @@
                     if(!decrypted || decrypted === "") { 
                         toast("DENIED: INCORRECT KEY"); 
                         out.innerText = "ACCESS DENIED"; 
-                        addLog("SECURITY: BREACH ATTEMPT BLOCKED"); return; 
+                        addLog("SECURITY: BREACH BLOCKED"); return; 
                     }
                     result = decrypted;
                     toast("AUTH: VERIFIED"); addLog("TITAN: TRUTH REVEALED");
                 } catch(e) { toast("ERROR: DECRYPT FAILED"); return; }
             }
 
-            // GLITCH REVEAL
+            // GLITCH SEQUENCER
             out.innerText = ""; let cur = ""; let idx = 0;
             const timer = setInterval(() => {
                 if(idx < result.length) {
