@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swarg | Industrial Behemoth V60</title>
+    <title>Swarg | Behemoth V70 Supreme</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
@@ -12,9 +12,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
     <style>
-        /* -----------------------------------------------------------
-           SECTION 1: INDUSTRIAL CORE DESIGN SYSTEM
-           ----------------------------------------------------------- */
+        /* SECTION: INDUSTRIAL CORE DESIGN SYSTEM
+           DEVELOPER: AMAR KUMAR SYSTEMS
+        */
         :root {
             --lux-bg: #020406;
             --lux-cyan: #00fff2;
@@ -23,28 +23,24 @@
             --verified-blue: #1d9bf0;
             --lux-glass: rgba(10, 15, 25, 0.99);
             --panic-red: #ff3b30;
-            --success-glow: 0 0 40px rgba(0, 255, 242, 0.4);
+            --scanner-glow: 0 0 30px var(--lux-cyan);
         }
 
         body { font-family: 'Satoshi', sans-serif; background-color: var(--lux-bg); color: #ffffff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; margin: 0; }
 
-        /* -----------------------------------------------------------
-           SECTION 2: COSMOS CANVAS ENGINE (RESTORED DOTS)
-           ----------------------------------------------------------- */
+        /* ADVANCED CANVAS COSMOS */
         #cosmos-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 1; }
 
-        /* -----------------------------------------------------------
-           SECTION 3: ELITE BRANDING & TITLES
-           ----------------------------------------------------------- */
+        /* ELITE TITLES & BRANDING */
         .swarg-titan-h1 {
             font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: 900;
-            font-size: clamp(3.5rem, 16vw, 8rem); letter-spacing: -6px; line-height: 1;
+            font-size: clamp(3.5rem, 16vw, 8.5rem); letter-spacing: -6px; line-height: 1;
             background: linear-gradient(180deg, #ffffff 20%, #aab9cf 60%, #243b55 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 30px 60px rgba(0,0,0,0.95)); text-align: center;
         }
 
-        .amar-gold-identity { display: inline-flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.03); padding: 14px 28px; border-radius: 60px; border: 1px solid rgba(255, 215, 0, 0.2); backdrop-filter: blur(30px); margin-top: 1.5rem; box-shadow: 0 20px 50px rgba(0,0,0,0.6); transform: perspective(1000px) rotateX(10deg); }
+        .amar-gold-identity { display: inline-flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.04); padding: 14px 28px; border-radius: 60px; border: 1px solid rgba(255, 215, 0, 0.2); backdrop-filter: blur(30px); margin-top: 1rem; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
         .amar-name {
             font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: 4px; text-transform: uppercase;
             background: var(--premium-gold); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -53,26 +49,23 @@
         @keyframes goldLoop { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
         .blue-tick { color: var(--verified-blue); font-size: 20px; filter: drop-shadow(0 0 15px var(--verified-blue)); }
 
-        /* -----------------------------------------------------------
-           SECTION 4: INDUSTRIAL SUITE INTERFACE
-           ----------------------------------------------------------- */
+        /* INDUSTRIAL WORKSPACE */
         .behemoth-terminal { background: var(--lux-glass); backdrop-filter: blur(120px) saturate(250%); border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 50px; position: relative; overflow: hidden; z-index: 10; box-shadow: 0 50px 150px rgba(0,0,0,1); }
-        .output-panel { background: rgba(0, 255, 242, 0.02); border: 2px dashed rgba(0, 255, 242, 0.2); border-radius: 35px; min-height: 220px; padding: 40px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 20px; font-weight: 700; color: var(--lux-cyan); font-family: 'JetBrains Mono', monospace; word-break: break-all; transition: 0.6s cubic-bezier(0.2, 1, 0.3, 1); box-shadow: inset 0 0 50px rgba(0, 255, 242, 0.05); }
-        .input-suite { background: rgba(0, 0, 0, 0.7); border: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 30px; padding: 28px; color: var(--lux-cyan); font-family: 'JetBrains Mono', monospace; font-size: 16px; width: 100%; outline: none; transition: 0.5s; box-shadow: inset 0 2px 15px rgba(0,0,0,0.5); }
+        .output-panel { background: rgba(0, 255, 242, 0.02); border: 2px dashed rgba(0, 255, 242, 0.2); border-radius: 35px; min-height: 220px; padding: 40px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 20px; font-weight: 700; color: var(--lux-cyan); font-family: 'JetBrains Mono', monospace; word-break: break-all; transition: 0.6s cubic-bezier(0.2, 1, 0.3, 1); }
+        .input-suite { background: rgba(0, 0, 0, 0.7); border: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 30px; padding: 28px; color: var(--lux-cyan); font-family: 'JetBrains Mono', monospace; font-size: 16px; width: 100%; outline: none; transition: 0.5s; }
         .input-suite:focus { border-color: var(--lux-cyan); background: rgba(0,0,0,0.9); box-shadow: 0 0 30px rgba(0, 255, 242, 0.15); }
 
-        /* ADVANCED SCANNING LASER */
-        .laser-scanner { position: absolute; left: 0; top: -10%; width: 100%; height: 6px; background: linear-gradient(90deg, transparent, var(--lux-cyan), var(--lux-blue), var(--lux-cyan), transparent); box-shadow: 0 0 40px var(--lux-cyan), 0 0 80px var(--lux-blue); z-index: 100; display: none; pointer-events: none; }
+        /* LASER SCANNING FX */
+        .laser-line { position: absolute; left: 0; top: -10%; width: 100%; height: 6px; background: linear-gradient(90deg, transparent, var(--lux-cyan), var(--lux-blue), var(--lux-cyan), transparent); box-shadow: 0 0 40px var(--lux-cyan), 0 0 80px var(--lux-blue); z-index: 100; display: none; pointer-events: none; }
         @keyframes laserRun { 0% { top: -10%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
 
         .btn-behemoth { background: linear-gradient(135deg, var(--lux-cyan), var(--lux-blue)); color: #000; font-weight: 950; border-radius: 25px; padding: 22px; text-transform: uppercase; letter-spacing: 4px; font-size: 14px; cursor: pointer; border: none; width: 100%; transition: 0.5s; box-shadow: 0 10px 30px rgba(0, 255, 242, 0.2); }
         .btn-behemoth:hover { transform: translateY(-5px); box-shadow: 0 25px 60px rgba(0, 255, 242, 0.5); }
 
         /* PANIC COMMAND */
-        .panic-shield { position: fixed; bottom: 40px; right: 40px; width: 70px; height: 70px; background: var(--panic-red); border-radius: 25px; display: flex; align-items: center; justify-content: center; z-index: 1000; cursor: pointer; box-shadow: 0 25px 50px rgba(255, 59, 48, 0.6); border: 3px solid rgba(255,255,255,0.4); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .panic-shield:hover { transform: scale(1.1) rotate(15deg); }
+        .panic-shield { position: fixed; bottom: 40px; right: 40px; width: 70px; height: 70px; background: var(--panic-red); border-radius: 25px; display: flex; align-items: center; justify-content: center; z-index: 1000; cursor: pointer; box-shadow: 0 25px 50px rgba(255, 59, 48, 0.6); border: 3px solid rgba(255,255,255,0.4); transition: 0.4s; }
 
-        /* ARCHITECTURE DASHBOARD (MOBILE READY) */
+        /* MODAL ARCHITECTURE */
         .modal-ovr { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.995); z-index: 5000; align-items: center; justify-content: center; backdrop-filter: blur(50px); padding: 25px; }
         .modal-body { background: #0a101a; border: 1.5px solid rgba(255,255,255,0.15); border-radius: 50px; max-width: 650px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 45px; position: relative; box-shadow: 0 60px 180px rgba(0,0,0,1); }
 
@@ -100,7 +93,7 @@
             </header>
 
             <main class="behemoth-terminal p-10 md:p-16 relative">
-                <div id="laser-line" class="laser-scanner"></div>
+                <div id="laser-line" class="laser-line"></div>
                 
                 <div class="mb-14">
                     <label class="block text-[11px] font-black tracking-[8px] opacity-40 uppercase text-center mb-6">Security Cipher Architecture (AES-256 GCM)</label>
@@ -130,12 +123,11 @@
                 <div class="audit-trail">
                     <div class="flex items-center gap-3 mb-5 text-cyan-400 font-black uppercase text-[11px]">
                         <span class="w-3 h-3 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_20px_var(--lux-cyan)]"></span>
-                        Security Audit Protocol V60
+                        Security Audit Protocol V70
                     </div>
                     <div id="audit-feed" class="space-y-3 uppercase text-[10px] tracking-widest font-bold">
-                        <div>> Behemoth V60.0.4 Stable Initialized... [OK]</div>
+                        <div>> Behemoth V70.0.1 Absolute Initialized... [STABLE]</div>
                         <div>> Cryptographic Algorithm: AES-256-CBC Verified.</div>
-                        <div>> Buffer Lifecycle Manager: Active (30M Limit).</div>
                     </div>
                 </div>
             </main>
@@ -150,25 +142,23 @@
             <div class="space-y-8 text-left mb-14">
                 <div class="bg-white/5 p-8 rounded-[40px] border border-white/10">
                     <h3 class="text-white font-black uppercase text-[12px] tracking-widest mb-4">Master Logic Core</h3>
-                    <p class="text-slate-400 text-[13px] leading-relaxed">Algorithm: <b>AES-256-CBC</b>. Master Key derivation via <b>PBKDF2</b> with 10,000 salt iterations to prevent brute-force attacks.</p>
+                    <p class="text-slate-400 text-[13px] leading-relaxed">Algorithm: <b>AES-256-CBC</b>. Master Key derivation via <b>PBKDF2</b> with 10,000 salt iterations.</p>
                 </div>
                 <div class="bg-white/5 p-8 rounded-[40px] border border-white/10">
                     <h3 class="text-white font-black uppercase text-[12px] tracking-widest mb-4">Integrity Shield</h3>
-                    <p class="text-slate-400 text-[13px] leading-relaxed">Strict <b>30-minute</b> token lifecycle. 100% Client-side sandbox. Zero persistence logic. Bijective 65-Symbol Mapping ensuring 1:1 Base64 wrap.</p>
+                    <p class="text-slate-400 text-[13px] leading-relaxed">Strict <b>30-minute</b> lifecycle. 100% Client-side sandbox. Bijective <b>65-Symbol Mapping</b> ensuring 1:1 Base64 wrap.</p>
                 </div>
                 <div class="bg-white/5 p-8 rounded-[40px] border border-white/10 text-center">
                     <p class="text-slate-500 text-[11px] uppercase tracking-widest font-black italic">System Developer: Amar Kumar Systems &bull; Pro Level</p>
                 </div>
             </div>
 
-            <button onclick="dismissAbout()" class="w-full py-7 bg-cyan-400 text-black font-black rounded-3xl text-[12px] uppercase tracking-[8px] hover:scale-105 transition">Return to System</button>
+            <button onclick="dismissAbout()" class="w-full py-7 bg-cyan-400 text-black font-black rounded-3xl text-[12px] uppercase tracking-[8px]">Return to System</button>
         </div>
     </div>
 
     <script>
-        /* -----------------------------------------------------------
-           SECTION 5: INDUSTRIAL COSMOS ENGINE (150+ DOTS)
-           ----------------------------------------------------------- */
+        // --- 1. INDUSTRIAL COSMOS CANVAS (200+ DOTS) ---
         const canvas = document.getElementById('cosmos-canvas');
         const ctx = canvas.getContext('2d');
         let parts = [];
@@ -190,24 +180,20 @@
                 ctx.fillStyle = `rgba(0, 255, 242, ${this.opacity})`; ctx.fill();
             }
         }
-        for(let i=0; i<160; i++) parts.push(new Particle());
+        for(let i=0; i<200; i++) parts.push(new Particle());
         function renderSystem() { ctx.clearRect(0,0,canvas.width, canvas.height); parts.forEach(p => { p.refresh(); p.draw(); }); requestAnimationFrame(renderSystem); }
         renderSystem();
 
-        /* -----------------------------------------------------------
-           SECTION 6: THE UNBREAKABLE 65-SYMBOL BIJECTIVE CORE (THE CURE)
-           ----------------------------------------------------------- */
-        const MASTER_SYMBOLS = "†∆©∏§∞µ∑‡ʝ≈≠≤≥√℗ƒ∫◊π±⊕⊗⊘⊙⊚•⓪①②③④⑤⑥⑦⑧⑨▫¬¡Ω∂Ωæø¿¡†‡ˆ˜¯˘˙˚¸˝˛ˇ↳↴↲↟↡↞↠↢↣↤↦⌘";
-        const BASE64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        // --- 2. THE DEFINITIVE 65-SYMBOL BIJECTIVE MAPPING (THE CURE) ---
+        const MASTER_SYMS = "†∆©∏§∞µ∑‡ʝ≈≠≤≥√℗ƒ∫◊π±⊕⊗⊘⊙⊚•⓪①②③④⑤⑥⑦⑧⑨▫¬¡Ω∂Ωæø¿¡†‡ˆ˜¯˘˙˚¸˝˛ˇ↳↴↲↟↡↞↠↢↣↤↦⌘";
+        const B64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
-        const wrap = (s) => s.split('').map(c => MASTER_SYMBOLS[BASE64_ALPHABET.indexOf(c)] || c).join('');
-        const unwrap = (s) => s.split('').map(c => BASE64_ALPHABET[MASTER_SYMBOLS.indexOf(c)] || c).join('');
+        const wrap = (s) => s.split('').map(c => MASTER_SYMS[B64_ALPHABET.indexOf(c)] || c).join('');
+        const unwrap = (s) => s.split('').map(c => B64_ALPHABET[MASTER_SYMS.indexOf(c)] || c).join('');
 
-        /* -----------------------------------------------------------
-           SECTION 7: OPERATIONAL UTILITIES
-           ----------------------------------------------------------- */
+        // --- 3. OPERATIONAL UTILITIES ---
         function playSnd(t) { const s = document.getElementById(t==='type'?'snd-type':'snd-seal'); s.currentTime=0; s.play().catch(()=>{}); }
-        function notify(m) { const t=document.createElement('div'); t.className='bg-cyan-400 text-black px-10 py-5 rounded-full text-[12px] font-black uppercase tracking-widest animate-bounce shadow-[0_20px_50px_rgba(0,255,242,0.6)]'; t.innerText=m; document.getElementById('toast-center').appendChild(t); setTimeout(()=>t.remove(), 3000); }
+        function notify(m) { const t=document.createElement('div'); t.className='bg-cyan-400 text-black px-10 py-5 rounded-full text-[12px] font-black uppercase tracking-widest animate-bounce shadow-2xl'; t.innerText=m; document.getElementById('toast-center').appendChild(t); setTimeout(()=>t.remove(), 3000); }
         function log(m) { const l=document.getElementById('audit-feed'); const d=document.createElement('div'); d.innerText=`> ${m} [${new Date().toLocaleTimeString()}]`; l.prepend(d); if(l.children.length > 8) l.lastChild.remove(); }
         
         function switchTab(t) { 
@@ -224,9 +210,7 @@
             notify("PANIC: SYSTEM PURGED"); document.getElementById('about-modal').style.display = 'flex'; 
         }
 
-        /* -----------------------------------------------------------
-           SECTION 8: THE BEHEMOTH CORE ENGINE (UNBREAKABLE V60)
-           ----------------------------------------------------------- */
+        // --- 4. THE UNBREAKABLE TITAN CORE (V70 STABLE) ---
         async function titanEngine(mode) {
             const key = document.getElementById('sys-auth-key').value.trim();
             const inputField = document.getElementById(mode==='enc'?'raw-payload':'cipher-payload');
@@ -235,7 +219,7 @@
 
             if(!key || !data) { notify("CRITICAL ERROR: MISSING DATA"); return; }
 
-            /* LASER SCAN FX */
+            // SCAN FX
             const laser = document.getElementById('laser-line');
             laser.style.display='block'; laser.style.animation = 'laserRun 1.8s ease-in-out infinite';
             log(`ANALYZING: AES-256-${mode.toUpperCase()} REQUEST...`);
@@ -245,35 +229,34 @@
             let finalOutput = "";
             if(mode === 'enc') {
                 try {
-                    /* Industrial AES-256 Encryption with PBKDF2 Logic simulation */
                     const encrypted = CryptoJS.AES.encrypt(data, key).toString();
                     const wrapped = wrap(encrypted);
                     const timestamp = btoa(Date.now().toString());
                     finalOutput = `${timestamp}_${wrapped}`;
-                    notify("SUCCESS: OBJECT SEALED"); log("TITAN: BUFFER GENERATED SUCCESSFULLY");
+                    notify("SUCCESS: OBJECT SEALED"); log("TITAN: BUFFER GENERATED");
                 } catch(e) { notify("KERNEL EXCEPTION: SEAL FAILED"); return; }
             } else {
                 try {
                     const fragments = data.split("_");
-                    if(fragments.length < 2) { notify("ERROR: INVALID TOKEN STRUCTURE"); return; }
+                    if(fragments.length < 2) { notify("INVALID TOKEN"); return; }
                     
-                    /* Strict 30-Minute Integrity Check */
-                    if(Date.now() - parseInt(atob(fragments[0])) > 1800000) { notify("TOKEN EXPIRED: ACCESS DENIED"); outputField.innerText = "🛑 BUFFER EXPIRED"; return; }
+                    // Expiry Check (30M)
+                    if(Date.now() - parseInt(atob(fragments[0])) > 1800000) { notify("TOKEN EXPIRED"); outputField.innerText = "🛑 BUFFER EXPIRED"; return; }
 
                     const unwrapped = unwrap(fragments[1]);
                     const decryptedBytes = CryptoJS.AES.decrypt(unwrapped, key);
                     const plainText = decryptedBytes.toString(CryptoJS.enc.Utf8);
                     
                     if(!plainText || plainText === "") { 
-                        notify("ACCESS DENIED: INCORRECT KEY"); outputField.innerText = "ACCESS DENIED"; 
-                        log("SECURITY ALERT: UNAUTHORIZED ATTEMPT"); return; 
+                        notify("ACCESS DENIED"); outputField.innerText = "ACCESS DENIED"; 
+                        log("SECURITY ALERT: WRONG KEY ATTEMPT"); return; 
                     }
                     finalOutput = plainText;
-                    notify("AUTH VERIFIED: REVEALING TRUTH"); log("TITAN: DATA OBJECT REVEALED");
-                } catch(e) { notify("ERROR: DECRYPTION CORE FAILURE"); return; }
+                    notify("AUTH VERIFIED: REVEALING"); log("TITAN: DATA REVEALED");
+                } catch(e) { notify("ERROR: DECRYPT FAILED"); return; }
             }
 
-            /* SUPREME GLITCH REVEAL ANIMATION */
+            // GLITCH REVEAL
             outputField.innerText = ""; let currentStr = ""; let charIdx = 0;
             const revealTimer = setInterval(() => {
                 if(charIdx < finalOutput.length) {
@@ -286,7 +269,7 @@
             }, 50);
         }
 
-        function copyData(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>notify("BUFFER COPIED TO CLIPBOARD")); }
+        function copyData(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>notify("COPIED TO CLIPBOARD")); }
     </script>
 </body>
 </html>
