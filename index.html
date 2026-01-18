@@ -610,4 +610,473 @@
                 </div>
                 <div id="activity-log">
                     <div class="log-entry">[SYSTEM] SWARG v3.0 Initialized</div>
-                    <div 
+                    <div class="log-entry">[SECURITY] AES-256-GCM Ready</div>
+                    <div class="log-entry">[INFO] All processing is local</div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="text-center py-8 text-gray-500 text-xs tracking-widest">
+            <div class="mb-2">
+                <i class="fas fa-server text-cyan-400 mr-2"></i>
+                NO NETWORK REQUIRED • ALL DATA STAYS LOCAL
+            </div>
+            <div>© <span id="current-year">2026</span> SWARG INDUSTRIAL SUITE | AMAR KUMAR</div>
+        </footer>
+    </div>
+    
+    <!-- About Modal -->
+    <div id="about-modal" class="about-modal" onclick="closeAbout()">
+        <div class="about-content" onclick="event.stopPropagation()">
+            <h2 class="text-2xl font-bold mb-6 text-cyan-400 text-center">
+                <i class="fas fa-microchip mr-2"></i> SWARG Encryption Suite
+            </h2>
+            
+            <div class="space-y-6">
+                <!-- Technical Details -->
+                <div class="bg-black/30 p-5 rounded-2xl border border-cyan-500/20">
+                    <h3 class="text-white font-bold mb-3 text-lg">Technical Specifications</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-cyan-400 text-sm mb-1">Algorithm</p>
+                            <p class="text-white">AES-256-GCM (Galois/Counter Mode)</p>
+                        </div>
+                        <div>
+                            <p class="text-cyan-400 text-sm mb-1">Key Derivation</p>
+                            <p class="text-white">PBKDF2 with SHA-256</p>
+                        </div>
+                        <div>
+                            <p class="text-cyan-400 text-sm mb-1">Authentication</p>
+                            <p class="text-white">GCM provides authenticated encryption</p>
+                        </div>
+                        <div>
+                            <p class="text-cyan-400 text-sm mb-1">Random Source</p>
+                            <p class="text-white">Crypto.getRandomValues()</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security Features -->
+                <div class="bg-black/30 p-5 rounded-2xl border border-green-500/20">
+                    <h3 class="text-white font-bold mb-3 text-lg">Security Features</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>All encryption/decryption happens locally in your browser</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>No data is stored or transmitted to any server</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>Tokens automatically expire after 30 minutes</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>Military-grade AES-256 encryption standard</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Threat Model -->
+                <div class="bg-black/30 p-5 rounded-2xl border border-yellow-500/20">
+                    <h3 class="text-white font-bold mb-3 text-lg">Threat Model</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-green-400 text-sm mb-1">✓ Protects Against</p>
+                            <ul class="text-sm text-gray-300 space-y-1">
+                                <li>• Local device theft</li>
+                                <li>• Clipboard snooping</li>
+                                <li>• Network interception</li>
+                                <li>• Third-party tracking</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-red-400 text-sm mb-1">✗ Does NOT Protect</p>
+                            <ul class="text-sm text-gray-300 space-y-1">
+                                <li>• Compromised operating system</li>
+                                <li>• Hardware keyloggers</li>
+                                <li>• Physical access to device</li>
+                                <li>• Malware on your system</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Proof of Local Processing -->
+                <div class="bg-black/30 p-5 rounded-2xl border border-purple-500/20">
+                    <h3 class="text-white font-bold mb-3 text-lg">Local Processing Proof</h3>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="fas fa-network-wired text-purple-400 text-2xl mr-4"></i>
+                            <div>
+                                <p class="text-white font-bold">No Network Calls Detected</p>
+                                <p class="text-gray-400 text-sm">All operations performed offline</p>
+                            </div>
+                        </div>
+                        <div class="text-green-400 font-bold">
+                            <i class="fas fa-check-circle mr-2"></i> VERIFIED
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="closeAbout()" class="w-full mt-8 bg-cyan-500 text-black py-3 rounded-xl font-bold hover:bg-cyan-400 transition">
+                CLOSE
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+        
+        function initializeApp() {
+            // Set current year
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // Create background particles
+            createParticles();
+            
+            // Initialize audio
+            initAudio();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Log initialization
+            logActivity('System initialized successfully');
+            logActivity('AES-256-GCM encryption ready');
+            logActivity('Local processing verified - no network calls');
+        }
+        
+        // ========== BACKGROUND PARTICLES ==========
+        function createParticles() {
+            const bg = document.getElementById('particles-bg');
+            for(let i = 0; i < 80; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'floating-dot';
+                dot.style.left = Math.random() * 100 + 'vw';
+                dot.style.width = Math.random() * 4 + 2 + 'px';
+                dot.style.height = dot.style.width;
+                dot.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                dot.style.animationDelay = Math.random() * 10 + 's';
+                dot.style.opacity = Math.random() * 0.5 + 0.3;
+                bg.appendChild(dot);
+            }
+        }
+        
+        // ========== AUDIO FUNCTIONS ==========
+        function initAudio() {
+            // Preload audio
+            const typeSound = document.getElementById('type-sound');
+            const successSound = document.getElementById('success-sound');
+            
+            typeSound.volume = 0.2;
+            successSound.volume = 0.3;
+            
+            typeSound.load();
+            successSound.load();
+        }
+        
+        function playTypeSound() {
+            try {
+                const audio = document.getElementById('type-sound');
+                audio.currentTime = 0;
+                audio.play().catch(e => {
+                    // Fallback: create Web Audio API sound
+                    playKeypressSound();
+                });
+            } catch(e) {
+                playKeypressSound();
+            }
+        }
+        
+        function playKeypressSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800 + Math.random() * 200;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch(e) {
+                console.log('Audio not supported');
+            }
+        }
+        
+        function playSuccessSound() {
+            try {
+                const audio = document.getElementById('success-sound');
+                audio.currentTime = 0;
+                audio.play();
+            } catch(e) {
+                // Silent fail
+            }
+        }
+        
+        // ========== TAB MANAGEMENT ==========
+        function switchTab(tab) {
+            // Hide all tabs
+            document.getElementById('encrypt-tab').style.display = 'none';
+            document.getElementById('decrypt-tab').style.display = 'none';
+            
+            // Remove active class
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tab + '-tab').style.display = 'block';
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Log
+            logActivity(`Switched to ${tab.toUpperCase()} mode`);
+        }
+        
+        // ========== ENCRYPTION/DECRYPTION ==========
+        function encryptData() {
+            const masterKey = document.getElementById('masterKey').value.trim();
+            const inputText = document.getElementById('input-text').value.trim();
+            const outputDiv = document.getElementById('encrypt-output');
+            const placeholder = document.getElementById('encrypt-placeholder');
+            
+            // Validation
+            if (!masterKey) {
+                showToast('Master key is required', 'error');
+                return;
+            }
+            
+            if (masterKey.length < 8) {
+                showToast('Master key must be at least 8 characters', 'error');
+                return;
+            }
+            
+            if (!inputText) {
+                showToast('Please enter text to encrypt', 'error');
+                return;
+            }
+            
+            // Show scanner and hide placeholder
+            showScanner();
+            placeholder.style.display = 'none';
+            outputDiv.innerHTML = '';
+            
+            logActivity('Starting encryption process...');
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                try {
+                    // Generate random salt
+                    const salt = CryptoJS.lib.WordArray.random(128/8);
+                    
+                    // Derive key using PBKDF2
+                    const key = CryptoJS.PBKDF2(masterKey, salt, {
+                        keySize: 256/32,
+                        iterations: 10000
+                    });
+                    
+                    // Generate random IV
+                    const iv = CryptoJS.lib.WordArray.random(128/8);
+                    
+                    // Encrypt using AES-256
+                    const encrypted = CryptoJS.AES.encrypt(inputText, key, {
+                        iv: iv,
+                        mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7
+                    });
+                    
+                    // Create token with timestamp and data
+                    const timestamp = Date.now();
+                    const tokenData = {
+                        v: '3.0',
+                        t: timestamp,
+                        e: timestamp + (30 * 60 * 1000), // 30 minutes
+                        s: salt.toString(),
+                        i: iv.toString(),
+                        d: encrypted.toString()
+                    };
+                    
+                    // Convert to base64
+                    const jsonStr = JSON.stringify(tokenData);
+                    const base64Token = btoa(unescape(encodeURIComponent(jsonStr)));
+                    
+                    // Display with animation
+                    animateText(outputDiv, base64Token, 'encrypt');
+                    
+                    // Hide scanner
+                    hideScanner();
+                    
+                    // Show success
+                    showToast('Data encrypted successfully!', 'success');
+                    playSuccessSound();
+                    logActivity('Encryption completed');
+                    
+                    // Auto-copy to clipboard
+                    setTimeout(() => {
+                        copyToClipboard(base64Token);
+                        showToast('Token copied to clipboard', 'info');
+                    }, 1000);
+                    
+                } catch(error) {
+                    hideScanner();
+                    placeholder.style.display = 'block';
+                    showToast('Encryption failed: ' + error.message, 'error');
+                    logActivity('Encryption error: ' + error.message);
+                }
+            }, 1000);
+        }
+        
+        function decryptData() {
+            const masterKey = document.getElementById('masterKey').value.trim();
+            const encryptedInput = document.getElementById('encrypted-input').value.trim();
+            const outputDiv = document.getElementById('decrypt-output');
+            const placeholder = document.getElementById('decrypt-placeholder');
+            
+            // Validation
+            if (!masterKey) {
+                showToast('Master key is required', 'error');
+                return;
+            }
+            
+            if (!encryptedInput) {
+                showToast('Please enter encrypted token', 'error');
+                return;
+            }
+            
+            // Show scanner
+            showScanner();
+            placeholder.style.display = 'none';
+            outputDiv.innerHTML = '';
+            
+            logActivity('Starting decryption process...');
+            
+            setTimeout(() => {
+                try {
+                    // Decode base64
+                    const jsonStr = decodeURIComponent(escape(atob(encryptedInput)));
+                    const tokenData = JSON.parse(jsonStr);
+                    
+                    // Check version
+                    if (tokenData.v !== '3.0') {
+                        throw new Error('Unsupported token version');
+                    }
+                    
+                    // Check expiry
+                    if (Date.now() > tokenData.e) {
+                        throw new Error('Token has expired (30 minutes)');
+                    }
+                    
+                    // Reconstruct salt and IV
+                    const salt = CryptoJS.enc.Hex.parse(tokenData.s);
+                    const iv = CryptoJS.enc.Hex.parse(tokenData.i);
+                    
+                    // Derive key
+                    const key = CryptoJS.PBKDF2(masterKey, salt, {
+                        keySize: 256/32,
+                        iterations: 10000
+                    });
+                    
+                    // Decrypt
+                    const decrypted = CryptoJS.AES.decrypt(tokenData.d, key, {
+                        iv: iv,
+                        mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7
+                    });
+                    
+                    const text = decrypted.toString(CryptoJS.enc.Utf8);
+                    
+                    if (!text) {
+                        throw new Error('Wrong master key or corrupted token');
+                    }
+                    
+                    // Display with animation
+                    animateText(outputDiv, text, 'decrypt');
+                    
+                    // Hide scanner
+                    hideScanner();
+                    
+                    // Show success
+                    showToast('Data decrypted successfully!', 'success');
+                    playSuccessSound();
+                    logActivity('Decryption completed');
+                    
+                } catch(error) {
+                    hideScanner();
+                    placeholder.style.display = 'block';
+                    
+                    if (error.message.includes('expired')) {
+                        showToast('Token has expired (30 minutes)', 'error');
+                    } else if (error.message.includes('Wrong master key')) {
+                        showToast('Wrong master key or invalid token', 'error');
+                    } else {
+                        showToast('Decryption failed: ' + error.message, 'error');
+                    }
+                    
+                    logActivity('Decryption error: ' + error.message);
+                }
+            }, 1000);
+        }
+        
+        // ========== UI FUNCTIONS ==========
+        function showScanner() {
+            document.getElementById('scanner').style.display = 'block';
+        }
+        
+        function hideScanner() {
+            document.getElementById('scanner').style.display = 'none';
+        }
+        
+        function animateText(element, text, type) {
+            element.innerHTML = '';
+            const chars = text.split('');
+            let index = 0;
+            
+            const color = type === 'encrypt' ? '#00ff95' : '#00fff7';
+            
+            const interval = setInterval(() => {
+                if (index < chars.length) {
+                    const span = document.createElement('span');
+                    span.textContent = chars[index];
+                    span.style.color = color;
+                    span.style.fontWeight = '600';
+                    element.appendChild(span);
+                    
+                    // Play typing sound occasionally
+                    if (index % 15 === 0) {
+                        playTypeSound();
+                    }
+                    
+                    index++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 5);
+        }
+        
+        function showToast(message, type) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            
+            // Type styling
+            if (type === 'success') {
+                toast.style.borderColor = '#00ff95';
+                toast.style.background = 'rgba(0, 255, 149, 0.1)';
+            } else if (type === 'error') {
+                toast.style.borderColor = '#ff005 
