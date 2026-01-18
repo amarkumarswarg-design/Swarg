@@ -1155,4 +1155,491 @@
                 const size = Math.random() * 4 + 1;
                 const x = Math.random() * 100;
                 const y = Math.random() * 100;
-                con
+                const duration = Math.random() * 5 + 3;
+                const delay = Math.random() * 5;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${x}vw`;
+                particle.style.top = `${y}vh`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                particle.style.background = `hsl(${Math.random() * 60 + 180}, 100%, 50%)`;
+                
+                matrix.appendChild(particle);
+            }
+        }
+        
+        // ========== TAB MANAGEMENT ==========
+        function switchTab(tab) {
+            // Update active tab button
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-tab') === tab) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Show active tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            document.getElementById(tab + 'Tab').style.display = 'block';
+            currentTab = tab;
+            
+            // Update security status
+            updateSecurityStatus(`${tab}_ready`);
+            logActivity(`Switched to ${tab.toUpperCase()} mode`);
+        }
+        
+        // ========== KEY STRENGTH INDICATOR ==========
+        function updateKeyStrength() {
+            const key = document.getElementById('masterKey').value;
+            const bars = document.querySelectorAll('.strength-bar');
+            const strengthText = document.getElementById('strengthText');
+            
+            let strength = 0;
+            let text = 'Weak';
+            let color = '#ff003c';
+            
+            if (key.length === 0) {
+                strength = 0;
+                text = 'No key';
+            } else if (key.length < 8) {
+                strength = 1;
+                text = 'Very Weak';
+                color = '#ff003c';
+            } else if (key.length < 12) {
+                strength = 2;
+                text = 'Weak';
+                color = '#ffcc00';
+            } else if (key.length < 16) {
+                strength = 3;
+                text = 'Good';
+                color = '#00ff88';
+            } else if (key.length < 20) {
+                strength = 4;
+                text = 'Strong';
+                color = '#00f3ff';
+            } else {
+                strength = 5;
+                text = 'Very Strong';
+                color = '#9d00ff';
+            }
+            
+            // Update bars
+            bars.forEach((bar, index) => {
+                if (index < strength) {
+                    bar.style.background = color;
+                    bar.style.boxShadow = `0 0 10px ${color}`;
+                } else {
+                    bar.style.background = 'rgba(255, 255, 255, 0.1)';
+                    bar.style.boxShadow = 'none';
+                }
+            });
+            
+            // Update text
+            strengthText.textContent = `Strength: ${text}`;
+            strengthText.style.color = color;
+        }
+        
+        // ========== ENCRYPTION ENGINE ==========
+        function performEncryption() {
+            const masterKey = document.getElementById('masterKey').value.trim();
+            const inputText = document.getElementById('inputText').value.trim();
+            const outputElement = document.getElementById('encryptedOutput');
+            const placeholder = document.getElementById('encryptPlaceholder');
+            
+            // Validation
+            if (!masterKey) {
+                showToast('Master key is required', 'error');
+                playSound('error');
+                return;
+            }
+            
+            if (masterKey.length < 8) {
+                showToast('Master key must be at least 8 characters', 'error');
+                playSound('error');
+                return;
+            }
+            
+            if (!inputText) {
+                showToast('Please enter text to encrypt', 'error');
+                playSound('error');
+                return;
+            }
+            
+            // Start encryption process
+            showScanner();
+            updateSecurityStatus('encrypting');
+            placeholder.style.display = 'none';
+            outputElement.innerHTML = '';
+            logActivity('Starting encryption process...');
+            
+            setTimeout(() => {
+                try {
+                    // Enhanced encryption with multiple layers
+                    const encryptedData = encryptWithLayers(inputText, masterKey);
+                    
+                    // Display with animation
+                    displayAnimatedOutput(outputElement, encryptedData, 'encrypt');
+                    
+                    // Update UI
+                    hideScanner();
+                    updateSecurityStatus('encrypted');
+                    showToast('Data encrypted successfully', 'success');
+                    logActivity('Encryption completed successfully');
+                    playSound('success');
+                    
+                    // Add to history
+                    encryptionHistory.push({
+                        timestamp: new Date(),
+                        data: inputText.substring(0, 50) + (inputText.length > 50 ? '...' : '')
+                    });
+                    
+                } catch (error) {
+                    console.error('Encryption error:', error);
+                    hideScanner();
+                    updateSecurityStatus('error');
+                    showToast('Encryption failed: ' + error.message, 'error');
+                    logActivity(`Encryption error: ${error.message}`);
+                    playSound('error');
+                    placeholder.style.display = 'block';
+                }
+            }, 1500);
+        }
+        
+        // ========== DECRYPTION ENGINE ==========
+        function performDecryption() {
+            const masterKey = document.getElementById('masterKey').value.trim();
+            const encryptedInput = document.getElementById('encryptedInput').value.trim();
+            const outputElement = document.getElementById('decryptedOutput');
+            const placeholder = document.getElementById('decryptPlaceholder');
+            const tokenInfo = document.getElementById('tokenInfo');
+            
+            // Validation
+            if (!masterKey) {
+                showToast('Master key is required', 'error');
+                playSound('error');
+                return;
+            }
+            
+            if (!encryptedInput) {
+                showToast('Please enter encrypted token', 'error');
+                playSound('error');
+                return;
+            }
+            
+            // Start decryption process
+            showScanner();
+            updateSecurityStatus('decrypting');
+            placeholder.style.display = 'none';
+            outputElement.innerHTML = '';
+            tokenInfo.classList.add('hidden');
+            logActivity('Starting decryption process...');
+            
+            setTimeout(() => {
+                try {
+                    // Enhanced decryption with validation
+                    const decryptedData = decryptWithLayers(encryptedInput, masterKey);
+                    
+                    if (!decryptedData) {
+                        throw new Error('Invalid master key or corrupted token');
+                    }
+                    
+                    // Display with animation
+                    displayAnimatedOutput(outputElement, decryptedData, 'decrypt');
+                    
+                    // Update UI
+                    hideScanner();
+                    updateSecurityStatus('decrypted');
+                    showToast('Data decrypted successfully', 'success');
+                    logActivity('Decryption completed successfully');
+                    playSound('success');
+                    
+                    // Show token info
+                    showTokenInfo(encryptedInput);
+                    
+                    // Add to history
+                    decryptionHistory.push({
+                        timestamp: new Date(),
+                        success: true
+                    });
+                    
+                } catch (error) {
+                    console.error('Decryption error:', error);
+                    hideScanner();
+                    updateSecurityStatus('error');
+                    
+                    if (error.message.includes('expired')) {
+                        showToast('Token has expired (30-minute limit)', 'error');
+                    } else if (error.message.includes('Invalid') || error.message.includes('wrong key')) {
+                        showToast('Wrong master key or invalid token', 'error');
+                    } else {
+                        showToast('Decryption failed: ' + error.message, 'error');
+                    }
+                    
+                    logActivity(`Decryption error: ${error.message}`);
+                    playSound('error');
+                    placeholder.style.display = 'block';
+                }
+            }, 1500);
+        }
+        
+        // ========== ENHANCED ENCRYPTION ALGORITHM ==========
+        function encryptWithLayers(text, key) {
+            try {
+                // Layer 1: Generate salt and derive key using PBKDF2
+                const salt = CryptoJS.lib.WordArray.random(128/8);
+                const derivedKey = CryptoJS.PBKDF2(key, salt, {
+                    keySize: 512/32,
+                    iterations: 10000
+                });
+                
+                // Layer 2: Generate IV
+                const iv = CryptoJS.lib.WordArray.random(128/8);
+                
+                // Layer 3: AES-256 Encryption
+                const encrypted = CryptoJS.AES.encrypt(text, derivedKey, {
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+                
+                // Layer 4: HMAC for integrity check
+                const hmac = CryptoJS.HmacSHA512(encrypted.toString(), derivedKey);
+                
+                // Layer 5: Compile final token with metadata
+                const timestamp = Date.now();
+                const expiry = timestamp + (30 * 60 * 1000); // 30 minutes
+                
+                const tokenData = {
+                    v: '3.0',                    // Version
+                    t: timestamp,                // Creation time
+                    e: expiry,                   // Expiry time
+                    s: salt.toString(),          // Salt
+                    i: iv.toString(),            // IV
+                    d: encrypted.toString(),     // Encrypted data
+                    h: hmac.toString()           // HMAC
+                };
+                
+                // Convert to base64
+                const jsonString = JSON.stringify(tokenData);
+                const base64Token = btoa(unescape(encodeURIComponent(jsonString)));
+                
+                // Add random padding for extra security
+                const padding = generateRandomString(16);
+                const finalToken = padding + base64Token + padding;
+                
+                return finalToken;
+                
+            } catch (error) {
+                throw new Error('Encryption failed: ' + error.message);
+            }
+        }
+        
+        // ========== ENHANCED DECRYPTION ALGORITHM ==========
+        function decryptWithLayers(token, key) {
+            try {
+                // Remove padding
+                const cleanToken = token.substring(16, token.length - 16);
+                
+                // Decode base64
+                const jsonString = decodeURIComponent(escape(atob(cleanToken)));
+                const tokenData = JSON.parse(jsonString);
+                
+                // Check version
+                if (tokenData.v !== '3.0') {
+                    throw new Error('Unsupported token version');
+                }
+                
+                // Check expiry
+                const now = Date.now();
+                if (now > tokenData.e) {
+                    throw new Error('Token expired');
+                }
+                
+                // Reconstruct salt and IV
+                const salt = CryptoJS.enc.Hex.parse(tokenData.s);
+                const iv = CryptoJS.enc.Hex.parse(tokenData.i);
+                
+                // Derive key using PBKDF2
+                const derivedKey = CryptoJS.PBKDF2(key, salt, {
+                    keySize: 512/32,
+                    iterations: 10000
+                });
+                
+                // Verify HMAC
+                const hmac = CryptoJS.HmacSHA512(tokenData.d, derivedKey);
+                if (hmac.toString() !== tokenData.h) {
+                    throw new Error('Integrity check failed');
+                }
+                
+                // Decrypt data
+                const decrypted = CryptoJS.AES.decrypt(tokenData.d, derivedKey, {
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+                
+                const result = decrypted.toString(CryptoJS.enc.Utf8);
+                
+                if (!result) {
+                    throw new Error('Decryption failed - invalid key or data');
+                }
+                
+                return result;
+                
+            } catch (error) {
+                throw new Error('Decryption failed: ' + error.message);
+            }
+        }
+        
+        // ========== UTILITY FUNCTIONS ==========
+        function generateRandomString(length) {
+            const chars = 'ABCDEFGHIJKLMNLMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        function displayAnimatedOutput(element, text, type) {
+            element.innerHTML = '';
+            const chars = text.split('');
+            let index = 0;
+            
+            const colors = {
+                encrypt: '#00ff88',
+                decrypt: '#00f3ff'
+            };
+            
+            const interval = setInterval(() => {
+                if (index < chars.length) {
+                    const span = document.createElement('span');
+                    span.textContent = chars[index];
+                    span.style.color = colors[type];
+                    span.style.fontWeight = '600';
+                    element.appendChild(span);
+                    
+                    // Play typing sound every 10 characters
+                    if (index % 10 === 0) {
+                        playSound('type');
+                    }
+                    
+                    index++;
+                } else {
+                    clearInterval(interval);
+                    playSound('success');
+                }
+            }, 10);
+        }
+        
+        function showTokenInfo(token) {
+            try {
+                const cleanToken = token.substring(16, token.length - 16);
+                const jsonString = decodeURIComponent(escape(atob(cleanToken)));
+                const tokenData = JSON.parse(jsonString);
+                
+                const age = Date.now() - tokenData.t;
+                const ageMinutes = Math.floor(age / (60 * 1000));
+                const ageSeconds = Math.floor((age % (60 * 1000)) / 1000);
+                
+                const expiry = tokenData.e - Date.now();
+                const expiryMinutes = Math.floor(expiry / (60 * 1000));
+                const expirySeconds = Math.floor((expiry % (60 * 1000)) / 1000);
+                
+                const tokenInfo = document.getElementById('tokenInfo');
+                const tokenAge = document.getElementById('tokenAge');
+                const tokenExpiry = document.getElementById('tokenExpiry');
+                
+                tokenAge.textContent = `Created: ${ageMinutes}m ${ageSeconds}s ago`;
+                tokenExpiry.textContent = `Expires in: ${expiryMinutes}m ${expirySeconds}s`;
+                
+                tokenInfo.classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Token info error:', error);
+            }
+        }
+        
+        // ========== UI FUNCTIONS ==========
+        function showScanner() {
+            document.getElementById('scanner').style.display = 'block';
+        }
+        
+        function hideScanner() {
+            document.getElementById('scanner').style.display = 'none';
+        }
+        
+        function updateSecurityStatus(status) {
+            const statusElement = document.getElementById('securityStatus');
+            const statusMap = {
+                'ready': { text: 'READY', color: '#00ff88' },
+                'encrypt_ready': { text: 'ENCRYPTION READY', color: '#00f3ff' },
+                'decrypt_ready': { text: 'DECRYPTION READY', color: '#9d00ff' },
+                'encrypting': { text: 'ENCRYPTING...', color: '#ffcc00' },
+                'decrypting': { text: 'DECRYPTING...', color: '#ffcc00' },
+                'encrypted': { text: 'ENCRYPTED', color: '#00ff88' },
+                'decrypted': { text: 'DECRYPTED', color: '#00ff88' },
+                'error': { text: 'SECURITY ERROR', color: '#ff003c' }
+            };
+            
+            if (statusMap[status]) {
+                statusElement.textContent = statusMap[status].text;
+                statusElement.style.color = statusMap[status].color;
+            }
+        }
+        
+        function updateSystemStatus(status) {
+            const indicator = document.querySelector('.status-indicator');
+            if (status === 'active') {
+                indicator.style.background = '#00ff88';
+                systemActive = true;
+            } else if (status === 'error') {
+                indicator.style.background = '#ff003c';
+                systemActive = false;
+            }
+        }
+        
+        function logActivity(message) {
+            const logElement = document.getElementById('activityLog');
+            const timestamp = new Date().toLocaleTimeString('en-US', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span class="log-time">[${timestamp}]</span> <span class="log-message">${message}</span>`;
+            
+            logElement.insertBefore(logEntry, logElement.firstChild);
+            
+            // Keep only last 10 entries
+            while (logElement.children.length > 10) {
+                logElement.removeChild(logElement.lastChild);
+            }
+        }
+        
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            
+            // Type-specific styling
+            const typeColors = {
+                'success': '#00ff88',
+                'error': '#ff003c',
+                'info': '#00f3ff',
+                'warning': '#ffcc00'
+            };
+            
+            if (typeColors[type]) {
+                toast.style.borderColor = typeColors[type];
+                toast.style.boxShadow = `0 5px 20px ${typeColors[
