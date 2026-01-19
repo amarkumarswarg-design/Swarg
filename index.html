@@ -1087,6 +1087,247 @@
             }
         }
 
-        // UI Functi
+        // UI Functions
+        function showMainInterface() {
+            document.getElementById('welcome-message').classList.add('hidden');
+            document.getElementById('main-interface').classList.remove('hidden');
+        }
+
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tab);
+            });
+
+            // Show selected tab
+            document.getElementById('lock-tab').classList.toggle('hidden', tab !== 'lock');
+            document.getElementById('unlock-tab').classList.toggle('hidden', tab !== 'unlock');
+
+            state.currentTab = tab;
+        }
+
+        function showLockOutput(token) {
+            const output = document.getElementById('lock-output-content');
+            const outputContainer = document.getElementById('lock-output');
+            const placeholder = document.getElementById('lock-placeholder');
+            const success = document.getElementById('lock-success');
+
+            output.textContent = token;
+            outputContainer.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            success.classList.remove('hidden');
+
+            // Scroll to output
+            outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function hideLockOutput() {
+            document.getElementById('lock-output').classList.add('hidden');
+            document.getElementById('lock-placeholder').classList.remove('hidden');
+            document.getElementById('lock-success').classList.add('hidden');
+        }
+
+        function showUnlockOutput(text) {
+            const output = document.getElementById('unlock-output-content');
+            const outputContainer = document.getElementById('unlock-output');
+            const placeholder = document.getElementById('unlock-placeholder');
+            const success = document.getElementById('unlock-success');
+            const timer = document.getElementById('autolock-timer');
+
+            output.textContent = text;
+            outputContainer.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            success.classList.remove('hidden');
+            
+            if (state.autoHideEnabled) {
+                timer.classList.remove('hidden');
+            }
+
+            // Scroll to output
+            outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function hideUnlockOutput() {
+            document.getElementById('unlock-output').classList.add('hidden');
+            document.getElementById('unlock-placeholder').classList.remove('hidden');
+            document.getElementById('unlock-success').classList.add('hidden');
+            document.getElementById('autolock-timer').classList.add('hidden');
+        }
+
+        function startAutoHideTimer() {
+            // Clear existing timer
+            if (state.autoHideTimer) {
+                clearInterval(state.autoHideTimer);
+            }
+
+            let secondsLeft = CONFIG.AUTO_HIDE_SECONDS;
+            const timerElement = document.getElementById('timer-countdown');
+            timerElement.textContent = secondsLeft;
+
+            state.autoHideTimer = setInterval(() => {
+                secondsLeft--;
+                timerElement.textContent = secondsLeft;
+
+                if (secondsLeft <= 0) {
+                    clearInterval(state.autoHideTimer);
+                    hideUnlockOutput();
+                    showToast('Unlocked data hidden (auto-lock)');
+                }
+            }, 1000);
+        }
+
+        function getCurrentOutput() {
+            if (state.currentTab === 'lock') {
+                return document.getElementById('lock-output-content').textContent;
+            } else {
+                return document.getElementById('unlock-output-content').textContent;
+            }
+        }
+
+        // Sound Functions
+        function initAudio() {
+            // Preload all sounds
+            const sounds = ['type', 'lock', 'unlock', 'success', 'error'];
+            sounds.forEach(sound => {
+                const audio = document.getElementById(`${sound}-sound`);
+                if (audio) {
+                    audio.load();
+                    audio.volume = 0.3;
+                }
+            });
+        }
+
+        function playSound(sound) {
+            if (!state.soundsEnabled) return;
+            
+            try {
+                const audio = document.getElementById(`${sound}-sound`);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(() => {
+                        // Ignore audio errors
+                    });
+                }
+            } catch (error) {
+                // Ignore audio errors
+            }
+        }
+
+        function playTypingSound() {
+            // Only play typing sound occasionally to avoid annoyance
+            if (Math.random() < 0.3) {
+                playSound('type');
+            }
+        }
+
+        // Utility Functions
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                
+                // Clear clipboard after 15 seconds
+                setTimeout(async () => {
+                    try {
+                        await navigator.clipboard.writeText('');
+                    } catch (error) {
+                        // Ignore clipboard clearing errors
+                    }
+                }, 15000);
+                
+                return true;
+            } catch (error) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                return true;
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('hidden');
+            
+            // Set color based on type
+            if (type === 'error') {
+                toast.style.background = '#ef4444';
+            } else if (type === 'warning') {
+                toast.style.background = '#f59e0b';
+            } else {
+                toast.style.background = '#10b981';
+            }
+
+            // Auto hide
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Settings
+        function loadSettings() {
+            const savedSounds = localStorage.getItem('swarg_sounds');
+            const savedAutoHide = localStorage.getItem('swarg_autohide');
+            
+            if (savedSounds !== null) {
+                state.soundsEnabled = savedSounds === 'true';
+                document.getElementById('sound-toggle').checked = state.soundsEnabled;
+            }
+            
+            if (savedAutoHide !== null) {
+                state.autoHideEnabled = savedAutoHide === 'true';
+                document.getElementById('autohide-toggle').checked = state.autoHideEnabled;
+            }
+        }
+
+        function saveSettings() {
+            localStorage.setItem('swarg_sounds', state.soundsEnabled);
+            localStorage.setItem('swarg_autohide', state.autoHideEnabled);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+L to lock
+            if (e.ctrlKey && e.key === 'l') {
+                e.preventDefault();
+                document.getElementById('lock-btn').click();
+            }
+            
+            // Ctrl+U to unlock
+            if (e.ctrlKey && e.key === 'u') {
+                e.preventDefault();
+                document.getElementById('unlock-btn').click();
+            }
+            
+            // Escape to close modal
+            if (e.key === 'Escape') {
+                document.getElementById('settings-modal').style.display = 'none';
+            }
+            
+            // Tab switching with 1/2
+            if (e.key === '1') {
+                e.preventDefault();
+                switchTab('lock');
+            }
+            if (e.key === '2') {
+                e.preventDefault();
+                switchTab('unlock');
+            }
+        });
+
+        // Prevent form submission
+        document.querySelectorAll('input, textarea').forEach(element => {
+            element.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.ctrlKey) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
                         
      
