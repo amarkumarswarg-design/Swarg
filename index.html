@@ -1407,4 +1407,292 @@
         }
 
         // ===== CORE FUNCTIONS =====
-        async
+        async function encryptData() {
+            const text = document.getElementById('text-to-encrypt').value.trim();
+            const password = state.password;
+
+            if (!password || password.length < 8) {
+                showToast('Password must be at least 8 characters', 'error');
+                return;
+            }
+
+            if (!text) {
+                showToast('Please enter text to encrypt', 'error');
+                return;
+            }
+
+            const encryptBtn = document.getElementById('encrypt-btn');
+            const originalText = encryptBtn.innerHTML;
+            encryptBtn.innerHTML = '<span class="loading"><span class="loading-spinner"></span> Encrypting...</span>';
+            encryptBtn.disabled = true;
+
+            // Show scanner animation
+            const scanner = document.getElementById('scanner-line');
+            scanner.style.display = 'block';
+            
+            playSound('encrypt');
+
+            try {
+                // Simulate processing (in real app, this would be actual encryption)
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Generate fake token for demo (in real app, use actual encryption)
+                const fakeToken = btoa(JSON.stringify({
+                    v: '1.0',
+                    t: Date.now(),
+                    data: 'ENCRYPTED_' + Math.random().toString(36).substr(2, 9)
+                }));
+
+                showLockOutput(fakeToken);
+                
+                // Auto-copy if enabled
+                if (state.autoCopyEnabled) {
+                    await copyToClipboard(fakeToken);
+                    showToast('Encrypted text copied', 'success');
+                }
+                
+                playSound('success');
+
+            } catch (error) {
+                console.error('Encryption error:', error);
+                showToast('Failed to encrypt data', 'error');
+                playSound('error');
+            } finally {
+                encryptBtn.innerHTML = originalText;
+                encryptBtn.disabled = false;
+                
+                // Hide scanner after animation
+                setTimeout(() => {
+                    scanner.style.display = 'none';
+                }, 1200);
+            }
+        }
+
+        async function decryptData() {
+            const token = document.getElementById('text-to-decrypt').value.trim();
+            const password = state.password;
+
+            if (!password) {
+                showToast('Please enter your password', 'error');
+                return;
+            }
+
+            if (!token) {
+                showToast('Please enter encrypted code', 'error');
+                return;
+            }
+
+            // Check rate limiting
+            if (state.lockedUntil > Date.now()) {
+                const remaining = Math.ceil((state.lockedUntil - Date.now()) / 1000);
+                showToast(`Too many attempts. Try again in ${remaining} seconds.`, 'error');
+                return;
+            }
+
+            const decryptBtn = document.getElementById('decrypt-btn');
+            const originalText = decryptBtn.innerHTML;
+            decryptBtn.innerHTML = '<span class="loading"><span class="loading-spinner"></span> Decrypting...</span>';
+            decryptBtn.disabled = true;
+            
+            playSound('decrypt');
+
+            try {
+                // Simulate processing
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // For demo, just show the token as decrypted
+                // In real app, this would be actual decryption
+                showUnlockOutput(token);
+                
+                playSound('success');
+
+                // Start auto-hide timer
+                if (state.autoHideEnabled) {
+                    startAutoHideTimer();
+                }
+
+            } catch (error) {
+                console.error('Decryption error:', error);
+                
+                // Handle failed attempts
+                state.failedAttempts++;
+                if (state.failedAttempts >= CONFIG.MAX_ATTEMPTS) {
+                    state.lockedUntil = Date.now() + (CONFIG.LOCK_TIME_SECONDS * 1000);
+                    showToast(`Too many attempts. Locked for ${CONFIG.LOCK_TIME_SECONDS} seconds.`, 'error');
+                } else {
+                    showToast('Incorrect password or invalid code', 'error');
+                }
+                
+                playSound('error');
+            } finally {
+                decryptBtn.innerHTML = originalText;
+                decryptBtn.disabled = false;
+            }
+        }
+
+        function showLockOutput(token) {
+            const output = document.getElementById('encrypted-output');
+            const placeholder = document.getElementById('encrypted-placeholder');
+            const success = document.getElementById('encrypt-success');
+            
+            output.textContent = token;
+            output.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            
+            setTimeout(() => {
+                success.classList.remove('hidden');
+                output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 300);
+        }
+
+        function hideLockOutput() {
+            document.getElementById('encrypted-output').classList.add('hidden');
+            document.getElementById('encrypted-placeholder').classList.remove('hidden');
+            document.getElementById('encrypt-success').classList.add('hidden');
+        }
+
+        function showUnlockOutput(text) {
+            const output = document.getElementById('decrypted-output');
+            const placeholder = document.getElementById('decrypted-placeholder');
+            const success = document.getElementById('decrypt-success');
+            
+            output.textContent = text;
+            output.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            
+            setTimeout(() => {
+                success.classList.remove('hidden');
+                output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 300);
+        }
+
+        function hideUnlockOutput() {
+            document.getElementById('decrypted-output').classList.add('hidden');
+            document.getElementById('decrypted-placeholder').classList.remove('hidden');
+            document.getElementById('decrypt-success').classList.add('hidden');
+            document.getElementById('auto-lock-timer').classList.add('hidden');
+        }
+
+        function startAutoHideTimer() {
+            if (state.autoHideTimer) {
+                clearInterval(state.autoHideTimer);
+            }
+
+            let secondsLeft = CONFIG.AUTO_HIDE_SECONDS;
+            const timerElement = document.getElementById('timer-count');
+            timerElement.textContent = secondsLeft;
+            
+            document.getElementById('auto-lock-timer').classList.remove('hidden');
+
+            state.autoHideTimer = setInterval(() => {
+                secondsLeft--;
+                timerElement.textContent = secondsLeft;
+
+                if (secondsLeft <= 0) {
+                    clearInterval(state.autoHideTimer);
+                    hideUnlockOutput();
+                    showToast('Unlocked data hidden', 'info');
+                }
+            }, 1000);
+        }
+
+        // ===== UI FUNCTIONS =====
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tab);
+            });
+
+            // Show selected tab
+            document.getElementById('lock-tab').classList.toggle('hidden', tab !== 'lock');
+            document.getElementById('unlock-tab').classList.toggle('hidden', tab !== 'unlock');
+
+            state.currentTab = tab;
+        }
+
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                
+                // Auto-clear clipboard after 15 seconds
+                setTimeout(async () => {
+                    try {
+                        await navigator.clipboard.writeText('');
+                    } catch (error) {
+                        // Ignore
+                    }
+                }, 15000);
+                
+                return true;
+            } catch (error) {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                return true;
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            
+            // Style based on type
+            if (type === 'error') {
+                toast.style.background = 'var(--accent-red)';
+            } else if (type === 'warning') {
+                toast.style.background = 'var(--accent-yellow)';
+                toast.style.color = 'var(--gray-900)';
+            } else if (type === 'info') {
+                toast.style.background = 'var(--accent-cyan)';
+            } else {
+                toast.style.background = 'var(--accent-green)';
+            }
+            
+            container.appendChild(toast);
+            
+            // Auto remove
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    container.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // ===== SETTINGS =====
+        function loadSettings() {
+            const savedSounds = localStorage.getItem('swarg_sounds');
+            const savedAutoHide = localStorage.getItem('swarg_autohide');
+            const savedAutoCopy = localStorage.getItem('swarg_autocopy');
+            
+            if (savedSounds !== null) {
+                state.soundsEnabled = savedSounds === 'true';
+                document.getElementById('sound-toggle').checked = state.soundsEnabled;
+            }
+            
+            if (savedAutoHide !== null) {
+                state.autoHideEnabled = savedAutoHide === 'true';
+                document.getElementById('auto-hide-toggle').checked = state.autoHideEnabled;
+            }
+            
+            if (savedAutoCopy !== null) {
+                state.autoCopyEnabled = savedAutoCopy === 'true';
+                document.getElementById('auto-copy-toggle').checked = state.autoCopyEnabled;
+            }
+        }
+
+        function saveSettings() {
+            localStorage.setItem('swarg_sounds', state.soundsEnabled);
+            localStorage.setItem('swarg_autohide', state.autoHideEnabled);
+            localStorage.setItem('swarg_autocopy', state.autoCopyEnabled);
+        }
+    </script>
+</body>
+</html>
