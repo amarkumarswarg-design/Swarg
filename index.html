@@ -933,4 +933,478 @@
                     <div class="scanner-line" id="scanner-line"></div>
                     
                     <div class="output-container">
-                        <div id="encryp
+                        <div id="encrypted-output" class="output-display hidden"></div>
+                        <div id="encrypted-placeholder" class="output-placeholder">
+                            <i class="fas fa-lock placeholder-icon"></i>
+                            <div>Encrypted data will appear here</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="encrypt-btn" class="action-button primary-button">
+                        <i class="fas fa-shield-alt"></i>
+                        Encrypt Data
+                    </button>
+                    <button id="copy-encrypted" class="action-button secondary-button">
+                        <i class="fas fa-copy"></i>
+                        Copy
+                    </button>
+                </div>
+                
+                <div id="encrypt-success" class="success-animation hidden">
+                    <div class="checkmark-container">
+                        <div class="checkmark-circle">
+                            <i class="fas fa-check checkmark"></i>
+                        </div>
+                    </div>
+                    <h3 class="section-title">Data Secured!</h3>
+                    <p class="section-subtitle">Your data is now encrypted and copied to clipboard</p>
+                </div>
+            </div>
+            
+            <!-- Unlock Tab -->
+            <div id="unlock-tab" class="tab-content hidden">
+                <div class="text-area-container">
+                    <label class="input-label">Encrypted code</label>
+                    <textarea id="text-to-decrypt" 
+                              class="text-area"
+                              placeholder="Paste encrypted code here..."
+                              rows="5"></textarea>
+                </div>
+                
+                <div class="output-container">
+                    <div id="decrypted-output" class="output-display hidden"></div>
+                    <div id="decrypted-placeholder" class="output-placeholder">
+                        <i class="fas fa-unlock placeholder-icon"></i>
+                        <div>Decrypted data will appear here</div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="decrypt-btn" class="action-button primary-button">
+                        <i class="fas fa-key"></i>
+                        Decrypt Data
+                    </button>
+                    <button id="clear-decrypted" class="action-button secondary-button">
+                        <i class="fas fa-eraser"></i>
+                        Clear
+                    </button>
+                </div>
+                
+                <div id="decrypt-success" class="unlock-animation hidden">
+                    <div class="lock-icon">
+                        <div class="lock-body"></div>
+                        <div class="lock-shackle"></div>
+                    </div>
+                    <h3 class="section-title">Access Granted!</h3>
+                    <p class="section-subtitle">Your data is now visible</p>
+                </div>
+                
+                <div id="auto-lock-timer" class="timer-display hidden">
+                    <i class="fas fa-clock timer-icon"></i>
+                    <div>
+                        <div class="timer-text">Auto-hide in</div>
+                        <div class="timer-count" id="timer-count">30</div>
+                    </div>
+                    <span class="timer-text">seconds</span>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons mt-8">
+                <button id="settings-btn" class="action-button secondary-button">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </button>
+                <button id="clear-all" class="action-button secondary-button">
+                    <i class="fas fa-trash"></i>
+                    Clear All
+                </button>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="mb-4">
+                <span class="security-tag">
+                    <i class="fas fa-shield-alt"></i>
+                    AES-256 Encryption
+                </span>
+                <span class="security-tag">
+                    <i class="fas fa-user-shield"></i>
+                    100% Private
+                </span>
+            </div>
+            <p>Your data never leaves your device</p>
+            <p class="text-tertiary mt-4">SWARG Vault © 2024</p>
+        </footer>
+    </div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+                <h2 class="section-title">Settings</h2>
+                <button id="close-settings" style="background: none; border: none; color: var(--text-tertiary); font-size: 24px; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Auto-copy Setting -->
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Auto-copy after encryption</h4>
+                    <p>Automatically copy encrypted text</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="auto-copy-toggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <!-- Sound Effects -->
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Sound effects</h4>
+                    <p>Play subtle sounds for actions</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="sound-toggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <!-- Auto-hide -->
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Auto-hide unlocked data</h4>
+                    <p>Hide decrypted text after 30 seconds</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="auto-hide-toggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <!-- Technical Details -->
+            <button id="show-tech-details" class="action-button secondary-button" style="width: 100%; margin-top: 24px;">
+                <i class="fas fa-microchip"></i>
+                Technical Details
+            </button>
+            
+            <!-- Technical Details Content -->
+            <div id="tech-details" class="hidden" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-medium);">
+                <h4 class="input-label mb-4">Security Specifications</h4>
+                <div style="background: var(--bg-tertiary); padding: 20px; border-radius: 16px; font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+                    <p style="margin-bottom: 8px;"><strong>Algorithm:</strong> AES-256-GCM</p>
+                    <p style="margin-bottom: 8px;"><strong>Key Derivation:</strong> PBKDF2 (300,000+ iterations)</p>
+                    <p style="margin-bottom: 8px;"><strong>Processing:</strong> 100% local in browser</p>
+                    <p style="margin-bottom: 8px;"><strong>Data Storage:</strong> No server transmission</p>
+                    <p style="margin-bottom: 8px;"><strong>Token Expiry:</strong> 30 minutes</p>
+                </div>
+            </div>
+            
+            <!-- App Info -->
+            <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border-medium);">
+                <p style="color: var(--text-tertiary); font-size: 14px;">
+                    SWARG Secure Vault v1.0<br>
+                    <span style="color: var(--text-secondary);">by Amar Kumar</span><br>
+                    All encryption happens on your device
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Audio Elements -->
+    <audio id="typing-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-mechanical-keyboard-typing-1384.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="encrypt-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-lock-2851.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="decrypt-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-2858.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="success-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="error-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-warning-alarm-buzzer-958.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="click-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ===== CONFIGURATION =====
+        const CONFIG = {
+            PBKDF2_ITERATIONS: 300000,
+            SALT_LENGTH: 32,
+            IV_LENGTH: 16,
+            TOKEN_EXPIRY_MINUTES: 30,
+            AUTO_HIDE_SECONDS: 30,
+            MAX_ATTEMPTS: 5,
+            LOCK_TIME_SECONDS: 60
+        };
+
+        // ===== APP STATE =====
+        const state = {
+            password: '',
+            currentTab: 'lock',
+            soundsEnabled: true,
+            autoCopyEnabled: true,
+            autoHideEnabled: true,
+            failedAttempts: 0,
+            lockedUntil: 0,
+            autoHideTimer: null,
+            typingTimer: null
+        };
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+        });
+
+        async function initializeApp() {
+            // Create animated background
+            createStarfield();
+            
+            // Load settings
+            loadSettings();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Initialize audio
+            initAudio();
+            
+            console.log('✨ SWARG Secure Vault initialized');
+        }
+
+        function createStarfield() {
+            const background = document.getElementById('space-background');
+            const starsCount = 150;
+            const particlesCount = 30;
+            
+            // Create stars
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 2 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.opacity = Math.random() * 0.5 + 0.2;
+                star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+                background.appendChild(star);
+            }
+            
+            // Create floating particles
+            for (let i = 0; i < particlesCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 4 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.opacity = Math.random() * 0.3 + 0.1;
+                particle.style.setProperty('--duration', Math.random() * 20 + 10 + 's');
+                particle.style.setProperty('--tx', (Math.random() * 200 - 100) + 'px');
+                particle.style.setProperty('--ty', (Math.random() * 200 - 100) + 'px');
+                background.appendChild(particle);
+            }
+        }
+
+        function initAudio() {
+            const sounds = ['typing', 'encrypt', 'decrypt', 'success', 'error', 'click'];
+            sounds.forEach(sound => {
+                const audio = document.getElementById(`${sound}-sound`);
+                if (audio) {
+                    audio.volume = 0.2;
+                    audio.load();
+                }
+            });
+        }
+
+        function playSound(sound) {
+            if (!state.soundsEnabled) return;
+            
+            try {
+                const audio = document.getElementById(`${sound}-sound`);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(() => {});
+                }
+            } catch (error) {
+                // Ignore audio errors
+            }
+        }
+
+        // ===== EVENT LISTENERS =====
+        function setupEventListeners() {
+            // Toggle password visibility
+            document.getElementById('toggle-password').addEventListener('click', function() {
+                const passwordInput = document.getElementById('master-password');
+                const icon = this.querySelector('i');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.className = 'fas fa-eye-slash';
+                } else {
+                    passwordInput.type = 'password';
+                    icon.className = 'fas fa-eye';
+                }
+                
+                playSound('click');
+            });
+
+            // Password input with typing sound
+            document.getElementById('master-password').addEventListener('input', function(e) {
+                state.password = e.target.value;
+                playTypingSound();
+            });
+
+            // Tab switching
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tab = this.dataset.tab;
+                    switchTab(tab);
+                    playSound('click');
+                });
+            });
+
+            // Text inputs with typing sound
+            ['text-to-encrypt', 'text-to-decrypt'].forEach(id => {
+                document.getElementById(id).addEventListener('input', playTypingSound);
+            });
+
+            // Encrypt button
+            document.getElementById('encrypt-btn').addEventListener('click', encryptData);
+
+            // Decrypt button
+            document.getElementById('decrypt-btn').addEventListener('click', decryptData);
+
+            // Copy button
+            document.getElementById('copy-encrypted').addEventListener('click', async () => {
+                const output = document.getElementById('encrypted-output').textContent;
+                if (output) {
+                    await copyToClipboard(output);
+                    showToast('Copied to clipboard', 'success');
+                }
+            });
+
+            // Clear decrypted
+            document.getElementById('clear-decrypted').addEventListener('click', () => {
+                document.getElementById('decrypted-output').textContent = '';
+                document.getElementById('decrypted-output').classList.add('hidden');
+                document.getElementById('decrypted-placeholder').classList.remove('hidden');
+                document.getElementById('decrypt-success').classList.add('hidden');
+                document.getElementById('auto-lock-timer').classList.add('hidden');
+                playSound('click');
+            });
+
+            // Clear all
+            document.getElementById('clear-all').addEventListener('click', () => {
+                if (confirm('Clear all data?')) {
+                    document.getElementById('master-password').value = '';
+                    document.getElementById('text-to-encrypt').value = '';
+                    document.getElementById('text-to-decrypt').value = '';
+                    hideLockOutput();
+                    hideUnlockOutput();
+                    state.password = '';
+                    playSound('click');
+                    showToast('All cleared', 'info');
+                }
+            });
+
+            // Settings
+            document.getElementById('settings-btn').addEventListener('click', () => {
+                document.getElementById('settings-modal').style.display = 'flex';
+                playSound('click');
+            });
+
+            document.getElementById('close-settings').addEventListener('click', () => {
+                document.getElementById('settings-modal').style.display = 'none';
+                playSound('click');
+            });
+
+            document.getElementById('settings-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('settings-modal')) {
+                    document.getElementById('settings-modal').style.display = 'none';
+                }
+            });
+
+            // Show technical details
+            document.getElementById('show-tech-details').addEventListener('click', () => {
+                document.getElementById('tech-details').classList.toggle('hidden');
+                playSound('click');
+            });
+
+            // Settings toggles
+            document.getElementById('auto-copy-toggle').addEventListener('change', function() {
+                state.autoCopyEnabled = this.checked;
+                saveSettings();
+            });
+
+            document.getElementById('sound-toggle').addEventListener('change', function() {
+                state.soundsEnabled = this.checked;
+                saveSettings();
+            });
+
+            document.getElementById('auto-hide-toggle').addEventListener('change', function() {
+                state.autoHideEnabled = this.checked;
+                saveSettings();
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Ctrl+E to encrypt
+                if (e.ctrlKey && e.key === 'e') {
+                    e.preventDefault();
+                    encryptData();
+                }
+                
+                // Ctrl+D to decrypt
+                if (e.ctrlKey && e.key === 'd') {
+                    e.preventDefault();
+                    decryptData();
+                }
+                
+                // Ctrl+1 for lock tab
+                if (e.ctrlKey && e.key === '1') {
+                    e.preventDefault();
+                    switchTab('lock');
+                }
+                
+                // Ctrl+2 for unlock tab
+                if (e.ctrlKey && e.key === '2') {
+                    e.preventDefault();
+                    switchTab('unlock');
+                }
+                
+                // Ctrl+, for settings
+                if (e.ctrlKey && e.key === ',') {
+                    e.preventDefault();
+                    document.getElementById('settings-btn').click();
+                }
+                
+                // Escape to close modal
+                if (e.key === 'Escape') {
+                    document.getElementById('settings-modal').style.display = 'none';
+                }
+            });
+        }
+
+        function playTypingSound() {
+            // Only play occasionally
+            if (Math.random() < 0.3) {
+                playSound('typing');
+            }
+        }
+
+        // ===== CORE FUNCTIONS =====
+        async
