@@ -779,6 +779,314 @@
                 });
             });
 
-            // Loc
+            // Lock button
+            document.getElementById('lock-btn').addEventListener('click', async () => {
+                await lockData();
+            });
+
+            // Unlock button
+            document.getElementById('unlock-btn').addEventListener('click', async () => {
+                await unlockData();
+            });
+
+            // Clear buttons
+            document.getElementById('clear-lock').addEventListener('click', () => {
+                document.getElementById('text-to-lock').value = '';
+                hideLockOutput();
+                playSound('type');
+            });
+
+            document.getElementById('clear-unlock').addEventListener('click', () => {
+                document.getElementById('text-to-unlock').value = '';
+                hideUnlockOutput();
+                playSound('type');
+            });
+
+            // Copy button
+            document.getElementById('copy-btn').addEventListener('click', async () => {
+                const output = getCurrentOutput();
+                if (output) {
+                    await copyToClipboard(output);
+                    showToast('Copied to clipboard');
+                }
+            });
+
+            // Settings button
+            document.getElementById('settings-btn').addEventListener('click', () => {
+                document.getElementById('settings-modal').style.display = 'flex';
+                playSound('type');
+            });
+
+            // Close settings
+            document.getElementById('close-settings').addEventListener('click', () => {
+                document.getElementById('settings-modal').style.display = 'none';
+                playSound('type');
+            });
+
+            // Close settings when clicking outside
+            document.getElementById('settings-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('settings-modal')) {
+                    document.getElementById('settings-modal').style.display = 'none';
+                }
+            });
+
+            // Show security details
+            document.getElementById('show-security-details').addEventListener('click', () => {
+                document.getElementById('security-details').classList.toggle('hidden');
+                playSound('type');
+            });
+
+            // Settings toggles
+            document.getElementById('autohide-toggle').addEventListener('change', function() {
+                state.autoHideEnabled = this.checked;
+                saveSettings();
+            });
+
+            document.getElementById('sound-toggle').addEventListener('change', function() {
+                state.soundsEnabled = this.checked;
+                saveSettings();
+            });
+
+            // Enter key to submit
+            document.getElementById('text-to-lock').addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'Enter') {
+                    e.preventDefault();
+                    lockData();
+                }
+            });
+
+            document.getElementById('text-to-unlock').addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'Enter') {
+                    e.preventDefault();
+                    unlockData();
+                }
+            });
+        }
+
+        // Core Functions
+        async function lockData() {
+            const text = document.getElementById('text-to-lock').value.trim();
+            const password = state.password;
+
+            // Validation
+            if (!password || password.length < 8) {
+                showToast('Please enter a password (min 8 characters)', 'error');
+                return;
+            }
+
+            if (!text) {
+                showToast('Please enter text to lock', 'error');
+                return;
+            }
+
+            // Show loading
+            const lockBtn = document.getElementById('lock-btn');
+            const originalText = lockBtn.innerHTML;
+            lockBtn.innerHTML = '<span class="spinner"></span> Locking...';
+            lockBtn.disabled = true;
+
+            try {
+                // Play lock sound
+                playSound('lock');
+
+                // Generate random salt and IV
+                const salt = crypto.getRandomValues(new Uint8Array(CONFIG.SALT_LENGTH));
+                const iv = crypto.getRandomValues(new Uint8Array(CONFIG.IV_LENGTH));
+
+                // Derive key using PBKDF2
+                const encoder = new TextEncoder();
+                const passwordBuffer = encoder.encode(password);
+                
+                const baseKey = await crypto.subtle.importKey(
+                    'raw',
+                    passwordBuffer,
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits', 'deriveKey']
+                );
+
+                const derivedKey = await crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: CONFIG.PBKDF2_ITERATIONS,
+                        hash: 'SHA-256'
+                    },
+                    baseKey,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['encrypt', 'decrypt']
+                );
+
+                // Encrypt the data
+                const data = encoder.encode(text);
+                const encrypted = await crypto.subtle.encrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: iv
+                    },
+                    derivedKey,
+                    data
+                );
+
+                // Create token
+                const expiryTime = Date.now() + (CONFIG.TOKEN_EXPIRY_MINUTES * 60 * 1000);
+                const tokenData = {
+                    v: '1.0',
+                    t: Date.now(),
+                    e: expiryTime,
+                    s: btoa(String.fromCharCode(...salt)),
+                    i: btoa(String.fromCharCode(...iv)),
+                    d: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
+                };
+
+                // Convert to base64
+                const jsonStr = JSON.stringify(tokenData);
+                const token = btoa(unescape(encodeURIComponent(jsonStr)));
+
+                // Show output
+                showLockOutput(token);
+                playSound('success');
+                showToast('Data locked successfully');
+
+            } catch (error) {
+                console.error('Lock error:', error);
+                showToast('Failed to lock data', 'error');
+                playSound('error');
+            } finally {
+                // Restore button
+                lockBtn.innerHTML = originalText;
+                lockBtn.disabled = false;
+            }
+        }
+
+        async function unlockData() {
+            const token = document.getElementById('text-to-unlock').value.trim();
+            const password = state.password;
+
+            // Check rate limiting
+            if (state.lockedUntil > Date.now()) {
+                const remaining = Math.ceil((state.lockedUntil - Date.now()) / 1000);
+                showToast(`Too many attempts. Try again in ${remaining} seconds.`, 'error');
+                return;
+            }
+
+            // Validation
+            if (!password) {
+                showToast('Please enter your password', 'error');
+                return;
+            }
+
+            if (!token) {
+                showToast('Please enter locked code', 'error');
+                return;
+            }
+
+            // Show loading
+            const unlockBtn = document.getElementById('unlock-btn');
+            const originalText = unlockBtn.innerHTML;
+            unlockBtn.innerHTML = '<span class="spinner"></span> Unlocking...';
+            unlockBtn.disabled = true;
+
+            try {
+                // Play unlock sound
+                playSound('unlock');
+
+                // Decode token
+                const jsonStr = decodeURIComponent(escape(atob(token)));
+                const tokenData = JSON.parse(jsonStr);
+
+                // Check version and expiry
+                if (tokenData.v !== '1.0') {
+                    throw new Error('Invalid code version');
+                }
+
+                if (Date.now() > tokenData.e) {
+                    throw new Error('This code has expired (30 minutes)');
+                }
+
+                // Decode components
+                const salt = Uint8Array.from(atob(tokenData.s), c => c.charCodeAt(0));
+                const iv = Uint8Array.from(atob(tokenData.i), c => c.charCodeAt(0));
+                const encryptedData = Uint8Array.from(atob(tokenData.d), c => c.charCodeAt(0));
+
+                // Derive key
+                const encoder = new TextEncoder();
+                const passwordBuffer = encoder.encode(password);
+                
+                const baseKey = await crypto.subtle.importKey(
+                    'raw',
+                    passwordBuffer,
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits', 'deriveKey']
+                );
+
+                const derivedKey = await crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: CONFIG.PBKDF2_ITERATIONS,
+                        hash: 'SHA-256'
+                    },
+                    baseKey,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['encrypt', 'decrypt']
+                );
+
+                // Decrypt
+                const decrypted = await crypto.subtle.decrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: iv
+                    },
+                    derivedKey,
+                    encryptedData
+                );
+
+                const decoder = new TextDecoder();
+                const text = decoder.decode(decrypted);
+
+                // Success - reset attempts
+                state.failedAttempts = 0;
+
+                // Show output
+                showUnlockOutput(text);
+                playSound('success');
+                showToast('Data unlocked successfully');
+
+                // Start auto-hide timer
+                if (state.autoHideEnabled) {
+                    startAutoHideTimer();
+                }
+
+            } catch (error) {
+                console.error('Unlock error:', error);
+                
+                // Increment failed attempts
+                state.failedAttempts++;
+                
+                if (state.failedAttempts >= CONFIG.MAX_ATTEMPTS) {
+                    state.lockedUntil = Date.now() + (CONFIG.LOCK_TIME_SECONDS * 1000);
+                    showToast(`Too many incorrect attempts. Locked for ${CONFIG.LOCK_TIME_SECONDS} seconds.`, 'error');
+                } else if (error.message.includes('expired')) {
+                    showToast('This code has expired (30 minutes)', 'error');
+                } else if (error.message.includes('Invalid')) {
+                    showToast('Invalid code format', 'error');
+                } else {
+                    showToast('Incorrect password or invalid code', 'error');
+                }
+                
+                playSound('error');
+                
+            } finally {
+                // Restore button
+                unlockBtn.innerHTML = originalText;
+                unlockBtn.disabled = false;
+            }
+        }
+
+        // UI Functi
                         
      
