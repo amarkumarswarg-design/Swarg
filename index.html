@@ -1475,5 +1475,370 @@
                 </label>
             </div>
             
-            <!-- Secur
+            <!-- Security Details -->
+            <div class="setting-item" style="flex-direction: column; align-items: flex-start; gap: 20px;">
+                <div class="setting-info">
+                    <h4>Security Specifications</h4>
+                    <p>Technical details about the encryption system</p>
+                </div>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 16px; width: 100%;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div>
+                            <div style="font-size: 12px; color: var(--neon-cyan); margin-bottom: 4px;">Algorithm</div>
+                            <div style="font-size: 14px; color: white;">AES-256-GCM</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; color: var(--neon-cyan); margin-bottom: 4px;">Key Derivation</div>
+                            <div style="font-size: 14px; color: white;">PBKDF2-SHA256</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; color: var(--neon-cyan); margin-bottom: 4px;">Iterations</div>
+                            <div style="font-size: 14px; color: white;">300,000+</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; color: var(--neon-cyan); margin-bottom: 4px;">Processing</div>
+                            <div style="font-size: 14px; color: white;">100% Local</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- App Info -->
+            <div style="text-align: center; margin-top: 40px; padding-top: 32px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                <p style="color: rgba(255, 255, 255, 0.6); font-size: 14px;">
+                    SWARG Security Vault v2.0<br>
+                    <span style="color: var(--neon-cyan);">by Amar Kumar</span><br>
+                    All encryption happens on your device
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="typing-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-mechanical-keyboard-typing-1384.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="encrypt-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-security-lock-2854.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="decrypt-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-2858.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="success-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="error-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="click-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ===== CONFIGURATION =====
+        const CONFIG = {
+            PBKDF2_ITERATIONS: 300000,
+            SALT_LENGTH: 32,
+            IV_LENGTH: 16,
+            TOKEN_EXPIRY_MINUTES: 30,
+            AUTO_HIDE_SECONDS: 30,
+            MAX_ATTEMPTS: 5,
+            LOCK_TIME_SECONDS: 60
+        };
+
+        // ===== APP STATE =====
+        const state = {
+            password: '',
+            currentTab: 'encrypt',
+            soundsEnabled: true,
+            autoCopyEnabled: true,
+            autoHideEnabled: true,
+            failedAttempts: 0,
+            lockedUntil: 0,
+            autoHideTimer: null,
+            typingTimer: null,
+            isProcessing: false
+        };
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+        });
+
+        async function initializeApp() {
+            try {
+                // Create animated space background
+                createSpaceBackground();
+                
+                // Load settings from localStorage
+                loadSettings();
+                
+                // Initialize audio system
+                initAudio();
+                
+                // Setup all event listeners
+                setupEventListeners();
+                
+                // Check for PWA installation
+                checkPWA();
+                
+                // Log initialization
+                console.log('🚀 SWARG Security Vault v2.0 initialized');
+                console.log('✨ Design by Amar Kumar');
+                console.log('🔒 Military-grade encryption ready');
+                
+                // Show welcome toast
+                setTimeout(() => {
+                    showToast('SWARG Security Vault ready', 'success');
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showToast('Failed to initialize app', 'error');
+            }
+        }
+
+        // ===== SPACE BACKGROUND =====
+        function createSpaceBackground() {
+            const canvas = document.getElementById('space-canvas');
+            
+            // Create stars
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.opacity = Math.random() * 0.5 + 0.1;
+                star.style.setProperty('--duration', Math.random() * 4 + 2 + 's');
+                canvas.appendChild(star);
+            }
+            
+            // Create nebulae
+            for (let i = 0; i < 3; i++) {
+                const nebula = document.createElement('div');
+                nebula.className = 'nebula';
+                nebula.style.width = Math.random() * 300 + 200 + 'px';
+                nebula.style.height = nebula.style.width;
+                nebula.style.left = Math.random() * 100 + '%';
+                nebula.style.top = Math.random() * 100 + '%';
+                nebula.style.background = i === 0 ? 'rgba(0, 243, 255, 0.1)' : 
+                                        i === 1 ? 'rgba(157, 78, 221, 0.1)' : 
+                                        'rgba(0, 255, 157, 0.1)';
+                nebula.style.setProperty('--duration', Math.random() * 40 + 20 + 's');
+                canvas.appendChild(nebula);
+            }
+            
+            // Create particles
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.setProperty('--duration', Math.random() * 10 + 5 + 's');
+                particle.style.setProperty('--start-x', '0px');
+                particle.style.setProperty('--start-y', '0px');
+                particle.style.setProperty('--end-x', (Math.random() * 400 - 200) + 'px');
+                particle.style.setProperty('--end-y', (Math.random() * 400 - 200) + 'px');
+                canvas.appendChild(particle);
+            }
+        }
+
+        // ===== AUDIO SYSTEM =====
+        function initAudio() {
+            const sounds = ['typing', 'encrypt', 'decrypt', 'success', 'error', 'click'];
+            sounds.forEach(sound => {
+                const audio = document.getElementById(`${sound}-sound`);
+                if (audio) {
+                    audio.volume = 0.25;
+                    audio.load();
+                }
+            });
+        }
+
+        function playSound(sound) {
+            if (!state.soundsEnabled) return;
+            
+            try {
+                const audio = document.getElementById(`${sound}-sound`);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(() => {
+                        // Fallback: Create Web Audio API sound
+                        createFallbackSound(sound);
+                    });
+                }
+            } catch (error) {
+                createFallbackSound(sound);
+            }
+        }
+
+        function createFallbackSound(type) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                let frequency = 800;
+                let duration = 0.1;
+                
+                switch(type) {
+                    case 'typing':
+                        frequency = 600 + Math.random() * 200;
+                        duration = 0.05;
+                        break;
+                    case 'encrypt':
+                        frequency = 300;
+                        duration = 0.3;
+                        break;
+                    case 'decrypt':
+                        frequency = 400;
+                        duration = 0.3;
+                        break;
+                    case 'success':
+                        frequency = 600;
+                        duration = 0.2;
+                        break;
+                    case 'error':
+                        frequency = 200;
+                        duration = 0.3;
+                        break;
+                    case 'click':
+                        frequency = 500;
+                        duration = 0.05;
+                        break;
+                }
+                
+                oscillator.frequency.value = frequency;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + duration);
+                
+            } catch (error) {
+                // Audio not supported
+            }
+        }
+
+        // ===== ENCRYPTION ENGINE =====
+        async function encryptData() {
+            if (state.isProcessing) return;
+            
+            const text = document.getElementById('input-text').value.trim();
+            const password = state.password;
+
+            // Validation
+            if (!password || password.length < 8) {
+                showToast('Password must be at least 8 characters', 'error');
+                return;
+            }
+
+            if (!text) {
+                showToast('Please enter text to encrypt', 'error');
+                return;
+            }
+
+            // Update UI
+            state.isProcessing = true;
+            const encryptBtn = document.getElementById('encrypt-btn');
+            const originalText = encryptBtn.innerHTML;
+            encryptBtn.innerHTML = '<span class="loading"><span class="loading-spinner"></span> Encrypting...</span>';
+            encryptBtn.disabled = true;
+            
+            // Show scanner animation
+            const scanner = document.getElementById('scanner-line');
+            scanner.style.display = 'block';
+            
+            // Play encryption sound
+            playSound('encrypt');
+
+            try {
+                // Simulate processing delay for animation
+                await new Promise(resolve => setTimeout(resolve, 1800));
+                
+                // Real encryption implementation
+                const salt = crypto.getRandomValues(new Uint8Array(CONFIG.SALT_LENGTH));
+                const iv = crypto.getRandomValues(new Uint8Array(CONFIG.IV_LENGTH));
+                
+                // Derive key
+                const encoder = new TextEncoder();
+                const passwordBuffer = encoder.encode(password);
+                
+                const baseKey = await crypto.subtle.importKey(
+                    'raw',
+                    passwordBuffer,
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits', 'deriveKey']
+                );
+
+                const derivedKey = await crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: CONFIG.PBKDF2_ITERATIONS,
+                        hash: 'SHA-256'
+                    },
+                    baseKey,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['encrypt', 'decrypt']
+                );
+
+                // Encrypt data
+                const data = encoder.encode(text);
+                const encrypted = await crypto.subtle.encrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: iv
+                    },
+                    derivedKey,
+                    data
+                );
+
+                // Create token
+                const expiryTime = Date.now() + (CONFIG.TOKEN_EXPIRY_MINUTES * 60 * 1000);
+                const tokenData = {
+                    v: '2.0',
+                    t: Date.now(),
+                    e: expiryTime,
+                    s: btoa(String.fromCharCode(...salt)),
+                    i: btoa(String.fromCharCode(...iv)),
+                    d: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
+                };
+
+                const jsonStr = JSON.stringify(tokenData);
+                const token = btoa(unescape(encodeURIComponent(jsonStr)));
+
+                // Display output
+                showEncryptedOutput(token);
+                
+                // Auto-copy if enabled
+                if (state.autoCopyEnabled) {
+                    await copyToClipboard(token);
+                    showToast('Encrypted data copied to clipboard', 'success');
+                }
+                
+                // Play success sound
+                playSound('success');
+                
+                // Log activity
+                logActivity('Data encrypted successfully', 'encrypt');
+                
+            } catch (error) {
+                console.error('Encryption error:', error);
+                showToast('Failed to encrypt data', 'error');
+                playSound('error');
+                
+                // Log error
+                logActivity('Encryption failed: ' + error.message, 'error');
+                
+            } finally {
+                // Res
     
