@@ -1429,4 +1429,407 @@
                 max_size: "अधिकतम आकार",
                 future_support: "भविष्य का समर्थन",
                 local_proof: "स्थानीय प्रसंस्करण प्रमाण",
-                no_network_calls: "क
+                no_network_calls: "कोई नेटवर्क कॉल नहीं पाया गया",
+                all_operations: "सभी ऑपरेशन ऑफ़लाइन किए गए",
+                verified: "सत्यापित"
+            }
+        };
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🔐 SWARG v1.0 Initializing...');
+            
+            // Set current year
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // Initialize components
+            await initializeApp();
+            
+            // Log success
+            logActivity('[SYSTEM] SWARG v1.0 Initialized', 'system');
+            logActivity('[SECURITY] AES-256-GCM Ready', 'security');
+            logActivity('[INFO] All processing is local', 'info');
+            logActivity('[VAULT] IndexedDB initialized', 'vault');
+            
+            console.log('✅ SWARG v1.0 Ready');
+        });
+
+        // ==================== CORE FUNCTIONS ====================
+        async function initializeApp() {
+            try {
+                // Initialize IndexedDB for vault
+                await initVault();
+                
+                // Load vault entries
+                await loadVaultEntries();
+                
+                // Setup event listeners
+                setupEventListeners();
+                
+                // Setup audio system
+                initAudioSystem();
+                
+                // Setup auto-lock timer
+                startAutoLockTimer();
+                
+                // Setup activity monitoring
+                setupActivityMonitoring();
+                
+                // Check for performance capabilities
+                checkPerformance();
+                
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showToast('Initialization failed. Please refresh.', 'error');
+            }
+        }
+
+        // ==================== ENCRYPTION ENGINE ====================
+        async function deriveKey(password, salt) {
+            try {
+                // Encode password and salt
+                const encoder = new TextEncoder();
+                const passwordBuffer = encoder.encode(password);
+                const saltBuffer = typeof salt === 'string' ? 
+                    Uint8Array.from(atob(salt), c => c.charCodeAt(0)) : salt;
+                
+                // Import password as key
+                const baseKey = await crypto.subtle.importKey(
+                    'raw',
+                    passwordBuffer,
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits', 'deriveKey']
+                );
+                
+                // Derive key using PBKDF2 with dynamic iterations
+                const iterations = calculateIterations();
+                document.getElementById('iterations-display').textContent = `PBKDF2: ${iterations.toLocaleString()}`;
+                
+                const derivedKey = await crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: saltBuffer,
+                        iterations: iterations,
+                        hash: 'SHA-256'
+                    },
+                    baseKey,
+                    { name: 'AES-GCM', length: 256 },
+                    false, // Not extractable (memory protection)
+                    ['encrypt', 'decrypt']
+                );
+                
+                return { derivedKey, salt: saltBuffer, iterations };
+            } catch (error) {
+                console.error('Key derivation error:', error);
+                throw new Error('Key derivation failed');
+            }
+        }
+
+        function calculateIterations() {
+            // Dynamic iterations based on performance
+            const baseIterations = CONFIG.PBKDF2_ITERATIONS;
+            const performanceFactor = window.cryptoPerformance || 1;
+            return Math.min(
+                CONFIG.PBKDF2_MAX_ITERATIONS,
+                Math.max(
+                    CONFIG.PBKDF2_MIN_ITERATIONS,
+                    Math.round(baseIterations * performanceFactor)
+                )
+            );
+        }
+
+        async function encryptData(text, password) {
+            try {
+                // Check rate limiting
+                if (state.lockedUntil > Date.now()) {
+                    const remaining = Math.ceil((state.lockedUntil - Date.now()) / 1000);
+                    throw new Error(`Rate limited. Try again in ${remaining} seconds.`);
+                }
+                
+                // Generate random salt and IV
+                const salt = crypto.getRandomValues(new Uint8Array(CONFIG.SALT_LENGTH));
+                const iv = crypto.getRandomValues(new Uint8Array(CONFIG.IV_LENGTH));
+                
+                // Derive key
+                const { derivedKey } = await deriveKey(password, salt);
+                
+                // Encode text
+                const encoder = new TextEncoder();
+                const data = encoder.encode(text);
+                
+                // Encrypt using AES-GCM
+                const encrypted = await crypto.subtle.encrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: iv
+                    },
+                    derivedKey,
+                    data
+                );
+                
+                // Create token with expiry
+                const expiryTime = Date.now() + (CONFIG.TOKEN_EXPIRY_MINUTES * 60 * 1000);
+                const tokenData = {
+                    v: '1.0',
+                    t: Date.now(),
+                    e: expiryTime,
+                    s: btoa(String.fromCharCode(...salt)),
+                    i: btoa(String.fromCharCode(...iv)),
+                    d: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
+                };
+                
+                // Convert to base64
+                const jsonStr = JSON.stringify(tokenData);
+                const base64Token = btoa(unescape(encodeURIComponent(jsonStr)));
+                
+                return base64Token;
+                
+            } catch (error) {
+                handleEncryptionError(error);
+                throw error;
+            }
+        }
+
+        async function decryptData(token, password) {
+            try {
+                // Check rate limiting
+                if (state.lockedUntil > Date.now()) {
+                    const remaining = Math.ceil((state.lockedUntil - Date.now()) / 1000);
+                    throw new Error(`Rate limited. Try again in ${remaining} seconds.`);
+                }
+                
+                // Decode base64 token
+                const jsonStr = decodeURIComponent(escape(atob(token)));
+                const tokenData = JSON.parse(jsonStr);
+                
+                // Check version
+                if (tokenData.v !== '1.0') {
+                    throw new Error('Unsupported token version');
+                }
+                
+                // Check expiry
+                if (Date.now() > tokenData.e) {
+                    throw new Error('Token has expired (30 minutes)');
+                }
+                
+                // Decode salt, IV, and data
+                const salt = Uint8Array.from(atob(tokenData.s), c => c.charCodeAt(0));
+                const iv = Uint8Array.from(atob(tokenData.i), c => c.charCodeAt(0));
+                const encryptedData = Uint8Array.from(atob(tokenData.d), c => c.charCodeAt(0));
+                
+                // Derive key
+                const { derivedKey } = await deriveKey(password, salt);
+                
+                // Decrypt using AES-GCM
+                const decrypted = await crypto.subtle.decrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: iv
+                    },
+                    derivedKey,
+                    encryptedData
+                );
+                
+                // Decode to text
+                const decoder = new TextDecoder();
+                const text = decoder.decode(decrypted);
+                
+                // Reset failed attempts on success
+                state.failedAttempts = 0;
+                
+                return text;
+                
+            } catch (error) {
+                // Increment failed attempts
+                state.failedAttempts++;
+                
+                // Check for rate limiting
+                if (state.failedAttempts >= CONFIG.RATE_LIMIT_ATTEMPTS) {
+                    state.lockedUntil = Date.now() + (CONFIG.RATE_LIMIT_LOCK_SECONDS * 1000);
+                    showToast(`Too many failed attempts. Locked for ${CONFIG.RATE_LIMIT_LOCK_SECONDS} seconds.`, 'error');
+                    logActivity(`[SECURITY] Rate limit activated (${CONFIG.RATE_LIMIT_LOCK_SECONDS}s lock)`, 'security');
+                }
+                
+                handleEncryptionError(error);
+                throw error;
+            }
+        }
+
+        // ==================== VAULT SYSTEM ====================
+        async function initVault() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('SWARG_Vault', 1);
+                
+                request.onerror = () => {
+                    console.error('IndexedDB error:', request.error);
+                    reject(request.error);
+                };
+                
+                request.onsuccess = () => {
+                    state.db = request.result;
+                    resolve();
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains('entries')) {
+                        const store = db.createObjectStore('entries', { keyPath: 'id', autoIncrement: true });
+                        store.createIndex('timestamp', 'timestamp', { unique: false });
+                        store.createIndex('label', 'label', { unique: false });
+                    }
+                };
+            });
+        }
+
+        async function saveToVault(token, label = '') {
+            if (!state.db) throw new Error('Vault not initialized');
+            
+            const entry = {
+                token: token,
+                label: label || `Entry ${new Date().toLocaleString()}`,
+                timestamp: Date.now(),
+                size: token.length
+            };
+            
+            return new Promise((resolve, reject) => {
+                const transaction = state.db.transaction(['entries'], 'readwrite');
+                const store = transaction.objectStore('entries');
+                const request = store.add(entry);
+                
+                request.onsuccess = () => {
+                    entry.id = request.result;
+                    state.vaultEntries.unshift(entry);
+                    updateVaultDisplay();
+                    resolve(entry.id);
+                };
+                
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function loadVaultEntries() {
+            if (!state.db) return;
+            
+            return new Promise((resolve, reject) => {
+                const transaction = state.db.transaction(['entries'], 'readonly');
+                const store = transaction.objectStore('entries');
+                const index = store.index('timestamp');
+                const request = index.openCursor(null, 'prev');
+                
+                state.vaultEntries = [];
+                
+                request.onsuccess = (event) => {
+                    const cursor = event.target.result;
+                    if (cursor) {
+                        state.vaultEntries.push(cursor.value);
+                        cursor.continue();
+                    } else {
+                        updateVaultDisplay();
+                        resolve();
+                    }
+                };
+                
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function deleteVaultEntry(id) {
+            if (!state.db) throw new Error('Vault not initialized');
+            
+            return new Promise((resolve, reject) => {
+                const transaction = state.db.transaction(['entries'], 'readwrite');
+                const store = transaction.objectStore('entries');
+                const request = store.delete(id);
+                
+                request.onsuccess = () => {
+                    state.vaultEntries = state.vaultEntries.filter(entry => entry.id !== id);
+                    updateVaultDisplay();
+                    resolve();
+                };
+                
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function wipeVault() {
+            if (!state.db) throw new Error('Vault not initialized');
+            
+            return new Promise((resolve, reject) => {
+                const transaction = state.db.transaction(['entries'], 'readwrite');
+                const store = transaction.objectStore('entries');
+                const request = store.clear();
+                
+                request.onsuccess = () => {
+                    state.vaultEntries = [];
+                    updateVaultDisplay();
+                    resolve();
+                };
+                
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function updateVaultDisplay() {
+            const container = document.getElementById('vault-entries');
+            const emptyMsg = document.getElementById('vault-empty');
+            const countEl = document.getElementById('vault-count');
+            const sizeEl = document.getElementById('vault-size');
+            const perfEl = document.getElementById('performance');
+            
+            // Update counts
+            countEl.textContent = state.vaultEntries.length;
+            
+            // Calculate total size
+            const totalSize = state.vaultEntries.reduce((sum, entry) => sum + (entry.size || 0), 0);
+            sizeEl.textContent = `${(totalSize / 1024).toFixed(2)} KB`;
+            
+            // Update performance indicator
+            if (state.vaultEntries.length > CONFIG.PERFORMANCE_WARNING_THRESHOLD) {
+                perfEl.textContent = 'Slow';
+                perfEl.style.color = 'var(--cyber-red)';
+            } else if (state.vaultEntries.length > CONFIG.PERFORMANCE_WARNING_THRESHOLD / 2) {
+                perfEl.textContent = 'Fair';
+                perfEl.style.color = 'var(--cyber-yellow)';
+            } else {
+                perfEl.textContent = 'Good';
+                perfEl.style.color = 'var(--cyber-green)';
+            }
+            
+            // Show/hide empty message
+            if (state.vaultEntries.length === 0) {
+                emptyMsg.classList.remove('hidden');
+                container.innerHTML = '';
+            } else {
+                emptyMsg.classList.add('hidden');
+                
+                // Render entries
+                container.innerHTML = state.vaultEntries.slice(0, 50).map(entry => `
+                    <div class="vault-entry" data-id="${entry.id}">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-cyan-300">${escapeHtml(entry.label)}</h4>
+                                <p class="text-xs text-gray-400 mt-1">
+                                    ${new Date(entry.timestamp).toLocaleString()}
+                                    • ${Math.ceil(entry.size / 1024)} KB
+                                </p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="vault-copy text-cyan-400 hover:text-cyan-300 p-2" title="Copy Token">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button class="vault-decrypt text-green-400 hover:text-green-300 p-2" title="Decrypt">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="vault-delete text-red-400 hover:text-red-300 p-2" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-black/20 p-3 rounded-lg overflow-x-auto">
+                            <code class="text-xs font-mono text-gray-300 break-all">${entry.token.substring(0, 100)}...</code>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Add ev
