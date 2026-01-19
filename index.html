@@ -1,235 +1,688 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SWARG Security Vault</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Fonts + Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <style>
-    body { background:#0a0a0f; color:white; font-family:Inter,sans-serif; }
-    .glass { background:rgba(20,20,30,.85); border:1px solid rgba(255,255,255,.1); border-radius:18px; }
-    .hidden { display:none; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWARG | Ultimate Security Vault</title>
+    
+    <!-- PWA Metadata -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f;
+            color: white;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* ===== STAR BACKGROUND ===== */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(180deg, #0a0a0f 0%, #000000 100%);
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite alternate;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            box-shadow: 0 0 10px cyan;
+            animation: shoot 5s linear infinite;
+        }
+        
+        @keyframes shoot {
+            0% {
+                transform: translateX(-100px) translateY(-100px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px)) translateY(calc(100vh + 100px));
+                opacity: 0;
+            }
+        }
+        
+        /* ===== MAIN CONTAINER ===== */
+        .app-container {
+            max-width: 100%;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* ===== HEADER ===== */
+        .app-header {
+            padding: 40px 20px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .logo-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.3) 0%, transparent 70%);
+            filter: blur(40px);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 56px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffff, #9d00ff, #00ffff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shine 3s linear infinite;
+        }
+        
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+        
+        .creator-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50px;
+            font-weight: 600;
+            color: #ffd700;
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .creator-badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: shine-gold 2s linear infinite;
+        }
+        
+        @keyframes shine-gold {
+            to { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .verified-icon {
+            color: #00aaff;
+            font-size: 18px;
+        }
+        
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            padding: 0 20px 40px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* ===== CARD DESIGN ===== */
+        .card {
+            background: rgba(20, 20, 30, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* ===== PASSWORD SECTION ===== */
+        .password-container {
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .password-label {
+            display: block;
+            font-size: 14px;
+            color: #00ffff;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 18px 50px 18px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            font-size: 16px;
+            color: white;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .password-input:focus {
+            border-color: #00ffff;
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px;
+        }
+        
+        /* ===== TAB NAVIGATION ===== */
+        .tab-nav {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 5px;
+            margin: 25px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .tab-btn.active {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* ===== TEXT AREAS ===== */
+        .text-container {
+            margin-bottom: 20px;
+        }
+        
+        .text-label {
+            display: block;
+            font-size: 14px;
+            color: #00ffff;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .text-area {
+            width: 100%;
+            min-height: 150px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            font-size: 16px;
+            color: white;
+            resize: vertical;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .text-area:focus {
+            border-color: #00ffff;
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1);
+        }
+        
+        /* ===== OUTPUT BOXES ===== */
+        .output-container {
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .output-box {
+            min-height: 150px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            font-size: 14px;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+        
+        .output-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 14px;
+        }
+        
+        .output-placeholder i {
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        /* ===== SCANNER ANIMATION ===== */
+        .scanner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+        }
+        
+        .scanner-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            box-shadow: 0 0 20px #00ffff;
+            animation: scan 2s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% {
+                top: 0;
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+        
+        /* ===== BUTTONS ===== */
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .btn {
+            padding: 18px 24px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00aaff, #9d00ff);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* ===== SUCCESS ANIMATIONS ===== */
+        .success-animation {
+            text-align: center;
+            margin: 30px 0;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00ff88, #00aaff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+            color: white;
+            animation: bounce 0.5s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* ===== TIMER ===== */
+        .timer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .timer-icon {
+            color: #00ffff;
+            font-size: 20px;
+        }
+        
+        .timer-text {
+            font-weight: 600;
+            color: white;
+        }
+        
+        .timer-count {
+            font-size: 24px;
+            font-weight: 700;
+            color: #00ffff;
+        }
+        
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .toast {
+            padding: 15px 20px;
+            background: rgba(20, 20, 30, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            animation: slideUp 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: rgba(20, 20, 30, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* ===== FOOTER ===== */
+        .app-footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+        
+        .security-tags {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .security-tag {
+            padding: 8px 16px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            color: #00ffff;
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 42px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* ===== UTILITY ===== */
+        .hidden {
+            display: none !important;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-4 { margin-top: 16px; }
+        .mb-4 { margin-bottom: 16px; }
+    </style>
 </head>
-<body class="min-h-screen flex flex-col items-center p-6">
-
-  <!-- HEADER -->
-  <h1 class="text-5xl font-bold mb-2">SWARG</h1>
-  <div class="mb-8 text-yellow-400 font-semibold">by Amar Kumar</div>
-
-  <!-- PASSWORD -->
-  <div class="glass p-6 w-full max-w-xl mb-6">
-    <h2 class="text-xl font-semibold mb-4">Master Password</h2>
-    <input id="master-password" type="password"
-      class="w-full p-3 rounded bg-black border border-gray-600"
-      placeholder="Enter master password">
-  </div>
-
-  <!-- TABS -->
-  <div class="flex gap-2 mb-6">
-    <button class="tab-button bg-blue-600 px-4 py-2 rounded" data-tab="encrypt">Encrypt</button>
-    <button class="tab-button bg-gray-700 px-4 py-2 rounded" data-tab="decrypt">Decrypt</button>
-  </div>
-
-  <!-- ENCRYPT -->
-  <div id="encrypt-tab" class="glass p-6 w-full max-w-xl">
-    <textarea id="input-text"
-      class="w-full p-3 rounded bg-black border border-gray-600 mb-4"
-      rows="4"
-      placeholder="Enter text to encrypt"></textarea>
-
-    <div id="encrypted-output" class="p-3 bg-black border border-gray-600 rounded mb-4 hidden"></div>
-
-    <button id="encrypt-btn"
-      class="bg-cyan-600 px-4 py-2 rounded w-full">Encrypt</button>
-  </div>
-
-  <!-- DECRYPT -->
-  <div id="decrypt-tab" class="glass p-6 w-full max-w-xl hidden">
-    <textarea id="encrypted-token"
-      class="w-full p-3 rounded bg-black border border-gray-600 mb-4"
-      rows="4"
-      placeholder="Paste encrypted token"></textarea>
-
-    <div id="decrypted-output" class="p-3 bg-black border border-gray-600 rounded mb-4 hidden"></div>
-
-    <button id="decrypt-btn"
-      class="bg-purple-600 px-4 py-2 rounded w-full">Decrypt</button>
-  </div>
-
-  <!-- TOAST -->
-  <div id="toast-container" class="fixed bottom-6 left-1/2 -translate-x-1/2"></div>
-
-<script>
-/* ========= CONFIG ========= */
-const CONFIG = {
-  PBKDF2_ITERATIONS: 200000,
-  SALT_LENGTH: 16,
-  IV_LENGTH: 12
-};
-
-/* ========= STATE ========= */
-const state = {
-  password: '',
-  isProcessing: false
-};
-
-/* ========= INIT ========= */
-document.addEventListener("DOMContentLoaded", () => {
-  setupEvents();
-  showToast("SWARG ready");
-});
-
-/* ========= EVENTS ========= */
-function setupEvents() {
-  document.getElementById("encrypt-btn").addEventListener("click", encryptData);
-  document.getElementById("decrypt-btn").addEventListener("click", decryptData);
-
-  document.getElementById("master-password").addEventListener("input", e => {
-    state.password = e.target.value;
-  });
-
-  document.querySelectorAll(".tab-button").forEach(btn => {
-    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
-  });
-}
-
-/* ========= TABS ========= */
-function switchTab(tab) {
-  document.getElementById("encrypt-tab").classList.toggle("hidden", tab !== "encrypt");
-  document.getElementById("decrypt-tab").classList.toggle("hidden", tab !== "decrypt");
-}
-
-/* ========= ENCRYPT ========= */
-async function encryptData() {
-  if (state.isProcessing) return;
-
-  const text = document.getElementById("input-text").value.trim();
-  const password = state.password;
-
-  if (!password || password.length < 6) {
-    showToast("Weak password", "error");
-    return;
-  }
-  if (!text) {
-    showToast("Enter text", "error");
-    return;
-  }
-
-  state.isProcessing = true;
-
-  try {
-    const salt = crypto.getRandomValues(new Uint8Array(CONFIG.SALT_LENGTH));
-    const iv   = crypto.getRandomValues(new Uint8Array(CONFIG.IV_LENGTH));
-
-    const enc = new TextEncoder();
-    const baseKey = await crypto.subtle.importKey(
-      "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveKey"]
-    );
-
-    const key = await crypto.subtle.deriveKey(
-      { name: "PBKDF2", salt, iterations: CONFIG.PBKDF2_ITERATIONS, hash: "SHA-256" },
-      baseKey, { name: "AES-GCM", length: 256 }, false, ["encrypt"]
-    );
-
-    const encrypted = await crypto.subtle.encrypt(
-      { name: "AES-GCM", iv }, key, enc.encode(text)
-    );
-
-    const tokenData = {
-      s: btoa(String.fromCharCode(...salt)),
-      i: btoa(String.fromCharCode(...iv)),
-      d: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
-    };
-
-    const token = btoa(unescape(encodeURIComponent(JSON.stringify(tokenData))));
-
-    const out = document.getElementById("encrypted-output");
-    out.textContent = token;
-    out.classList.remove("hidden");
-
-    showToast("Encrypted");
-
-  } catch (e) {
-    console.error(e);
-    showToast("Encrypt failed", "error");
-  }
-
-  state.isProcessing = false;
-}
-
-/* ========= DECRYPT ========= */
-async function decryptData() {
-  if (state.isProcessing) return;
-
-  const token = document.getElementById("encrypted-token").value.trim();
-  const password = state.password;
-
-  if (!password || password.length < 6) {
-    showToast("Weak password", "error");
-    return;
-  }
-  if (!token) {
-    showToast("Paste token", "error");
-    return;
-  }
-
-  state.isProcessing = true;
-
-  try {
-    const json = decodeURIComponent(escape(atob(token)));
-    const tokenData = JSON.parse(json);
-
-    const salt = Uint8Array.from(atob(tokenData.s), c => c.charCodeAt(0));
-    const iv   = Uint8Array.from(atob(tokenData.i), c => c.charCodeAt(0));
-    const data = Uint8Array.from(atob(tokenData.d), c => c.charCodeAt(0));
-
-    const enc = new TextEncoder();
-    const baseKey = await crypto.subtle.importKey(
-      "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveKey"]
-    );
-
-    const key = await crypto.subtle.deriveKey(
-      { name: "PBKDF2", salt, iterations: CONFIG.PBKDF2_ITERATIONS, hash: "SHA-256" },
-      baseKey, { name: "AES-GCM", length: 256 }, false, ["decrypt"]
-    );
-
-    const decrypted = await crypto.subtle.decrypt(
-      { name: "AES-GCM", iv }, key, data
-    );
-
-    const text = new TextDecoder().decode(decrypted);
-
-    const out = document.getElementById("decrypted-output");
-    out.textContent = text;
-    out.classList.remove("hidden");
-
-    showToast("Decrypted");
-
-  } catch (e) {
-    console.error(e);
-    showToast("Wrong password or token", "error");
-  }
-
-  state.isProcessing = false;
-}
-
-/* ========= TOAST ========= */
-function showToast(msg, type="ok") {
-  const c = document.getElementById("toast-container");
-  const d = document.createElement("div");
-  d.className = "px-4 py-2 rounded bg-black border border-gray-600 mb-2";
-  d.textContent = msg;
-  c.appendChild(d);
-  setTimeout(()=>d.remove(),2500);
-}
-</script>
-</body>
-    </html>
+<body>
+    <!-- Star Background -->
+    <div id="starfield"></div>
+    
+    <!-- Scanner Overlay -->
+    <div class="scanner-overlay" id="scanner-overlay">
+        <div class="scanner-line"></div>
+    </div>
+    
+    <!-- Main App -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-container">
+                <div class="logo-glow"></div>
+                <h1 class="logo-text">SWARG</h1>
+            </div>
+            <div class="creator-badge">
+                <span>by Amar Kumar</span>
+                <i class="fas fa-check-circle verified-icon"></i>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Password Card -->
+            <div class="card">
+                <div class="password-container">
+                    <label class="password-label">Master Password</label>
+                    <div style="position: relative;">
+                        <input type="password" 
+                               id="master-password"
+                               class="password-input"
+                               placeholder="Enter your master password"
+                               autocomplete="off">
+                        <button type="button" class="password-toggle" id="toggle-password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Password Tools -->
+                <div class="btn-group">
+                    <button id="generate-password" class="btn btn-secondary">
+                        <i class="fas fa-dice"></i>
+                        Generate
+                    </button>
+                    <button id="clear-password" class="btn btn-secondary">
+                        <i class="fas fa-eraser"></i>
+                        Clear
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="encrypt">
+                    <i class="fas fa-lock"></i>
+                    Encrypt
+                </button>
+                <button class="tab-btn" data-tab="decrypt">
+                    <i class="fas fa-unlock"></i>
+                    Decrypt
+                </button>
+            </div>
+            
+            <!-- Encrypt Tab -->
+            <div id="encrypt-tab" class="tab-content">
+                <div class="card">
+                    <div class="text-container">
+                        <label class="text-label">Data to Encrypt</label>
+                        <textarea id="input-text" 
+                                  class="text-area"
+                                  placeholder="Enter sensitive information here..."
+                                  rows="5"></textarea>
+                    </div>
+                    
+                    <div class="output-container">
+                        <div id="encrypted-output" class="output-box hidden"></div>
+                        <div id="encrypted-placeholder" class="output-placeholder">
+                            <i class="fas fa-lock"></i>
+                            <div>Encrypted data will appear here</div>
+                        </div>
+                    </div>
+                  
