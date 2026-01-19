@@ -662,4 +662,223 @@
         }
 
         /* ========== SESSION TIMER ========== */
-        .session-tim
+        .session-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--cyber-cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 247, 255, 0.1);
+            border-radius: 50px;
+            border: 1px solid rgba(0, 247, 255, 0.3);
+        }
+
+        /* ========== LOADING STATES ========== */
+        .loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(0, 247, 255, 0.3);
+            border-top-color: var(--cyber-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="cyber-grid"></div>
+    <div class="energy-orb" style="top: 10%; left: 10%;"></div>
+    <div class="energy-orb" style="bottom: 10%; right: 10%;"></div>
+    
+    <!-- Scanner Line -->
+    <div id="scanner" class="scanner-line"></div>
+    
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+    
+    <!-- Language Toggle -->
+    <div class="lang-toggle">
+        <button id="lang-toggle" class="lang-btn">
+            <i class="fas fa-globe"></i>
+            <span id="lang-text">EN</span>
+        </button>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="min-h-screen p-4 md:p-6">
+        <!-- Header -->
+        <header class="text-center py-6 md:py-10">
+            <h1 class="cyber-title mb-2">SWARG</h1>
+            
+            <!-- Amar Kumar Badge -->
+            <div class="amar-badge inline-flex">
+                <span class="text-gradient font-bold tracking-widest text-lg">AMAR KUMAR</span>
+                <i class="fas fa-check-circle text-blue-400 glow"></i>
+            </div>
+            
+            <!-- About Button -->
+            <button id="about-btn" class="mt-6 px-8 py-3 bg-white/5 border border-white/10 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-cyan-500/10 transition-all duration-300">
+                <i class="fas fa-info-circle text-cyan-400 mr-2"></i>
+                <span data-i18n="about_system">About System</span>
+            </button>
+        </header>
+        
+        <!-- Security Badges -->
+        <div class="text-center mb-8">
+            <div class="security-badge">
+                <i class="fas fa-shield-alt"></i>
+                <span>AES-256-GCM</span>
+            </div>
+            <div class="security-badge" style="border-color: var(--cyber-purple); color: var(--cyber-purple);">
+                <i class="fas fa-network-wired"></i>
+                <span data-i18n="local_processing">Local Processing</span>
+            </div>
+            <div class="security-badge" style="border-color: var(--cyber-yellow); color: var(--cyber-yellow);">
+                <i class="fas fa-user-shield"></i>
+                <span data-i18n="no_data_storage">No Data Storage</span>
+            </div>
+            <div class="security-badge" style="border-color: var(--cyber-red); color: var(--cyber-red);">
+                <i class="fas fa-file-shield"></i>
+                <span data-i18n="vault_mode">Vault Mode</span>
+            </div>
+        </div>
+        
+        <!-- Threat Warning -->
+        <div class="threat-warning glass-panel max-w-4xl mx-auto mb-8">
+            <h4>
+                <i class="fas fa-exclamation-triangle"></i>
+                <span data-i18n="security_warning">Security Warning</span>
+            </h4>
+            <p class="text-sm opacity-80" data-i18n="threat_model">
+                This app protects data at rest and in transit using AES-256-GCM encryption. 
+                It does NOT protect against malware, keyloggers, or a compromised device. 
+                Always ensure your operating system and browser are up to date.
+            </p>
+        </div>
+        
+        <!-- Main Application -->
+        <div class="max-w-6xl mx-auto">
+            <div class="glass-panel mb-8">
+                <!-- Master Key Section -->
+                <div class="mb-8">
+                    <label class="block text-cyan-400 font-mono text-sm uppercase tracking-widest mb-4">
+                        <i class="fas fa-key mr-2"></i>
+                        <span data-i18n="master_key">MASTER ENCRYPTION KEY</span>
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="masterKey"
+                            class="cyber-input"
+                            placeholder="Enter your password (minimum 12 characters)"
+                            autocomplete="off"
+                        />
+                        <button id="toggleKey" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-cyan-400 hover:text-cyan-300">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Password Strength -->
+                    <div class="mt-4">
+                        <div class="strength-meter">
+                            <div class="strength-segment" id="strength-1"></div>
+                            <div class="strength-segment" id="strength-2"></div>
+                            <div class="strength-segment" id="strength-3"></div>
+                            <div class="strength-segment" id="strength-4"></div>
+                            <div class="strength-segment" id="strength-5"></div>
+                        </div>
+                        <div class="flex justify-between text-xs mt-2">
+                            <span id="strength-text" class="text-gray-400" data-i18n="strength">Strength</span>
+                            <span id="iterations-display" class="text-cyan-400 font-mono">PBKDF2: 100,000</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Key Tools -->
+                    <div class="flex flex-wrap gap-3 mt-4">
+                        <button id="generate-password" class="cyber-button" style="background: linear-gradient(135deg, var(--cyber-purple), var(--cyber-blue));">
+                            <i class="fas fa-dice"></i>
+                            <span data-i18n="generate_password">Generate Password</span>
+                        </button>
+                        <button id="clear-all" class="cyber-button" style="background: rgba(255, 51, 102, 0.2); color: var(--cyber-red); border-color: var(--cyber-red);">
+                            <i class="fas fa-trash"></i>
+                            <span data-i18n="clear_all">Clear All</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Tab Navigation -->
+                <div class="cyber-tabs mb-8">
+                    <button class="cyber-tab active" data-tab="encrypt">
+                        <i class="fas fa-lock"></i>
+                        <span data-i18n="secure_data">Secure Data</span>
+                    </button>
+                    <button class="cyber-tab" data-tab="decrypt">
+                        <i class="fas fa-unlock"></i>
+                        <span data-i18n="reveal_truth">Reveal Truth</span>
+                    </button>
+                    <button class="cyber-tab" data-tab="vault">
+                        <i class="fas fa-database"></i>
+                        <span data-i18n="vault">Vault</span>
+                    </button>
+                    <button class="cyber-tab" data-tab="files">
+                        <i class="fas fa-file"></i>
+                        <span data-i18n="files">Files</span>
+                    </button>
+                    <button class="cyber-tab" data-tab="qr">
+                        <i class="fas fa-qrcode"></i>
+                        <span>QR Code</span>
+                    </button>
+                </div>
+                
+                <!-- Tab Contents -->
+                <div id="tab-contents">
+                    <!-- Encrypt Tab -->
+                    <div id="encrypt-tab" class="tab-content active">
+                        <textarea 
+                            id="input-text"
+                            class="cyber-textarea mb-6"
+                            placeholder="Enter your data to encrypt..."
+                            rows="6"
+                        ></textarea>
+                        
+                        <div class="cyber-output mb-6">
+                            <div class="output-placeholder" id="encrypt-placeholder">
+                                ENCRYPTED TOKEN WILL APPEAR HERE
+                            </div>
+                            <div id="encrypt-output" class="hidden"></div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button id="encrypt-btn" class="cyber-button">
+                                <i class="fas fa-shield-alt"></i>
+                                <span data-i18n="encrypt">Encrypt</span>
+                            </button>
+                            <button id="copy-encrypted" class="cyber-button" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
+                                <i class="fas fa-copy"></i>
+                                <span data-i18n="copy">Copy</span>
+                            </button>
+                            <button id="save-to-vault" class="cyber-button" style="background: linear-gradient(135deg, var(--cyber-purple), var(--cyber-red));">
+                                <i class="fas fa-save"></i>
+                                <span data-i18n="save_to_vault">Save to Vault</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Decryp
