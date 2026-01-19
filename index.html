@@ -1,2849 +1,568 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWARG | Industrial Encryption Suite v1.0</title>
+    <title>SWARG | Secure Lock</title>
     
-    <!-- PWA Configuration -->
+    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
-    <meta name="description" content="Client-side AES-256-GCM encryption suite with vault storage and zero data transmission">
+    <meta name="theme-color" content="#1e40af">
     
-    <!-- External Resources -->
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=JetBrains+Mono:wght@300;400;600&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
-    <!-- Custom Styles -->
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* ========== CSS VARIABLES ========== */
+        /* Clean, minimal styles */
         :root {
-            --bg-deep: #000000;
-            --bg-dark: #0a0a0f;
-            --bg-darker: #05050a;
-            --cyber-cyan: #00f7ff;
-            --cyber-blue: #0066ff;
-            --cyber-purple: #9d00ff;
-            --cyber-green: #00ff88;
-            --cyber-red: #ff3366;
-            --cyber-yellow: #ffcc00;
-            --gold-start: #ffd700;
-            --gold-mid: #fffacd;
-            --gold-end: #daa520;
-            --glass-bg: rgba(10, 15, 25, 0.85);
-            --glass-border: rgba(0, 247, 255, 0.2);
-            --shadow-glow: 0 0 40px rgba(0, 247, 255, 0.3);
+            --primary: #1e40af;
+            --primary-light: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
-
-        /* ========== BASE STYLES ========== */
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.5;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-
-        body {
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg-deep);
-            color: #ffffff;
+        
+        /* App container */
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
             min-height: 100vh;
-            overflow-x: hidden;
+            background: white;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
             position: relative;
-            line-height: 1.6;
         }
-
-        /* ========== DYNAMIC BACKGROUND ========== */
-        .cyber-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 247, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 247, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: -2;
-            pointer-events: none;
-        }
-
-        .energy-orb {
-            position: fixed;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(0, 102, 255, 0.1) 0%, transparent 70%);
-            filter: blur(60px);
-            animation: pulse-orb 8s ease-in-out infinite;
-            z-index: -1;
-        }
-
-        @keyframes pulse-orb {
-            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-            33% { transform: translate(100px, -50px) scale(1.2); opacity: 0.5; }
-            66% { transform: translate(-80px, 80px) scale(0.8); opacity: 0.2; }
-        }
-
-        /* ========== GLASS MORPHISM CONTAINERS ========== */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 32px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        .glass-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--cyber-cyan), 
-                transparent);
-        }
-
-        /* ========== TYPOGRAPHY ========== */
-        .cyber-title {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            font-size: 4.5rem;
-            background: linear-gradient(135deg, 
-                #ffffff 0%, 
-                var(--cyber-cyan) 25%, 
-                var(--cyber-blue) 50%, 
-                var(--cyber-purple) 75%, 
-                #ffffff 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 40px rgba(0, 247, 255, 0.5);
-            letter-spacing: 2px;
-            animation: title-shine 3s linear infinite;
-        }
-
-        @keyframes title-shine {
-            to { background-position: 200% center; }
-        }
-
-        .amar-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 32px;
-            background: linear-gradient(135deg, 
-                rgba(255, 215, 0, 0.1), 
-                rgba(218, 165, 32, 0.05));
-            border: 2px solid rgba(255, 215, 0, 0.3);
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .amar-badge::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, 
-                transparent, 
-                rgba(255, 215, 0, 0.2), 
-                transparent);
-            transform: rotate(30deg);
-            animation: badge-shine 3s linear infinite;
-        }
-
-        @keyframes badge-shine {
-            0% { transform: translateX(-100%) rotate(30deg); }
-            100% { transform: translateX(100%) rotate(30deg); }
-        }
-
-        /* ========== INPUT STYLES ========== */
-        .cyber-input {
-            width: 100%;
-            padding: 18px 24px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(0, 247, 255, 0.3);
-            border-radius: 16px;
-            color: var(--cyber-cyan);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 15px;
-            font-weight: 500;
-            letter-spacing: 1px;
-            outline: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .cyber-input:focus {
-            border-color: var(--cyber-cyan);
-            box-shadow: 0 0 30px rgba(0, 247, 255, 0.3);
-            background: rgba(0, 0, 0, 0.7);
-        }
-
-        .cyber-input::placeholder {
-            color: rgba(0, 247, 255, 0.5);
-            font-weight: 300;
-        }
-
-        /* ========== BUTTON STYLES ========== */
-        .cyber-button {
-            padding: 16px 32px;
-            border: none;
-            border-radius: 14px;
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 600;
-            font-size: 13px;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, 
-                var(--cyber-cyan), 
-                var(--cyber-blue));
-            color: #000;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .cyber-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.2), 
-                transparent);
-            transition: left 0.6s;
-        }
-
-        .cyber-button:hover::before {
-            left: 100%;
-        }
-
-        .cyber-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 247, 255, 0.4);
-        }
-
-        .cyber-button:active {
-            transform: translateY(-1px);
-        }
-
-        /* ========== TAB SYSTEM ========== */
-        .cyber-tabs {
-            display: flex;
-            gap: 4px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 8px;
-            border-radius: 16px;
-            margin-bottom: 32px;
-        }
-
-        .cyber-tab {
-            flex: 1;
-            padding: 16px 24px;
-            border: none;
-            background: transparent;
-            color: rgba(255, 255, 255, 0.6);
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 600;
-            font-size: 12px;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            cursor: pointer;
-            border-radius: 12px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .cyber-tab.active {
-            background: rgba(0, 247, 255, 0.1);
-            color: var(--cyber-cyan);
-            box-shadow: 0 4px 20px rgba(0, 247, 255, 0.2);
-        }
-
-        /* ========== TEXT AREAS ========== */
-        .cyber-textarea {
-            width: 100%;
-            min-height: 180px;
+        
+        /* Header */
+        .app-header {
             padding: 20px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            color: #ffffff;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            resize: vertical;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        .cyber-textarea:focus {
-            border-color: var(--cyber-cyan);
-            box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        /* ========== OUTPUT DISPLAY ========== */
-        .cyber-output {
-            min-height: 180px;
-            padding: 20px;
-            background: rgba(0, 247, 255, 0.03);
-            border: 2px dashed rgba(0, 247, 255, 0.3);
-            border-radius: 16px;
-            color: var(--cyber-green);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            word-break: break-all;
-            overflow-wrap: break-word;
-            white-space: pre-wrap;
-            position: relative;
-        }
-
-        .output-placeholder {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: rgba(0, 247, 255, 0.3);
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
             text-align: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border-radius: 0 0 24px 24px;
         }
-
-        /* ========== SECURITY BADGES ========== */
+        
+        .app-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+        
+        .app-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        
+        /* Main content */
+        .main-content {
+            padding: 24px;
+        }
+        
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        /* Security badge */
         .security-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 20px;
-            background: rgba(0, 255, 136, 0.08);
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            border-radius: 50px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--cyber-green);
-            margin: 5px;
+            padding: 8px 16px;
+            background: #dbeafe;
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin: 4px;
         }
-
-        /* ========== THREAT WARNING ========== */
-        .threat-warning {
-            background: linear-gradient(135deg, 
-                rgba(255, 51, 102, 0.1), 
-                rgba(255, 204, 0, 0.1));
-            border: 1px solid rgba(255, 51, 102, 0.3);
-            border-radius: 16px;
-            padding: 20px;
+        
+        /* Password input */
+        .password-container {
+            position: relative;
             margin: 20px 0;
         }
-
-        .threat-warning h4 {
-            color: var(--cyber-red);
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* ========== VAULT ENTRY ========== */
-        .vault-entry {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(0, 247, 255, 0.1);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
-        }
-
-        .vault-entry:hover {
-            background: rgba(0, 247, 255, 0.05);
-            border-color: rgba(0, 247, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        /* ========== PROGRESS BARS ========== */
-        .progress-container {
+        
+        .password-input {
             width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, 
-                var(--cyber-green), 
-                var(--cyber-cyan));
-            border-radius: 3px;
-            transition: width 0.3s ease;
-        }
-
-        /* ========== TOAST NOTIFICATIONS ========== */
-        .toast-container {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
-        }
-
-        .cyber-toast {
-            padding: 16px 30px;
-            background: rgba(10, 15, 25, 0.95);
-            border: 1px solid var(--cyber-cyan);
-            border-radius: 50px;
-            color: white;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            text-align: center;
-            backdrop-filter: blur(20px);
-            animation: toastSlide 0.3s ease-out;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            pointer-events: auto;
-        }
-
-        @keyframes toastSlide {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ========== SCANNER EFFECT ========== */
-        .scanner-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--cyber-cyan), 
-                transparent);
-            box-shadow: 0 0 20px var(--cyber-cyan);
-            z-index: 10;
-            display: none;
-            animation: scan 2s linear infinite;
-        }
-
-        @keyframes scan {
-            0% { top: 0%; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
-        }
-
-        /* ========== QR CODE DISPLAY ========== */
-        .qr-container {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .qr-code {
-            width: 200px;
-            height: 200px;
+            padding: 16px;
+            padding-right: 48px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s;
             background: white;
-            padding: 10px;
-            border-radius: 8px;
         }
-
-        /* ========== LANGUAGE TOGGLE ========== */
-        .lang-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
+        
+        .password-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
-
-        .lang-btn {
-            padding: 10px 20px;
-            background: rgba(0, 247, 255, 0.1);
-            border: 1px solid rgba(0, 247, 255, 0.3);
-            border-radius: 50px;
-            color: var(--cyber-cyan);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            padding: 4px;
         }
-
-        .lang-btn:hover {
-            background: rgba(0, 247, 255, 0.2);
-            transform: scale(1.05);
+        
+        /* Action buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 24px 0;
         }
-
-        /* ========== RESPONSIVE DESIGN ========== */
-        @media (max-width: 768px) {
-            .cyber-title {
-                font-size: 3rem;
-            }
-            
-            .glass-panel {
-                padding: 20px;
-                margin: 10px;
-                border-radius: 20px;
-            }
-            
-            .cyber-tabs {
-                flex-direction: column;
-            }
-            
-            .cyber-tab {
-                padding: 14px 20px;
-            }
-            
-            .qr-code {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .lang-toggle {
-                top: 10px;
-                right: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .cyber-title {
-                font-size: 2.5rem;
-            }
-            
-            .cyber-button {
-                padding: 14px 24px;
-                font-size: 12px;
-            }
-            
-            .security-badge {
-                padding: 8px 16px;
-                font-size: 10px;
-            }
-        }
-
-        /* ========== UTILITY CLASSES ========== */
-        .hidden {
-            display: none !important;
-        }
-
-        .text-gradient {
-            background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .glow {
-            filter: drop-shadow(0 0 10px currentColor);
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        /* ========== FILE UPLOAD ========== */
-        .file-upload {
-            position: relative;
-            width: 100%;
-            height: 120px;
-            border: 2px dashed rgba(0, 247, 255, 0.3);
-            border-radius: 16px;
+        
+        .btn {
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: rgba(0, 247, 255, 0.02);
+            gap: 10px;
         }
-
-        .file-upload:hover {
-            border-color: var(--cyber-cyan);
-            background: rgba(0, 247, 255, 0.05);
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
         }
-
-        .file-upload input {
-            position: absolute;
+        
+        .btn-primary:hover {
+            background: #1e3a8a;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        
+        /* Text areas */
+        .text-area {
             width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
+            min-height: 120px;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            resize: vertical;
+            transition: all 0.2s;
+            margin: 12px 0;
         }
-
-        /* ========== PASSWORD STRENGTH ========== */
-        .strength-meter {
-            display: flex;
-            gap: 5px;
-            margin-top: 10px;
+        
+        .text-area:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
-
-        .strength-segment {
-            flex: 1;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            transition: all 0.3s;
+        
+        /* Output display */
+        .output-display {
+            min-height: 120px;
+            padding: 16px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            background: #f8fafc;
+            margin: 12px 0;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
         }
-
-        .strength-segment.active {
-            background: var(--cyber-green);
-        }
-
-        .strength-segment.weak {
-            background: var(--cyber-red);
-        }
-
-        .strength-segment.medium {
-            background: var(--cyber-yellow);
-        }
-
-        /* ========== SESSION TIMER ========== */
-        .session-timer {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--cyber-cyan);
+        
+        .output-placeholder {
+            color: #94a3b8;
+            text-align: center;
+            font-style: italic;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(0, 247, 255, 0.1);
-            border-radius: 50px;
-            border: 1px solid rgba(0, 247, 255, 0.3);
+            justify-content: center;
+            height: 100%;
         }
-
-        /* ========== LOADING STATES ========== */
-        .loading {
-            position: relative;
-            pointer-events: none;
-            opacity: 0.8;
-        }
-
-        .loading::after {
-            content: '';
-            position: absolute;
-            top: 50%;
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
             left: 50%;
-            width: 20px;
-            height: 20px;
-            margin: -10px 0 0 -10px;
-            border: 2px solid rgba(0, 247, 255, 0.3);
-            border-top-color: var(--cyber-cyan);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: slideUp 0.3s ease-out;
+            max-width: 90%;
+            text-align: center;
         }
-
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        /* Success animation */
+        .success-check {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            animation: scaleIn 0.3s ease-out;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+        
+        /* Info cards */
+        .info-card {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .info-card i {
+            color: #0284c7;
+            margin-right: 8px;
+        }
+        
+        /* Tab navigation */
+        .tab-nav {
+            display: flex;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 4px;
+            margin: 24px 0;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Settings modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        /* Utility classes */
+        .hidden {
+            display: none !important;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-4 { margin-top: 16px; }
+        .mt-6 { margin-top: 24px; }
+        .mb-4 { margin-bottom: 16px; }
+        .mb-6 { margin-bottom: 24px; }
+        
+        /* Responsive */
+        @media (max-width: 480px) {
+            .app-container {
+                border-radius: 0;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Background Elements -->
-    <div class="cyber-grid"></div>
-    <div class="energy-orb" style="top: 10%; left: 10%;"></div>
-    <div class="energy-orb" style="bottom: 10%; right: 10%;"></div>
-    
-    <!-- Scanner Line -->
-    <div id="scanner" class="scanner-line"></div>
-    
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
-    
-    <!-- Language Toggle -->
-    <div class="lang-toggle">
-        <button id="lang-toggle" class="lang-btn">
-            <i class="fas fa-globe"></i>
-            <span id="lang-text">EN</span>
-        </button>
-    </div>
-    
-    <!-- Main Container -->
-    <div class="min-h-screen p-4 md:p-6">
+    <!-- App Container -->
+    <div class="app-container">
         <!-- Header -->
-        <header class="text-center py-6 md:py-10">
-            <h1 class="cyber-title mb-2">SWARG</h1>
-            
-            <!-- Amar Kumar Badge -->
-            <div class="amar-badge inline-flex">
-                <span class="text-gradient font-bold tracking-widest text-lg">AMAR KUMAR</span>
-                <i class="fas fa-check-circle text-blue-400 glow"></i>
-            </div>
-            
-            <!-- About Button -->
-            <button id="about-btn" class="mt-6 px-8 py-3 bg-white/5 border border-white/10 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-cyan-500/10 transition-all duration-300">
-                <i class="fas fa-info-circle text-cyan-400 mr-2"></i>
-                <span data-i18n="about_system">About System</span>
-            </button>
+        <header class="app-header">
+            <h1 class="app-title">SWARG Lock</h1>
+            <p class="app-subtitle">Your data stays private, always</p>
         </header>
         
-        <!-- Security Badges -->
-        <div class="text-center mb-8">
-            <div class="security-badge">
-                <i class="fas fa-shield-alt"></i>
-                <span>AES-256-GCM</span>
-            </div>
-            <div class="security-badge" style="border-color: var(--cyber-purple); color: var(--cyber-purple);">
-                <i class="fas fa-network-wired"></i>
-                <span data-i18n="local_processing">Local Processing</span>
-            </div>
-            <div class="security-badge" style="border-color: var(--cyber-yellow); color: var(--cyber-yellow);">
-                <i class="fas fa-user-shield"></i>
-                <span data-i18n="no_data_storage">No Data Storage</span>
-            </div>
-            <div class="security-badge" style="border-color: var(--cyber-red); color: var(--cyber-red);">
-                <i class="fas fa-file-shield"></i>
-                <span data-i18n="vault_mode">Vault Mode</span>
-            </div>
-        </div>
-        
-        <!-- Threat Warning -->
-        <div class="threat-warning glass-panel max-w-4xl mx-auto mb-8">
-            <h4>
-                <i class="fas fa-exclamation-triangle"></i>
-                <span data-i18n="security_warning">Security Warning</span>
-            </h4>
-            <p class="text-sm opacity-80" data-i18n="threat_model">
-                This app protects data at rest and in transit using AES-256-GCM encryption. 
-                It does NOT protect against malware, keyloggers, or a compromised device. 
-                Always ensure your operating system and browser are up to date.
-            </p>
-        </div>
-        
-        <!-- Main Application -->
-        <div class="max-w-6xl mx-auto">
-            <div class="glass-panel mb-8">
-                <!-- Master Key Section -->
-                <div class="mb-8">
-                    <label class="block text-cyan-400 font-mono text-sm uppercase tracking-widest mb-4">
-                        <i class="fas fa-key mr-2"></i>
-                        <span data-i18n="master_key">MASTER ENCRYPTION KEY</span>
-                    </label>
-                    <div class="relative">
-                        <input 
-                            type="password" 
-                            id="masterKey"
-                            class="cyber-input"
-                            placeholder="Enter your password (minimum 12 characters)"
-                            autocomplete="off"
-                        />
-                        <button id="toggleKey" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-cyan-400 hover:text-cyan-300">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    
-                    <!-- Password Strength -->
-                    <div class="mt-4">
-                        <div class="strength-meter">
-                            <div class="strength-segment" id="strength-1"></div>
-                            <div class="strength-segment" id="strength-2"></div>
-                            <div class="strength-segment" id="strength-3"></div>
-                            <div class="strength-segment" id="strength-4"></div>
-                            <div class="strength-segment" id="strength-5"></div>
-                        </div>
-                        <div class="flex justify-between text-xs mt-2">
-                            <span id="strength-text" class="text-gray-400" data-i18n="strength">Strength</span>
-                            <span id="iterations-display" class="text-cyan-400 font-mono">PBKDF2: 100,000</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Key Tools -->
-                    <div class="flex flex-wrap gap-3 mt-4">
-                        <button id="generate-password" class="cyber-button" style="background: linear-gradient(135deg, var(--cyber-purple), var(--cyber-blue));">
-                            <i class="fas fa-dice"></i>
-                            <span data-i18n="generate_password">Generate Password</span>
-                        </button>
-                        <button id="clear-all" class="cyber-button" style="background: rgba(255, 51, 102, 0.2); color: var(--cyber-red); border-color: var(--cyber-red);">
-                            <i class="fas fa-trash"></i>
-                            <span data-i18n="clear_all">Clear All</span>
-                        </button>
-                    </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Message (First Visit) -->
+            <div id="welcome-message" class="card text-center">
+                <div class="mb-6">
+                    <i class="fas fa-lock text-4xl" style="color: var(--primary); margin-bottom: 16px;"></i>
+                    <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">Welcome to SWARG Lock</h2>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        Keep your sensitive information private. Everything is secured on your device - nothing is uploaded to the internet.
+                    </p>
                 </div>
-                
-                <!-- Tab Navigation -->
-                <div class="cyber-tabs mb-8">
-                    <button class="cyber-tab active" data-tab="encrypt">
-                        <i class="fas fa-lock"></i>
-                        <span data-i18n="secure_data">Secure Data</span>
-                    </button>
-                    <button class="cyber-tab" data-tab="decrypt">
-                        <i class="fas fa-unlock"></i>
-                        <span data-i18n="reveal_truth">Reveal Truth</span>
-                    </button>
-                    <button class="cyber-tab" data-tab="vault">
-                        <i class="fas fa-database"></i>
-                        <span data-i18n="vault">Vault</span>
-                    </button>
-                    <button class="cyber-tab" data-tab="files">
-                        <i class="fas fa-file"></i>
-                        <span data-i18n="files">Files</span>
-                    </button>
-                    <button class="cyber-tab" data-tab="qr">
-                        <i class="fas fa-qrcode"></i>
-                        <span>QR Code</span>
-                    </button>
-                </div>
-                
-                <!-- Tab Contents -->
-                <div id="tab-contents">
-                    <!-- Encrypt Tab -->
-                    <div id="encrypt-tab" class="tab-content active">
-                        <textarea 
-                            id="input-text"
-                            class="cyber-textarea mb-6"
-                            placeholder="Enter your data to encrypt..."
-                            rows="6"
-                        ></textarea>
-                        
-                        <div class="cyber-output mb-6">
-                            <div class="output-placeholder" id="encrypt-placeholder">
-                                ENCRYPTED TOKEN WILL APPEAR HERE
-                            </div>
-                            <div id="encrypt-output" class="hidden"></div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <button id="encrypt-btn" class="cyber-button">
-                                <i class="fas fa-shield-alt"></i>
-                                <span data-i18n="encrypt">Encrypt</span>
-                            </button>
-                            <button id="copy-encrypted" class="cyber-button" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
-                                <i class="fas fa-copy"></i>
-                                <span data-i18n="copy">Copy</span>
-                            </button>
-                            <button id="save-to-vault" class="cyber-button" style="background: linear-gradient(135deg, var(--cyber-purple), var(--cyber-red));">
-                                <i class="fas fa-save"></i>
-                                <span data-i18n="save_to_vault">Save to Vault</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Decrypt Tab -->
-                    <div id="decrypt-tab" class="tab-content hidden">
-                        <textarea 
-                            id="encrypted-input"
-                            class="cyber-textarea mb-6"
-                            placeholder="Paste encrypted token here..."
-                            rows="6"
-                        ></textarea>
-                        
-                        <div class="cyber-output mb-6">
-                            <div class="output-placeholder" id="decrypt-placeholder">
-                                DECRYPTED TEXT WILL APPEAR HERE
-                            </div>
-                            <div id="decrypt-output" class="hidden"></div>
-                        </div>
-                        
-                        <button id="decrypt-btn" class="cyber-button w-full" style="background: linear-gradient(135deg, var(--cyber-purple), var(--cyber-blue));">
-                            <i class="fas fa-eye"></i>
-                            <span data-i18n="decrypt">Decrypt</span>
-                        </button>
-                        
-                        <!-- Auto-lock Timer -->
-                        <div class="mt-6 flex items-center justify-between">
-                            <div class="session-timer">
-                                <i class="fas fa-clock"></i>
-                                <span data-i18n="auto_lock">Auto-lock:</span>
-                                <span id="lock-timer">30s</span>
-                            </div>
-                            <button id="clear-decrypted" class="text-sm text-cyan-400 hover:text-cyan-300 font-mono">
-                                <i class="fas fa-trash mr-2"></i>
-                                <span data-i18n="clear">Clear</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Vault Tab -->
-                    <div id="vault-tab" class="tab-content hidden">
-                        <div class="mb-6">
-                            <div class="flex flex-col md:flex-row gap-4 mb-4">
-                                <input 
-                                    type="text" 
-                                    id="vault-label"
-                                    class="cyber-input flex-1"
-                                    placeholder="Entry label (optional)"
-                                />
-                                <button id="add-vault-entry" class="cyber-button">
-                                    <i class="fas fa-plus"></i>
-                                    <span data-i18n="add_entry">Add Entry</span>
-                                </button>
-                            </div>
-                            
-                            <!-- Vault Stats -->
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                                <div class="bg-black/30 p-4 rounded-2xl text-center">
-                                    <div class="text-2xl font-bold text-cyan-400" id="vault-count">0</div>
-                                    <div class="text-xs text-gray-400" data-i18n="entries">Entries</div>
-                                </div>
-                                <div class="bg-black/30 p-4 rounded-2xl text-center">
-                                    <div class="text-2xl font-bold text-purple-400" id="vault-size">0 KB</div>
-                                    <div class="text-xs text-gray-400" data-i18n="size">Size</div>
-                                </div>
-                                <div class="bg-black/30 p-4 rounded-2xl text-center">
-                                    <div class="text-2xl font-bold text-green-400" id="last-backup">-</div>
-                                    <div class="text-xs text-gray-400" data-i18n="last_backup">Last Backup</div>
-                                </div>
-                                <div class="bg-black/30 p-4 rounded-2xl text-center">
-                                    <div class="text-2xl font-bold text-yellow-400" id="performance">Good</div>
-                                    <div class="text-xs text-gray-400" data-i18n="performance">Performance</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Vault Entries -->
-                        <div id="vault-entries" class="space-y-4 max-h-96 overflow-y-auto p-2">
-                            <div class="text-center py-12 text-gray-500" id="vault-empty">
-                                <i class="fas fa-database text-4xl mb-4"></i>
-                                <p data-i18n="vault_empty">Vault is empty. Add your first encrypted entry.</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Vault Actions -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                            <button id="export-vault" class="cyber-button" style="background: rgba(0, 247, 255, 0.1); color: var(--cyber-cyan);">
-                                <i class="fas fa-download"></i>
-                                <span data-i18n="export_vault">Export Vault</span>
-                            </button>
-                            <button id="import-vault" class="cyber-button" style="background: rgba(157, 0, 255, 0.1); color: var(--cyber-purple);">
-                                <i class="fas fa-upload"></i>
-                                <span data-i18n="import_vault">Import Vault</span>
-                            </button>
-                            <button id="wipe-vault" class="cyber-button" style="background: rgba(255, 51, 102, 0.1); color: var(--cyber-red);">
-                                <i class="fas fa-skull-crossbones"></i>
-                                <span data-i18n="wipe_vault">Wipe Vault</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Files Tab -->
-                    <div id="files-tab" class="tab-content hidden">
-                        <div class="mb-6">
-                            <div class="file-upload mb-6">
-                                <input type="file" id="file-input" accept=".txt,.pdf">
-                                <div class="text-center">
-                                    <i class="fas fa-cloud-upload-alt text-4xl text-cyan-400 mb-3"></i>
-                                    <p class="text-lg font-semibold" data-i18n="drag_drop">Drag & drop or click to upload</p>
-                                    <p class="text-sm text-gray-400 mt-2" data-i18n="supported_files">Supported: .txt, .pdf (Max 10MB)</p>
-                                </div>
-                            </div>
-                            
-                            <div id="file-info" class="hidden bg-black/30 p-4 rounded-2xl mb-4">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <h4 class="font-semibold" id="file-name"></h4>
-                                        <p class="text-sm text-gray-400" id="file-size"></p>
-                                    </div>
-                                    <button id="clear-file" class="text-red-400 hover:text-red-300">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <button id="encrypt-file" class="cyber-button">
-                                <i class="fas fa-file-shield"></i>
-                                <span data-i18n="encrypt_file">Encrypt File</span>
-                            </button>
-                            <button id="decrypt-file" class="cyber-button" style="background: linear-gradient(135deg, var(--cyber-purple), var(--cyber-blue));">
-                                <i class="fas fa-file-lock"></i>
-                                <span data-i18n="decrypt_file">Decrypt File</span>
-                            </button>
-                        </div>
-                        
-                        <div class="mt-6 text-xs text-gray-400">
-                            <p data-i18n="file_warning">
-                                Note: Files are encrypted locally and never uploaded to any server. 
-                                Large files may take longer to process.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <!-- QR Code Tab -->
-                    <div id="qr-tab" class="tab-content hidden">
-                        <div class="qr-container mb-6">
-                            <div id="qr-code" class="qr-code"></div>
-                            <div class="text-center">
-                                <p class="text-sm text-gray-400 mb-2" data-i18n="qr_instruction">
-                                    Scan this QR code to share the encrypted token
-                                </p>
-                                <p class="text-xs text-red-400" data-i18n="qr_warning">
-                                    Warning: QR codes are less secure than manual transfer. 
-                                    Tokens auto-expire in 30 minutes.
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <button id="generate-qr" class="cyber-button">
-                                <i class="fas fa-qrcode"></i>
-                                <span data-i18n="generate_qr">Generate QR</span>
-                            </button>
-                            <button id="scan-qr" class="cyber-button" style="background: rgba(0, 247, 255, 0.1); color: var(--cyber-cyan);">
-                                <i class="fas fa-camera"></i>
-                                <span data-i18n="scan_qr">Scan QR</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Activity Log -->
-                <div class="mt-8 pt-6 border-t border-white/10">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-cyan-400 font-mono text-sm uppercase tracking-widest">
-                            <i class="fas fa-terminal mr-2"></i>
-                            <span data-i18n="system_log">SYSTEM LOG</span>
-                        </h3>
-                        <button id="clear-log" class="text-xs text-gray-400 hover:text-white">
-                            <i class="fas fa-trash mr-1"></i>
-                            <span data-i18n="clear_log">Clear</span>
-                        </button>
-                    </div>
-                    <div id="activity-log" class="space-y-2 max-h-40 overflow-y-auto font-mono text-xs">
-                        <div class="text-cyan-400">[SYSTEM] SWARG v1.0 Initialized</div>
-                        <div class="text-green-400">[SECURITY] AES-256-GCM Ready</div>
-                        <div class="text-purple-400">[INFO] All processing is local</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Footer -->
-        <footer class="text-center py-8 text-gray-500 text-sm">
-            <div class="mb-2 flex flex-col md:flex-row items-center justify-center gap-4">
-                <div class="flex items-center">
-                    <i class="fas fa-server text-cyan-400 mr-2"></i>
-                    <span data-i18n="no_network">NO NETWORK REQUIRED • ALL DATA STAYS LOCAL</span>
-                </div>
-                <div class="flex items-center">
-                    <i class="fas fa-shield-alt text-green-400 mr-2"></i>
-                    <span data-i18n="zero_knowledge">ZERO-KNOWLEDGE ARCHITECTURE</span>
-                </div>
-            </div>
-            <div>© <span id="current-year">2026</span> SWARG INDUSTRIAL SUITE | AMAR KUMAR</div>
-        </footer>
-    </div>
-    
-    <!-- About Modal -->
-    <div id="about-modal" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 hidden items-center justify-center p-4">
-        <div class="glass-panel max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-bold text-cyan-400">
-                    <i class="fas fa-microchip mr-2"></i>
-                    <span data-i18n="about_swarg">About SWARG Encryption Suite</span>
-                </h2>
-                <button id="close-about" class="text-2xl text-gray-400 hover:text-white">
-                    <i class="fas fa-times"></i>
+                <button id="get-started" class="btn btn-primary" style="width: 100%;">
+                    Get Started
                 </button>
             </div>
             
-            <div class="space-y-6">
-                <!-- Technical Specifications -->
-                <div class="bg-black/30 p-5 rounded-2xl border border-cyan-500/20">
-                    <h3 class="text-white font-bold mb-3 text-lg" data-i18n="tech_specs">Technical Specifications</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Main Interface (Hidden initially) -->
+            <div id="main-interface" class="hidden">
+                <!-- Security Status -->
+                <div class="card">
+                    <div class="flex items-center justify-between mb-4">
                         <div>
-                            <p class="text-cyan-400 text-sm mb-1" data-i18n="algorithm">Algorithm</p>
-                            <p class="text-white">AES-256-GCM (Galois/Counter Mode)</p>
+                            <h3 style="font-weight: 700; font-size: 18px;">Security Status</h3>
+                            <p style="color: var(--text-secondary); font-size: 14px;">All systems secure</p>
                         </div>
-                        <div>
-                            <p class="text-cyan-400 text-sm mb-1" data-i18n="key_derivation">Key Derivation</p>
-                            <p class="text-white">PBKDF2 with SHA-256 (300,000+ iterations)</p>
-                        </div>
-                        <div>
-                            <p class="text-cyan-400 text-sm mb-1" data-i18n="authentication">Authentication</p>
-                            <p class="text-white">GCM provides authenticated encryption</p>
-                        </div>
-                        <div>
-                            <p class="text-cyan-400 text-sm mb-1" data-i18n="random_source">Random Source</p>
-                            <p class="text-white">Crypto.getRandomValues() + WebCrypto API</p>
+                        <div class="security-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Protected</span>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Security Features -->
-                <div class="bg-black/30 p-5 rounded-2xl border border-green-500/20">
-                    <h3 class="text-white font-bold mb-3 text-lg" data-i18n="security_features">Security Features</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                            <span data-i18n="feature_local">All encryption/decryption happens locally in your browser</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                            <span data-i18n="feature_no_storage">No data is stored or transmitted to any server</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                            <span data-i18n="feature_expiry">Tokens automatically expire after 30 minutes</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                            <span data-i18n="feature_memory">Memory protection with non-extractable WebCrypto keys</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                            <span data-i18n="feature_rate_limit">Rate limiting (5 attempts → 60s lock)</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                            <span data-i18n="feature_auto_lock">Auto-lock (decrypted text clears in 30 seconds)</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <!-- Vault Information -->
-                <div class="bg-black/30 p-5 rounded-2xl border border-purple-500/20">
-                    <h3 class="text-white font-bold mb-3 text-lg" data-i18n="vault_info">Vault Information</h3>
-                    <div class="space-y-3">
-                        <p class="text-white" data-i18n="vault_desc">
-                            The vault uses IndexedDB to store encrypted entries locally. 
-                            Each entry is individually encrypted with your master key.
+                    
+                    <div class="info-card">
+                        <p><i class="fas fa-shield-alt"></i> <strong>Your data is securely locked on this device</strong></p>
+                        <p style="margin-top: 8px; font-size: 14px; color: var(--text-secondary);">
+                            Everything stays on your phone/computer. Nothing is uploaded to the internet.
                         </p>
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <p class="text-purple-400" data-i18n="max_entries">Maximum Entries</p>
-                                <p class="text-white">~10,000 (performance warning after 10k)</p>
-                            </div>
-                            <div>
-                                <p class="text-purple-400" data-i18n="backup">Auto-backup</p>
-                                <p class="text-white">Every 10 entries (encrypted export)</p>
-                            </div>
-                        </div>
                     </div>
-                </div>
-                
-                <!-- File Support -->
-                <div class="bg-black/30 p-5 rounded-2xl border border-yellow-500/20">
-                    <h3 class="text-white font-bold mb-3 text-lg" data-i18n="file_support">File Support</h3>
-                    <div class="space-y-3">
-                        <p class="text-white" data-i18n="file_desc">
-                            SWARG v1.0 supports encryption of text files (.txt) and PDF files (.pdf).
-                            Files are processed entirely in your browser.
+                    
+                    <div class="info-card">
+                        <p><i class="fas fa-key"></i> <strong>Without your password, nobody can open this</strong></p>
+                        <p style="margin-top: 8px; font-size: 14px; color: var(--text-secondary);">
+                            Your password is required every time. We never store it.
                         </p>
-                        <div class="flex items-center gap-4 text-sm">
-                            <div>
-                                <p class="text-yellow-400" data-i18n="max_size">Maximum Size</p>
-                                <p class="text-white">10 MB per file</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <p><i class="fas fa-exclamation-triangle"></i> <strong>Important: No password recovery</strong></p>
+                        <p style="margin-top: 8px; font-size: 14px; color: var(--text-secondary);">
+                            If you forget your password, your data cannot be recovered. Please remember it.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Password Input -->
+                <div class="card">
+                    <h3 style="font-weight: 700; font-size: 18px; margin-bottom: 16px;">Your Master Password</h3>
+                    <div class="password-container">
+                        <input type="password" id="password" class="password-input" placeholder="Enter your master password">
+                        <button type="button" class="toggle-password" id="toggle-password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">
+                        Use a strong password you'll remember. This cannot be recovered.
+                    </p>
+                </div>
+                
+                <!-- Tab Navigation -->
+                <div class="tab-nav">
+                    <button class="tab-btn active" data-tab="lock">
+                        <i class="fas fa-lock"></i> Lock Data
+                    </button>
+                    <button class="tab-btn" data-tab="unlock">
+                        <i class="fas fa-unlock"></i> Unlock Data
+                    </button>
+                </div>
+                
+                <!-- Lock Tab -->
+                <div id="lock-tab" class="tab-content">
+                    <div class="card">
+                        <h3 style="font-weight: 700; font-size: 18px; margin-bottom: 16px;">Lock Your Data</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                            Enter the text you want to secure. It will be locked with your password.
+                        </p>
+                        
+                        <textarea id="text-to-lock" class="text-area" placeholder="Type or paste sensitive information here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button id="lock-btn" class="btn btn-primary">
+                                <i class="fas fa-lock"></i> Lock Data
+                            </button>
+                            <button id="clear-lock" class="btn btn-secondary">
+                                <i class="fas fa-eraser"></i> Clear
+                            </button>
+                        </div>
+                        
+                        <div id="lock-output" class="output-display hidden">
+                            <div id="lock-output-content"></div>
+                        </div>
+                        
+                        <div id="lock-placeholder" class="output-display">
+                            <div class="output-placeholder">
+                                <i class="fas fa-lock mr-2"></i>
+                                Locked data will appear here
                             </div>
-                            <div>
-                                <p class="text-yellow-400" data-i18n="future_support">Future Support</p>
-                                <p class="text-white">Images, Documents, Archives</p>
+                        </div>
+                        
+                        <div id="lock-success" class="hidden text-center mt-6">
+                            <div class="success-check">
+                                <i class="fas fa-check text-white text-xl"></i>
                             </div>
+                            <h4 style="font-weight: 700; font-size: 18px; color: var(--success);">Data Secured!</h4>
+                            <p style="color: var(--text-secondary); margin-top: 8px;">
+                                Your data is now locked. Copy the code below to save it.
+                            </p>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Local Processing Proof -->
-                <div class="bg-black/30 p-5 rounded-2xl border border-cyan-500/20">
-                    <h3 class="text-white font-bold mb-3 text-lg" data-i18n="local_proof">Local Processing Proof</h3>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <i class="fas fa-network-wired text-cyan-400 text-2xl mr-4"></i>
-                            <div>
-                                <p class="text-white font-bold" data-i18n="no_network_calls">No Network Calls Detected</p>
-                                <p class="text-gray-400 text-sm" data-i18n="all_operations">All operations performed offline</p>
+                <!-- Unlock Tab -->
+                <div id="unlock-tab" class="tab-content hidden">
+                    <div class="card">
+                        <h3 style="font-weight: 700; font-size: 18px; margin-bottom: 16px;">Unlock Your Data</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                            Paste the locked code here to unlock it with your password.
+                        </p>
+                        
+                        <textarea id="text-to-unlock" class="text-area" placeholder="Paste locked code here..."></textarea>
+                        
+                        <div class="action-buttons">
+                            <button id="unlock-btn" class="btn btn-primary">
+                                <i class="fas fa-unlock"></i> Unlock Data
+                            </button>
+                            <button id="clear-unlock" class="btn btn-secondary">
+                                <i class="fas fa-eraser"></i> Clear
+                            </button>
+                        </div>
+                        
+                        <div id="unlock-output" class="output-display hidden">
+                            <div id="unlock-output-content"></div>
+                        </div>
+                        
+                        <div id="unlock-placeholder" class="output-display">
+                            <div class="output-placeholder">
+                                <i class="fas fa-unlock mr-2"></i>
+                                Unlocked data will appear here
                             </div>
                         </div>
-                        <div class="text-green-400 font-bold">
-                            <i class="fas fa-check-circle mr-2"></i>
-                            <span data-i18n="verified">VERIFIED</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <button id="close-about-btn" class="w-full mt-8 bg-cyan-500 text-black py-3 rounded-xl font-bold hover:bg-cyan-400 transition">
-                <span data-i18n="close">CLOSE</span>
-            </button>
-        </div>
-    </div>
-    
-    <!-- Audio Elements for Sound Effects -->
-    <audio id="type-sound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-mechanical-keyboard-typing-1384.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="click-sound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="encrypt-sound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-sci-fi-positive-notification-905.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="decrypt-sound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="success-sound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="error-sound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-warning-alarm-buzzer-958.mp3" type="audio/mpeg">
-    </audio>
-
-    <!-- Main JavaScript -->
-    <script>
-        // ==================== CONFIGURATION ====================
-        const CONFIG = {
-            // Security
-            PBKDF2_ITERATIONS: 300000, // Increased from 100k
-            PBKDF2_MIN_ITERATIONS: 100000,
-            PBKDF2_MAX_ITERATIONS: 600000,
-            SALT_LENGTH: 32,
-            IV_LENGTH: 16,
-            TOKEN_EXPIRY_MINUTES: 30,
-            AUTO_LOCK_SECONDS: 30,
-            RATE_LIMIT_ATTEMPTS: 5,
-            RATE_LIMIT_LOCK_SECONDS: 60,
-            CLIPBOARD_CLEAR_SECONDS: 15,
-            
-            // Vault
-            MAX_VAULT_ENTRIES: 10000,
-            PERFORMANCE_WARNING_THRESHOLD: 5000,
-            AUTO_BACKUP_INTERVAL: 10,
-            
-            // Files
-            MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
-            SUPPORTED_FILE_TYPES: ['.txt', '.pdf'],
-            
-            // UI
-            ANIMATION_DURATION: 300,
-            TYPE_SOUND_VOLUME: 0.2,
-            CLICK_SOUND_VOLUME: 0.3
-        };
-
-        // ==================== STATE MANAGEMENT ====================
-        const state = {
-            masterKey: '',
-            currentTab: 'encrypt',
-            vaultEntries: [],
-            failedAttempts: 0,
-            lockedUntil: 0,
-            autoLockTimer: null,
-            clipboardTimer: null,
-            lastActivity: Date.now(),
-            isProcessing: false,
-            currentLanguage: 'en',
-            soundsEnabled: true,
-            sessionStart: Date.now()
-        };
-
-        // ==================== INTERNATIONALIZATION ====================
-        const translations = {
-            en: {
-                // UI Labels
-                about_system: "About System",
-                local_processing: "Local Processing",
-                no_data_storage: "No Data Storage",
-                vault_mode: "Vault Mode",
-                security_warning: "Security Warning",
-                threat_model: "This app protects data at rest and in transit using AES-256-GCM encryption. It does NOT protect against malware, keyloggers, or a compromised device. Always ensure your operating system and browser are up to date.",
-                master_key: "MASTER ENCRYPTION KEY",
-                strength: "Strength",
-                generate_password: "Generate Password",
-                clear_all: "Clear All",
-                secure_data: "Secure Data",
-                reveal_truth: "Reveal Truth",
-                vault: "Vault",
-                files: "Files",
-                encrypt: "Encrypt",
-                copy: "Copy",
-                save_to_vault: "Save to Vault",
-                decrypt: "Decrypt",
-                auto_lock: "Auto-lock",
-                clear: "Clear",
-                add_entry: "Add Entry",
-                entries: "Entries",
-                size: "Size",
-                last_backup: "Last Backup",
-                performance: "Performance",
-                vault_empty: "Vault is empty. Add your first encrypted entry.",
-                export_vault: "Export Vault",
-                import_vault: "Import Vault",
-                wipe_vault: "Wipe Vault",
-                drag_drop: "Drag & drop or click to upload",
-                supported_files: "Supported: .txt, .pdf (Max 10MB)",
-                encrypt_file: "Encrypt File",
-                decrypt_file: "Decrypt File",
-                file_warning: "Note: Files are encrypted locally and never uploaded to any server. Large files may take longer to process.",
-                qr_instruction: "Scan this QR code to share the encrypted token",
-                qr_warning: "Warning: QR codes are less secure than manual transfer. Tokens auto-expire in 30 minutes.",
-                generate_qr: "Generate QR",
-                scan_qr: "Scan QR",
-                system_log: "SYSTEM LOG",
-                clear_log: "Clear",
-                no_network: "NO NETWORK REQUIRED • ALL DATA STAYS LOCAL",
-                zero_knowledge: "ZERO-KNOWLEDGE ARCHITECTURE",
-                about_swarg: "About SWARG Encryption Suite",
-                close: "CLOSE",
-                tech_specs: "Technical Specifications",
-                algorithm: "Algorithm",
-                key_derivation: "Key Derivation",
-                authentication: "Authentication",
-                random_source: "Random Source",
-                security_features: "Security Features",
-                feature_local: "All encryption/decryption happens locally in your browser",
-                feature_no_storage: "No data is stored or transmitted to any server",
-                feature_expiry: "Tokens automatically expire after 30 minutes",
-                feature_memory: "Memory protection with non-extractable WebCrypto keys",
-                feature_rate_limit: "Rate limiting (5 attempts → 60s lock)",
-                feature_auto_lock: "Auto-lock (decrypted text clears in 30 seconds)",
-                vault_info: "Vault Information",
-                vault_desc: "The vault uses IndexedDB to store encrypted entries locally. Each entry is individually encrypted with your master key.",
-                max_entries: "Maximum Entries",
-                backup: "Auto-backup",
-                file_support: "File Support",
-                file_desc: "SWARG v1.0 supports encryption of text files (.txt) and PDF files (.pdf). Files are processed entirely in your browser.",
-                max_size: "Maximum Size",
-                future_support: "Future Support",
-                local_proof: "Local Processing Proof",
-                no_network_calls: "No Network Calls Detected",
-                all_operations: "All operations performed offline",
-                verified: "VERIFIED"
-            },
-            hi: {
-                // Hindi Translations
-                about_system: "सिस्टम के बारे में",
-                local_processing: "स्थानीय प्रसंस्करण",
-                no_data_storage: "कोई डेटा संग्रहण नहीं",
-                vault_mode: "वॉल्ट मोड",
-                security_warning: "सुरक्षा चेतावनी",
-                threat_model: "यह ऐप AES-256-GCM एन्क्रिप्शन का उपयोग करके आराम और पारगमन में डेटा की सुरक्षा करता है। यह मैलवेयर, कीलॉगर्स, या कम्प्रोमाइज्ड डिवाइस से सुरक्षा नहीं करता है। हमेशा सुनिश्चित करें कि आपका ऑपरेटिंग सिस्टम और ब्राउज़र अप टू डेट हैं।",
-                master_key: "मास्टर एन्क्रिप्शन कुंजी",
-                strength: "मजबूती",
-                generate_password: "पासवर्ड जनरेट करें",
-                clear_all: "सब साफ करें",
-                secure_data: "डेटा सुरक्षित करें",
-                reveal_truth: "सत्य प्रकट करें",
-                vault: "वॉल्ट",
-                files: "फ़ाइलें",
-                encrypt: "एन्क्रिप्ट करें",
-                copy: "कॉपी करें",
-                save_to_vault: "वॉल्ट में सहेजें",
-                decrypt: "डिक्रिप्ट करें",
-                auto_lock: "स्वचालित लॉक",
-                clear: "साफ करें",
-                add_entry: "प्रविष्टि जोड़ें",
-                entries: "प्रविष्टियाँ",
-                size: "आकार",
-                last_backup: "अंतिम बैकअप",
-                performance: "प्रदर्शन",
-                vault_empty: "वॉल्ट खाली है। अपनी पहली एन्क्रिप्टेड प्रविष्टि जोड़ें।",
-                export_vault: "वॉल्ट निर्यात करें",
-                import_vault: "वॉल्ट आयात करें",
-                wipe_vault: "वॉल्ट मिटाएँ",
-                drag_drop: "खींचें और छोड़ें या अपलोड करने के लिए क्लिक करें",
-                supported_files: "समर्थित: .txt, .pdf (अधिकतम 10MB)",
-                encrypt_file: "फ़ाइल एन्क्रिप्ट करें",
-                decrypt_file: "फ़ाइल डिक्रिप्ट करें",
-                file_warning: "नोट: फ़ाइलें स्थानीय रूप से एन्क्रिप्ट की जाती हैं और किसी सर्वर पर अपलोड नहीं की जातीं। बड़ी फ़ाइलों को संसाधित करने में अधिक समय लग सकता है।",
-                qr_instruction: "एन्क्रिप्टेड टोकन साझा करने के लिए इस QR कोड को स्कैन करें",
-                qr_warning: "चेतावनी: QR कोड मैनुअल ट्रांसफर की तुलना में कम सुरक्षित हैं। टोकन 30 मिनट में स्वचालित रूप से समाप्त हो जाते हैं।",
-                generate_qr: "QR कोड जनरेट करें",
-                scan_qr: "QR स्कैन करें",
-                system_log: "सिस्टम लॉग",
-                clear_log: "साफ करें",
-                no_network: "कोई नेटवर्क आवश्यक नहीं • सारा डेटा स्थानीय रहता है",
-                zero_knowledge: "जीरो-नॉलेज आर्किटेक्चर",
-                about_swarg: "SWARG एन्क्रिप्शन सुइट के बारे में",
-                close: "बंद करें",
-                tech_specs: "तकनीकी विशेषताएँ",
-                algorithm: "एल्गोरिथम",
-                key_derivation: "कुंजी व्युत्पत्ति",
-                authentication: "प्रमाणीकरण",
-                random_source: "यादृच्छिक स्रोत",
-                security_features: "सुरक्षा सुविधाएँ",
-                feature_local: "सारा एन्क्रिप्शन/डिक्रिप्शन आपके ब्राउज़र में स्थानीय रूप से होता है",
-                feature_no_storage: "कोई डेटा किसी सर्वर पर संग्रहीत या प्रसारित नहीं किया जाता",
-                feature_expiry: "टोकन 30 मिनट के बाद स्वचालित रूप से समाप्त हो जाते हैं",
-                feature_memory: "गैर-निकाले जाने योग्य WebCrypto कुंजियों के साथ मेमोरी संरक्षण",
-                feature_rate_limit: "दर सीमित (5 प्रयास → 60s लॉक)",
-                feature_auto_lock: "स्वचालित लॉक (डिक्रिप्टेड टेक्स्ट 30 सेकंड में साफ हो जाता है)",
-                vault_info: "वॉल्ट जानकारी",
-                vault_desc: "वॉल्ट एन्क्रिप्टेड प्रविष्टियों को स्थानीय रूप से संग्रहीत करने के लिए IndexedDB का उपयोग करता है। प्रत्येक प्रविष्टि आपकी मास्टर कुंजी के साथ व्यक्तिगत रूप से एन्क्रिप्ट की जाती है।",
-                max_entries: "अधिकतम प्रविष्टियाँ",
-                backup: "स्वचालित बैकअप",
-                file_support: "फ़ाइल समर्थन",
-                file_desc: "SWARG v1.0 टेक्स्ट फ़ाइलों (.txt) और PDF फ़ाइलों (.pdf) के एन्क्रिप्शन का समर्थन करता है। फ़ाइलें पूरी तरह से आपके ब्राउज़र में संसाधित की जाती हैं।",
-                max_size: "अधिकतम आकार",
-                future_support: "भविष्य का समर्थन",
-                local_proof: "स्थानीय प्रसंस्करण प्रमाण",
-                no_network_calls: "कोई नेटवर्क कॉल नहीं पाया गया",
-                all_operations: "सभी ऑपरेशन ऑफ़लाइन किए गए",
-                verified: "सत्यापित"
-            }
-        };
-
-        // ==================== INITIALIZATION ====================
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🔐 SWARG v1.0 Initializing...');
-            
-            // Set current year
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-            
-            // Initialize components
-            await initializeApp();
-            
-            // Log success
-            logActivity('[SYSTEM] SWARG v1.0 Initialized', 'system');
-            logActivity('[SECURITY] AES-256-GCM Ready', 'security');
-            logActivity('[INFO] All processing is local', 'info');
-            logActivity('[VAULT] IndexedDB initialized', 'vault');
-            
-            console.log('✅ SWARG v1.0 Ready');
-        });
-
-        // ==================== CORE FUNCTIONS ====================
-        async function initializeApp() {
-            try {
-                // Initialize IndexedDB for vault
-                await initVault();
-                
-                // Load vault entries
-                await loadVaultEntries();
-                
-                // Setup event listeners
-                setupEventListeners();
-                
-                // Setup audio system
-                initAudioSystem();
-                
-                // Setup auto-lock timer
-                startAutoLockTimer();
-                
-                // Setup activity monitoring
-                setupActivityMonitoring();
-                
-                // Check for performance capabilities
-                checkPerformance();
-                
-            } catch (error) {
-                console.error('Initialization error:', error);
-                showToast('Initialization failed. Please refresh.', 'error');
-            }
-        }
-
-        // ==================== ENCRYPTION ENGINE ====================
-        async function deriveKey(password, salt) {
-            try {
-                // Encode password and salt
-                const encoder = new TextEncoder();
-                const passwordBuffer = encoder.encode(password);
-                const saltBuffer = typeof salt === 'string' ? 
-                    Uint8Array.from(atob(salt), c => c.charCodeAt(0)) : salt;
-                
-                // Import password as key
-                const baseKey = await crypto.subtle.importKey(
-                    'raw',
-                    passwordBuffer,
-                    { name: 'PBKDF2' },
-                    false,
-                    ['deriveBits', 'deriveKey']
-                );
-                
-                // Derive key using PBKDF2 with dynamic iterations
-                const iterations = calculateIterations();
-                document.getElementById('iterations-display').textContent = `PBKDF2: ${iterations.toLocaleString()}`;
-                
-                const derivedKey = await crypto.subtle.deriveKey(
-                    {
-                        name: 'PBKDF2',
-                        salt: saltBuffer,
-                        iterations: iterations,
-                        hash: 'SHA-256'
-                    },
-                    baseKey,
-                    { name: 'AES-GCM', length: 256 },
-                    false, // Not extractable (memory protection)
-                    ['encrypt', 'decrypt']
-                );
-                
-                return { derivedKey, salt: saltBuffer, iterations };
-            } catch (error) {
-                console.error('Key derivation error:', error);
-                throw new Error('Key derivation failed');
-            }
-        }
-
-        function calculateIterations() {
-            // Dynamic iterations based on performance
-            const baseIterations = CONFIG.PBKDF2_ITERATIONS;
-            const performanceFactor = window.cryptoPerformance || 1;
-            return Math.min(
-                CONFIG.PBKDF2_MAX_ITERATIONS,
-                Math.max(
-                    CONFIG.PBKDF2_MIN_ITERATIONS,
-                    Math.round(baseIterations * performanceFactor)
-                )
-            );
-        }
-
-        async function encryptData(text, password) {
-            try {
-                // Check rate limiting
-                if (state.lockedUntil > Date.now()) {
-                    const remaining = Math.ceil((state.lockedUntil - Date.now()) / 1000);
-                    throw new Error(`Rate limited. Try again in ${remaining} seconds.`);
-                }
-                
-                // Generate random salt and IV
-                const salt = crypto.getRandomValues(new Uint8Array(CONFIG.SALT_LENGTH));
-                const iv = crypto.getRandomValues(new Uint8Array(CONFIG.IV_LENGTH));
-                
-                // Derive key
-                const { derivedKey } = await deriveKey(password, salt);
-                
-                // Encode text
-                const encoder = new TextEncoder();
-                const data = encoder.encode(text);
-                
-                // Encrypt using AES-GCM
-                const encrypted = await crypto.subtle.encrypt(
-                    {
-                        name: 'AES-GCM',
-                        iv: iv
-                    },
-                    derivedKey,
-                    data
-                );
-                
-                // Create token with expiry
-                const expiryTime = Date.now() + (CONFIG.TOKEN_EXPIRY_MINUTES * 60 * 1000);
-                const tokenData = {
-                    v: '1.0',
-                    t: Date.now(),
-                    e: expiryTime,
-                    s: btoa(String.fromCharCode(...salt)),
-                    i: btoa(String.fromCharCode(...iv)),
-                    d: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
-                };
-                
-                // Convert to base64
-                const jsonStr = JSON.stringify(tokenData);
-                const base64Token = btoa(unescape(encodeURIComponent(jsonStr)));
-                
-                return base64Token;
-                
-            } catch (error) {
-                handleEncryptionError(error);
-                throw error;
-            }
-        }
-
-        async function decryptData(token, password) {
-            try {
-                // Check rate limiting
-                if (state.lockedUntil > Date.now()) {
-                    const remaining = Math.ceil((state.lockedUntil - Date.now()) / 1000);
-                    throw new Error(`Rate limited. Try again in ${remaining} seconds.`);
-                }
-                
-                // Decode base64 token
-                const jsonStr = decodeURIComponent(escape(atob(token)));
-                const tokenData = JSON.parse(jsonStr);
-                
-                // Check version
-                if (tokenData.v !== '1.0') {
-                    throw new Error('Unsupported token version');
-                }
-                
-                // Check expiry
-                if (Date.now() > tokenData.e) {
-                    throw new Error('Token has expired (30 minutes)');
-                }
-                
-                // Decode salt, IV, and data
-                const salt = Uint8Array.from(atob(tokenData.s), c => c.charCodeAt(0));
-                const iv = Uint8Array.from(atob(tokenData.i), c => c.charCodeAt(0));
-                const encryptedData = Uint8Array.from(atob(tokenData.d), c => c.charCodeAt(0));
-                
-                // Derive key
-                const { derivedKey } = await deriveKey(password, salt);
-                
-                // Decrypt using AES-GCM
-                const decrypted = await crypto.subtle.decrypt(
-                    {
-                        name: 'AES-GCM',
-                        iv: iv
-                    },
-                    derivedKey,
-                    encryptedData
-                );
-                
-                // Decode to text
-                const decoder = new TextDecoder();
-                const text = decoder.decode(decrypted);
-                
-                // Reset failed attempts on success
-                state.failedAttempts = 0;
-                
-                return text;
-                
-            } catch (error) {
-                // Increment failed attempts
-                state.failedAttempts++;
-                
-                // Check for rate limiting
-                if (state.failedAttempts >= CONFIG.RATE_LIMIT_ATTEMPTS) {
-                    state.lockedUntil = Date.now() + (CONFIG.RATE_LIMIT_LOCK_SECONDS * 1000);
-                    showToast(`Too many failed attempts. Locked for ${CONFIG.RATE_LIMIT_LOCK_SECONDS} seconds.`, 'error');
-                    logActivity(`[SECURITY] Rate limit activated (${CONFIG.RATE_LIMIT_LOCK_SECONDS}s lock)`, 'security');
-                }
-                
-                handleEncryptionError(error);
-                throw error;
-            }
-        }
-
-        // ==================== VAULT SYSTEM ====================
-        async function initVault() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open('SWARG_Vault', 1);
-                
-                request.onerror = () => {
-                    console.error('IndexedDB error:', request.error);
-                    reject(request.error);
-                };
-                
-                request.onsuccess = () => {
-                    state.db = request.result;
-                    resolve();
-                };
-                
-                request.onupgradeneeded = (event) => {
-                    const db = event.target.result;
-                    if (!db.objectStoreNames.contains('entries')) {
-                        const store = db.createObjectStore('entries', { keyPath: 'id', autoIncrement: true });
-                        store.createIndex('timestamp', 'timestamp', { unique: false });
-                        store.createIndex('label', 'label', { unique: false });
-                    }
-                };
-            });
-        }
-
-        async function saveToVault(token, label = '') {
-            if (!state.db) throw new Error('Vault not initialized');
-            
-            const entry = {
-                token: token,
-                label: label || `Entry ${new Date().toLocaleString()}`,
-                timestamp: Date.now(),
-                size: token.length
-            };
-            
-            return new Promise((resolve, reject) => {
-                const transaction = state.db.transaction(['entries'], 'readwrite');
-                const store = transaction.objectStore('entries');
-                const request = store.add(entry);
-                
-                request.onsuccess = () => {
-                    entry.id = request.result;
-                    state.vaultEntries.unshift(entry);
-                    updateVaultDisplay();
-                    resolve(entry.id);
-                };
-                
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        async function loadVaultEntries() {
-            if (!state.db) return;
-            
-            return new Promise((resolve, reject) => {
-                const transaction = state.db.transaction(['entries'], 'readonly');
-                const store = transaction.objectStore('entries');
-                const index = store.index('timestamp');
-                const request = index.openCursor(null, 'prev');
-                
-                state.vaultEntries = [];
-                
-                request.onsuccess = (event) => {
-                    const cursor = event.target.result;
-                    if (cursor) {
-                        state.vaultEntries.push(cursor.value);
-                        cursor.continue();
-                    } else {
-                        updateVaultDisplay();
-                        resolve();
-                    }
-                };
-                
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        async function deleteVaultEntry(id) {
-            if (!state.db) throw new Error('Vault not initialized');
-            
-            return new Promise((resolve, reject) => {
-                const transaction = state.db.transaction(['entries'], 'readwrite');
-                const store = transaction.objectStore('entries');
-                const request = store.delete(id);
-                
-                request.onsuccess = () => {
-                    state.vaultEntries = state.vaultEntries.filter(entry => entry.id !== id);
-                    updateVaultDisplay();
-                    resolve();
-                };
-                
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        async function wipeVault() {
-            if (!state.db) throw new Error('Vault not initialized');
-            
-            return new Promise((resolve, reject) => {
-                const transaction = state.db.transaction(['entries'], 'readwrite');
-                const store = transaction.objectStore('entries');
-                const request = store.clear();
-                
-                request.onsuccess = () => {
-                    state.vaultEntries = [];
-                    updateVaultDisplay();
-                    resolve();
-                };
-                
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        function updateVaultDisplay() {
-            const container = document.getElementById('vault-entries');
-            const emptyMsg = document.getElementById('vault-empty');
-            const countEl = document.getElementById('vault-count');
-            const sizeEl = document.getElementById('vault-size');
-            const perfEl = document.getElementById('performance');
-            
-            // Update counts
-            countEl.textContent = state.vaultEntries.length;
-            
-            // Calculate total size
-            const totalSize = state.vaultEntries.reduce((sum, entry) => sum + (entry.size || 0), 0);
-            sizeEl.textContent = `${(totalSize / 1024).toFixed(2)} KB`;
-            
-            // Update performance indicator
-            if (state.vaultEntries.length > CONFIG.PERFORMANCE_WARNING_THRESHOLD) {
-                perfEl.textContent = 'Slow';
-                perfEl.style.color = 'var(--cyber-red)';
-            } else if (state.vaultEntries.length > CONFIG.PERFORMANCE_WARNING_THRESHOLD / 2) {
-                perfEl.textContent = 'Fair';
-                perfEl.style.color = 'var(--cyber-yellow)';
-            } else {
-                perfEl.textContent = 'Good';
-                perfEl.style.color = 'var(--cyber-green)';
-            }
-            
-            // Show/hide empty message
-            if (state.vaultEntries.length === 0) {
-                emptyMsg.classList.remove('hidden');
-                container.innerHTML = '';
-            } else {
-                emptyMsg.classList.add('hidden');
-                
-                // Render entries
-                container.innerHTML = state.vaultEntries.slice(0, 50).map(entry => `
-                    <div class="vault-entry" data-id="${entry.id}">
-                        <div class="flex justify-between items-start mb-3">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-cyan-300">${escapeHtml(entry.label)}</h4>
-                                <p class="text-xs text-gray-400 mt-1">
-                                    ${new Date(entry.timestamp).toLocaleString()}
-                                    • ${Math.ceil(entry.size / 1024)} KB
-                                </p>
+                        
+                        <div id="unlock-success" class="hidden text-center mt-6">
+                            <div class="success-check">
+                                <i class="fas fa-check text-white text-xl"></i>
                             </div>
-                            <div class="flex gap-2">
-                                <button class="vault-copy text-cyan-400 hover:text-cyan-300 p-2" title="Copy Token">
-                                    <i class="fas fa-copy"></i>
-                                </button>
-                                <button class="vault-decrypt text-green-400 hover:text-green-300 p-2" title="Decrypt">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="vault-delete text-red-400 hover:text-red-300 p-2" title="Delete">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
+                            <h4 style="font-weight: 700; font-size: 18px; color: var(--success);">Data Unlocked!</h4>
+                            <p style="color: var(--text-secondary); margin-top: 8px;">
+                                Your data is now visible. It will auto-hide in 30 seconds.
+                            </p>
                         </div>
-                        <div class="bg-black/20 p-3 rounded-lg overflow-x-auto">
-                            <code class="text-xs font-mono text-gray-300 break-all">${entry.token.substring(0, 100)}...</code>
-                        </div>
-                    </div>
-                `).join('');
-                
-                // Add event listeners to vault buttons
-                container.querySelectorAll('.vault-copy').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        const entryId = parseInt(e.target.closest('.vault-entry').dataset.id);
-                        const entry = state.vaultEntries.find(e => e.id === entryId);
-                        if (entry) {
-                            await copyToClipboard(entry.token);
-                            showToast('Token copied to clipboard', 'success');
-                        }
-                    });
-                });
-                
-                container.querySelectorAll('.vault-decrypt').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        const entryId = parseInt(e.target.closest('.vault-entry').dataset.id);
-                        const entry = state.vaultEntries.find(e => e.id === entryId);
-                        if (entry) {
-                            document.getElementById('encrypted-input').value = entry.token;
-                            switchTab('decrypt');
-                            showToast('Token loaded for decryption', 'info');
-                        }
-                    });
-                });
-                
-                container.querySelectorAll('.vault-delete').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        const entryId = parseInt(e.target.closest('.vault-entry').dataset.id);
-                        if (confirm('Delete this vault entry?')) {
-                            await deleteVaultEntry(entryId);
-                            showToast('Entry deleted', 'info');
-                        }
-                    });
-                });
-            }
-        }
-
-        // ==================== FILE ENCRYPTION ====================
-        async function encryptFile(file, password) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                
-                reader.onload = async (e) => {
-                    try {
-                        const fileData = e.target.result;
                         
-                        // Generate random salt and IV
-                        const salt = crypto.getRandomValues(new Uint8Array(CONFIG.SALT_LENGTH));
-                        const iv = crypto.getRandomValues(new Uint8Array(CONFIG.IV_LENGTH));
-                        
-                        // Derive key
-                        const { derivedKey } = await deriveKey(password, salt);
-                        
-                        // Encrypt file data
-                        const encrypted = await crypto.subtle.encrypt(
-                            {
-                                name: 'AES-GCM',
-                                iv: iv
-                            },
-                            derivedKey,
-                            fileData
-                        );
-                        
-                        // Create encrypted file object
-                        const expiryTime = Date.now() + (CONFIG.TOKEN_EXPIRY_MINUTES * 60 * 1000);
-                        const fileInfo = {
-                            name: file.name,
-                            type: file.type,
-                            size: file.size,
-                            v: '1.0',
-                            t: Date.now(),
-                            e: expiryTime,
-                            s: btoa(String.fromCharCode(...salt)),
-                            i: btoa(String.fromCharCode(...iv)),
-                            d: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
-                        };
-                        
-                        const encryptedFile = JSON.stringify(fileInfo);
-                        resolve(encryptedFile);
-                        
-                    } catch (error) {
-                        reject(error);
-                    }
-                };
-                
-                reader.onerror = () => reject(reader.error);
-                reader.readAsArrayBuffer(file);
-            });
-        }
-
-        async function decryptFile(encryptedFile, password) {
-            try {
-                const fileInfo = JSON.parse(encryptedFile);
-                
-                // Check version and expiry
-                if (fileInfo.v !== '1.0') throw new Error('Unsupported file version');
-                if (Date.now() > fileInfo.e) throw new Error('File token has expired');
-                
-                // Decode salt, IV, and data
-                const salt = Uint8Array.from(atob(fileInfo.s), c => c.charCodeAt(0));
-                const iv = Uint8Array.from(atob(fileInfo.i), c => c.charCodeAt(0));
-                const encryptedData = Uint8Array.from(atob(fileInfo.d), c => c.charCodeAt(0));
-                
-                // Derive key
-                const { derivedKey } = await deriveKey(password, salt);
-                
-                // Decrypt
-                const decrypted = await crypto.subtle.decrypt(
-                    {
-                        name: 'AES-GCM',
-                        iv: iv
-                    },
-                    derivedKey,
-                    encryptedData
-                );
-                
-                // Create blob and download link
-                const blob = new Blob([decrypted], { type: fileInfo.type });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = fileInfo.name;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                return fileInfo.name;
-                
-            } catch (error) {
-                handleEncryptionError(error);
-                throw error;
-            }
-        }
-
-        // ==================== QR CODE SYSTEM ====================
-        function generateQRCode(text) {
-            const qrContainer = document.getElementById('qr-code');
-            qrContainer.innerHTML = '';
-            
-            QRCode.toCanvas(qrContainer, text, {
-                width: 200,
-                height: 200,
-                margin: 1,
-                color: {
-                    dark: '#00f7ff',
-                    light: '#000000'
-                }
-            }, (error) => {
-                if (error) {
-                    console.error('QR generation error:', error);
-                    showToast('Failed to generate QR code', 'error');
-                }
-            });
-        }
-
-        // ==================== AUDIO SYSTEM ====================
-        function initAudioSystem() {
-            // Preload all sounds
-            const sounds = ['type', 'click', 'encrypt', 'decrypt', 'success', 'error'];
-            sounds.forEach(soundId => {
-                const audio = document.getElementById(`${soundId}-sound`);
-                if (audio) {
-                    audio.volume = CONFIG[`${soundId.toUpperCase()}_SOUND_VOLUME`] || 0.3;
-                    audio.load();
-                }
-            });
-            
-            // Enable/disable sounds based on user preference
-            const savedPref = localStorage.getItem('swarg_sounds_enabled');
-            state.soundsEnabled = savedPref !== 'false';
-        }
-
-        function playSound(soundId) {
-            if (!state.soundsEnabled) return;
-            
-            try {
-                const audio = document.getElementById(`${soundId}-sound`);
-                if (audio) {
-                    audio.currentTime = 0;
-                    audio.play().catch(e => console.log('Audio play failed:', e));
-                }
-            } catch (error) {
-                // Silent fail for audio errors
-            }
-        }
-
-        // ==================== UI FUNCTIONS ====================
-        function showToast(message, type = 'info') {
-            playSound('click');
-            
-            const toast = document.createElement('div');
-            toast.className = 'cyber-toast';
-            toast.textContent = message;
-            
-            // Add type-based styling
-            if (type === 'error') {
-                toast.style.borderColor = 'var(--cyber-red)';
-                toast.style.color = 'var(--cyber-red)';
-            } else if (type === 'success') {
-                toast.style.borderColor = 'var(--cyber-green)';
-                toast.style.color = 'var(--cyber-green)';
-            } else if (type === 'warning') {
-                toast.style.borderColor = 'var(--cyber-yellow)';
-                toast.style.color = 'var(--cyber-yellow)';
-            }
-            
-            const container = document.getElementById('toast-container');
-            container.appendChild(toast);
-            
-            // Auto-remove after 3 seconds
-            setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.style.opacity = '0';
-                    toast.style.transform = 'translateY(-20px)';
-                    setTimeout(() => {
-                        if (toast.parentNode) {
-                            container.removeChild(toast);
-                        }
-                    }, 300);
-                }
-            }, 3000);
-        }
-
-        function logActivity(message, type = 'info') {
-            playSound('click');
-            
-            const log = document.getElementById('activity-log');
-            const entry = document.createElement('div');
-            
-            // Add type-based styling
-            if (type === 'error') {
-                entry.className = 'text-red-400';
-            } else if (type === 'success') {
-                entry.className = 'text-green-400';
-            } else if (type === 'warning') {
-                entry.className = 'text-yellow-400';
-            } else if (type === 'security') {
-                entry.className = 'text-purple-400';
-            } else if (type === 'system') {
-                entry.className = 'text-cyan-400';
-            } else {
-                entry.className = 'text-gray-300';
-            }
-            
-            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            entry.textContent = `[${timestamp}] ${message}`;
-            
-            log.appendChild(entry);
-            log.scrollTop = log.scrollHeight;
-            
-            // Limit log size
-            while (log.children.length > 50) {
-                log.removeChild(log.firstChild);
-            }
-        }
-
-        function switchTab(tabName) {
-            playSound('click');
-            
-            // Update tab buttons
-            document.querySelectorAll('.cyber-tab').forEach(tab => {
-                tab.classList.toggle('active', tab.dataset.tab === tabName);
-            });
-            
-            // Update tab contents
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.toggle('active', content.id === `${tabName}-tab`);
-                content.classList.toggle('hidden', content.id !== `${tabName}-tab`);
-            });
-            
-            // Update state
-            state.currentTab = tabName;
-            
-            // Special handling for QR tab
-            if (tabName === 'qr') {
-                const encryptedToken = document.getElementById('encrypt-output')?.textContent;
-                if (encryptedToken && encryptedToken.length > 0 && encryptedToken.length < 2000) {
-                    generateQRCode(encryptedToken);
-                }
-            }
-            
-            logActivity(`Switched to ${tabName.toUpperCase()} mode`);
-        }
-
-        async function copyToClipboard(text) {
-            try {
-                await navigator.clipboard.writeText(text);
-                showToast('Copied to clipboard', 'success');
-                
-                // Set up auto-clear timer
-                if (state.clipboardTimer) {
-                    clearTimeout(state.clipboardTimer);
-                }
-                
-                state.clipboardTimer = setTimeout(() => {
-                    navigator.clipboard.writeText('').catch(() => {});
-                    logActivity('[SECURITY] Clipboard cleared');
-                }, CONFIG.CLIPBOARD_CLEAR_SECONDS * 1000);
-                
-                logActivity('Copied to clipboard (auto-clear in 15s)');
-                
-            } catch (error) {
-                console.error('Copy failed:', error);
-                showToast('Copy failed. Please copy manually.', 'error');
-            }
-        }
-
-        function updatePasswordStrength(password) {
-            const segments = [
-                document.getElementById('strength-1'),
-                document.getElementById('strength-2'),
-                document.getElementById('strength-3'),
-                document.getElementById('strength-4'),
-                document.getElementById('strength-5')
-            ];
-            
-            const strengthText = document.getElementById('strength-text');
-            
-            // Reset all segments
-            segments.forEach(seg => {
-                seg.className = 'strength-segment';
-            });
-            
-            if (!password) {
-                strengthText.textContent = getTranslation('strength');
-                strengthText.className = 'text-gray-400';
-                return;
-            }
-            
-            let strength = 0;
-            let color = '';
-            
-            // Length check
-            if (password.length >= 8) strength++;
-            if (password.length >= 12) strength++;
-            
-            // Complexity checks
-            if (/[A-Z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[^A-Za-z0-9]/.test(password)) strength++;
-            
-            // Update segments
-            for (let i = 0; i < strength; i++) {
-                if (strength <= 2) {
-                    segments[i].classList.add('weak');
-                } else if (strength <= 4) {
-                    segments[i].classList.add('medium');
-                } else {
-                    segments[i].classList.add('active');
-                }
-            }
-            
-            // Update text
-            if (strength <= 2) {
-                strengthText.textContent = 'Weak';
-                strengthText.className = 'text-red-400';
-            } else if (strength <= 4) {
-                strengthText.textContent = 'Medium';
-                strengthText.className = 'text-yellow-400';
-            } else {
-                strengthText.textContent = 'Strong';
-                strengthText.className = 'text-green-400';
-            }
-        }
-
-        function generatePassword() {
-            const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
-            let password = '';
-            
-            // Ensure at least one of each type
-            password += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.charAt(Math.floor(Math.random() * 26));
-            password += 'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26));
-            password += '0123456789'.charAt(Math.floor(Math.random() * 10));
-            password += '!@#$%^&*()_+-=[]{}|;:,.<>?'.charAt(Math.floor(Math.random() * 24));
-            
-            // Fill remaining characters
-            for (let i = 4; i < 16; i++) {
-                password += charset.charAt(Math.floor(Math.random() * charset.length));
-            }
-            
-            // Shuffle the password
-            password = password.split('').sort(() => Math.random() - 0.5).join('');
-            
-            // Set the password
-            document.getElementById('masterKey').value = password;
-            updatePasswordStrength(password);
-            showToast('Strong password generated', 'success');
-        }
-
-        // ==================== AUTO-LOCK SYSTEM ====================
-        function startAutoLockTimer() {
-            // Clear existing timer
-            if (state.autoLockTimer) {
-                clearInterval(state.autoLockTimer);
-            }
-            
-            // Start new timer
-            state.autoLockTimer = setInterval(() => {
-                const timerEl = document.getElementById('lock-timer');
-                const decryptedText = document.getElementById('decrypt-output');
-                
-                if (decryptedText && !decryptedText.classList.contains('hidden')) {
-                    const lastDecrypt = parseInt(decryptedText.dataset.timestamp || '0');
-                    const elapsed = Date.now() - lastDecrypt;
-                    const remaining = Math.max(0, Math.floor((CONFIG.AUTO_LOCK_SECONDS * 1000 - elapsed) / 1000));
-                    
-                    timerEl.textContent = `${remaining}s`;
-                    
-                    if (remaining === 0) {
-                        clearDecryptedText();
-                        showToast('Decrypted text cleared (auto-lock)', 'info');
-                    }
-                }
-            }, 1000);
-        }
-
-        function clearDecryptedText() {
-            const output = document.getElementById('decrypt-output');
-            const placeholder = document.getElementById('decrypt-placeholder');
-            
-            if (output) {
-                output.textContent = '';
-                output.classList.add('hidden');
-            }
-            
-            if (placeholder) {
-                placeholder.classList.remove('hidden');
-            }
-            
-            document.getElementById('lock-timer').textContent = '30s';
-        }
-
-        function setupActivityMonitoring() {
-            // Track user activity
-            const activityEvents = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
-            
-            activityEvents.forEach(event => {
-                document.addEventListener(event, () => {
-                    state.lastActivity = Date.now();
-                }, { passive: true });
-            });
-            
-            // Check for inactivity every minute
-            setInterval(() => {
-                const inactiveTime = Date.now() - state.lastActivity;
-                const inactiveMinutes = Math.floor(inactiveTime / (60 * 1000));
-                
-                if (inactiveMinutes >= 5) {
-                    // Clear sensitive data after 5 minutes of inactivity
-                    document.getElementById('masterKey').value = '';
-                    clearDecryptedText();
-                    state.masterKey = '';
-                    logActivity('[SECURITY] Cleared sensitive data (inactivity)', 'security');
-                    state.lastActivity = Date.now(); // Reset timer
-                }
-            }, 60 * 1000);
-        }
-
-        // ==================== ERROR HANDLING ====================
-        function handleEncryptionError(error) {
-            console.error('Encryption error:', error);
-            
-            let userMessage = 'Encryption/decryption failed';
-            
-            if (error.message.includes('Rate limited')) {
-                userMessage = error.message;
-            } else if (error.message.includes('expired')) {
-                userMessage = 'Token has expired (30 minutes)';
-            } else if (error.message.includes('Unsupported')) {
-                userMessage = 'Unsupported token or file version';
-            } else if (error.message.includes('wrong') || error.message.includes('incorrect')) {
-                userMessage = 'Incorrect password or corrupted token';
-            } else if (error.message.includes('quota')) {
-                userMessage = 'Storage quota exceeded. Please export and clear some entries.';
-            }
-            
-            showToast(userMessage, 'error');
-            playSound('error');
-            logActivity(`[ERROR] ${error.message}`, 'error');
-        }
-
-        // ==================== PERFORMANCE CHECK ====================
-        function checkPerformance() {
-            // Simple performance test for dynamic iterations
-            const start = performance.now();
-            let iterations = 0;
-            
-            // Run a small calculation loop
-            for (let i = 0; i < 1000000; i++) {
-                iterations += Math.sqrt(i) * Math.random();
-            }
-            
-            const duration = performance.now() - start;
-            
-            // Store performance factor (1.0 = average, higher = faster)
-            window.cryptoPerformance = Math.max(0.5, Math.min(2.0, 1000 / duration));
-            
-            logActivity(`[PERFORMANCE] System performance: ${window.cryptoPerformance.toFixed(2)}x`, 'info');
-        }
-
-        // ==================== UTILITY FUNCTIONS ====================
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function getTranslation(key) {
-            return translations[state.currentLanguage][key] || key;
-        }
-
-        function updateLanguage(lang) {
-            state.currentLanguage = lang;
-            document.getElementById('lang-text').textContent = lang.toUpperCase();
-            
-            // Update all translatable elements
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                const translation = getTranslation(key);
-                if (translation && translation !== key) {
-                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                        element.placeholder = translation;
-                    } else {
-                        element.textContent = translation;
-                    }
-                }
-            });
-            
-            showToast(`Language: ${lang === 'en' ? 'English' : 'Hindi'}`, 'info');
-            localStorage.setItem('swarg_language', lang);
-        }
-
-        // ==================== EVENT LISTENERS ====================
-        function setupEventListeners() {
-            // Master Key Events
-            const masterKeyInput = document.getElementById('masterKey');
-            masterKeyInput.addEventListener('input', (e) => {
-                playSound('type');
-                updatePasswordStrength(e.target.value);
-                state.masterKey = e.target.value;
-            });
-            
-            // Toggle password visibility
-            document.getElementById('toggleKey').addEventListener('click', () => {
-                const input = document.getElementById('masterKey');
-                const icon = document.querySelector('#toggleKey i');
-                
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.className = 'fas fa-eye-slash';
-                } else {
-                    input.type = 'password';
-                    icon.className = 'fas fa-eye';
-                }
-                
-                playSound('click');
-            });
-            
-            // Tab Switching
-            document.querySelectorAll('.cyber-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    switchTab(tab.dataset.tab);
-                });
-            });
-            
-            // Encrypt Button
-            document.getElementById('encrypt-btn').addEventListener('click', async () => {
-                const text = document.getElementById('input-text').value.trim();
-                const password = document.getElementById('masterKey').value;
-                
-                if (!password || password.length < 12) {
-                    showToast('Password must be at least 12 characters', 'error');
-                    return;
-                }
-                
-                if (!text) {
-                    showToast('Please enter text to encrypt', 'error');
-                    return;
-                }
-                
-                try {
-                    playSound('encrypt');
-                    document.getElementById('scanner').style.display = 'block';
-                    
-                    const token = await encryptData(text, password);
-                    
-                    // Display token
-                    const output = document.getElementById('encrypt-output');
-                    const placeholder = document.getElementById('encrypt-placeholder');
-                    
-                    output.textContent = token;
-                    output.classList.remove('hidden');
-                    placeholder.classList.add('hidden');
-                    
-                    document.getElementById('scanner').style.display = 'none';
-                    playSound('success');
-                    showToast('Data encrypted successfully', 'success');
-                    logActivity('Data encrypted (30 min expiry)');
-                    
-                } catch (error) {
-                    document.getElementById('scanner').style.display = 'none';
-                    // Error already handled in encryptData
-                }
-            });
-            
-            // Decrypt Button
-            document.getElementById('decrypt-btn').addEventListener('click', async () => {
-                const token = document.getElementById('encrypted-input').value.trim();
-                const password = document.getElementById('masterKey').value;
-                
-                if (!password) {
-                    showToast('Enter master key to decrypt', 'error');
-                    return;
-                }
-                
-                if (!token) {
-                    showToast('Please enter token to decrypt', 'error');
-                    return;
-                }
-                
-                try {
-                    playSound('decrypt');
-                    document.getElementById('scanner').style.display = 'block';
-                    
-                    const text = await decryptData(token, password);
-                    
-                    // Display decrypted text
-                    const output = document.getElementById('decrypt-output');
-                    const placeholder = document.getElementById('decrypt-placeholder');
-                    
-                    output.textContent = text;
-                    output.dataset.timestamp = Date.now();
-                    output.classList.remove('hidden');
-                    placeholder.classList.add('hidden');
-                    
-                    document.getElementById('scanner').style.display = 'none';
-                    playSound('success');
-                    showToast('Data decrypted successfully', 'success');
-                    logActivity('Data decrypted (auto-lock in 30s)');
-                    
-                } catch (error) {
-                    document.getElementById('scanner').style.display = 'none';
-                    // Error already handled in decryptData
-                }
-            });
-            
-            // Copy Encrypted
-            document.getElementById('copy-encrypted').addEventListener('click', async () => {
-                const token = document.getElementById('encrypt-output').textContent;
-                if (token) {
-                    await copyToClipboard(token);
-                } else {
-                    showToast('No encrypted text to copy', 'error');
-                }
-            });
-            
-            // Save to Vault
-            document.getElementById('save-to-vault').addEventListener('click', async () => {
-                const token = document.getElementById('encrypt-output').textContent;
-                const label = prompt('Enter label for this entry (optional):', '');
-                
-                if (token) {
-                    try {
-                        const id = await saveToVault(token, label);
-                        showToast(`Saved to vault (ID: ${id})`, 'success');
-                        logActivity(`Saved entry to vault: ${label || 'Unlabeled'}`);
-                    } catch (error) {
-                        showToast('Failed to save to vault', 'error');
-                    }
-                } else {
-                    showToast('No encrypted text to save', 'error');
-                }
-            });
-            
-            // Clear Decrypted
-            document.getElementById('clear-decrypted').addEventListener('click', () => {
-                clearDecryptedText();
-                showToast('Cleared decrypted text', 'info');
-            });
-            
-            // Add Vault Entry
-            document.getElementById('add-vault-entry').addEventListener('click', async () => {
-                const token = document.getElementById('encrypt-output').textContent;
-                const label = document.getElementById('vault-label').value.trim();
-                
-                if (token) {
-                    try {
-                        const id = await saveToVault(token, label || undefined);
-                        document.getElementById('vault-label').value = '';
-                        showToast(`Added to vault (ID: ${id})`, 'success');
-                    } catch (error) {
-                        showToast('Failed to add to vault', 'error');
-                    }
-                } else {
-                    showToast('Encrypt some data first', 'error');
-                }
-            });
-            
-            // Vault Actions
-            document.getElementById('export-vault').addEventListener('click', () => {
-                if (state.vaultEntries.length === 0) {
-                    showToast('Vault is empty', 'error');
-                    return;
-                }
-                
-                const vaultData = {
-                    version: '1.0',
-                    timestamp: Date.now(),
-                    entries: state.vaultEntries
-                };
-                
-                const dataStr = JSON.stringify(vaultData, null, 2);
-                const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(dataBlob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `swarg_vault_${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                showToast('Vault exported successfully', 'success');
-                logActivity('Vault exported');
-            });
-            
-            document.getElementById('import-vault').addEventListener('click', () => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.json';
-                
-                input.onchange = async (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        try {
-                            const vaultData = JSON.parse(e.target.result);
-                            
-                            if (vaultData.version !== '1.0') {
-                                throw new Error('Unsupported vault version');
-                            }
-                            
-                            // Ask for confirmation
-                            if (!confirm(`Import ${vaultData.entries.length} entries? This will add to existing vault.`)) {
-                                return;
-                            }
-                            
-                            // Import entries
-                            for (const entry of vaultData.entries) {
-                                await saveToVault(entry.token, entry.label);
-                            }
-                            
-                            showToast(`Imported ${vaultData.entries.length} entries`, 'success');
-                            logActivity(`Vault imported: ${vaultData.entries.length} entries`);
-                            
-                        } catch (error) {
-                            showToast('Failed to import vault file', 'error');
-                        }
-                    };
-                    
-                    reader.readAsText(file);
-                };
-                
-                input.click();
-            });
-            
-            document.getElementById('wipe-vault').addEventListener('click', async () => {
-                if (state.vaultEntries.length === 0) {
-                    showToast('Vault is already empty', 'info');
-                    return;
-                }
-                
-                if (confirm(`Wipe all ${state.vaultEntries.length} vault entries? This cannot be undone.`)) {
-                    try {
-                        await wipeVault();
-                        showToast('Vault wiped clean', 'success');
-                        logActivity('Vault wiped (all entries deleted)', 'security');
-                    } catch (error) {
-                        showToast('Failed to wipe vault', 'error');
-                    }
-                }
-            });
-            
-            // File Operations
-            const fileInput = document.getElementById('file-input');
-            const fileInfo = document.getElementById('file-info');
-            const fileName = document.getElementById('file-name');
-            const fileSize = document.getElementById('file-size');
-            let currentFile = null;
-            
-            fileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                // Check file type
-                const fileExt = '.' + file.name.split('.').pop().toLowerCase();
-                if (!CONFIG.SUPPORTED_FILE_TYPES.includes(fileExt)) {
-                    showToast(`Unsupported file type: ${fileExt}`, 'error');
-                    fileInput.value = '';
-                    return;
-                }
-                
-                // Check file size
-                if (file.size > CONFIG.MAX_FILE_SIZE) {
-                    showToast(`File too large (max ${CONFIG.MAX_FILE_SIZE / (1024 * 1024)}MB)`, 'error');
-                    fileInput.value = '';
-                    return;
-                }
-                
-                currentFile = file;
-                fileName.textContent = file.name;
-                fileSize.textContent = `${(file.size / 1024).toFixed(2)} KB`;
-                fileInfo.classList.remove('hidden');
-                
-                showToast(`File ready: ${file.name}`, 'info');
-            });
-            
-            document.getElementById('clear-file').addEventListener('click', () => {
-                fileInput.value = '';
-                currentFile = null;
-                fileInfo.classList.add('hidden');
-            });
-            
-            document.getElementById('encrypt-file').addEventListener('click', async () => {
-                if (!currentFile) {
-                    showToast('Select a file first', 'error');
-                    return;
-                }
-                
-                const password = document.getElementById('masterKey').value;
-                if (!password || password.length < 12) {
-                    showToast('Password must be at least 12 characters', 'error');
-                    return;
-                }
-                
-                try {
-                    playSound('encrypt');
-                    showToast('Encrypting file...', 'info');
-                    
-                    const encryptedFile = await encryptFile(currentFile, password);
-                    
-                    // Download encrypted file
-                    const blob = new Blob([encryptedFile], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${currentFile.name}.swarg`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    
-                    playSound('success');
-                    showToast('File encrypted successfully', 'success');
-                    logActivity(`File encrypted: ${currentFile.name}`);
-                    
-                } catch (error) {
-                    showToast('File encryption failed', 'error');
-                }
-            });
-            
-            document.getElementById('decrypt-file').addEventListener('click', async () => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.swarg,.json';
-                
-                input.onchange = async (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    
-                    const password = document.getElementById('masterKey').value;
-                    if (!password) {
-                        showToast('Enter master key to decrypt', 'error');
-                        return;
-                    }
-                    
-                    try {
-                        playSound('decrypt');
-                        showToast('Decrypting file...', 'info');
-                        
-                        const reader = new FileReader();
-                        reader.onload = async (e) => {
-                            try {
-                                const decryptedName = await decryptFile(e.target.result, password);
-                                playSound('success');
-                                showToast(`File decrypted: ${decryptedName}`, 'success');
-                                logActivity(`File decrypted: ${decryptedName}`);
-                            } catch (error) {
-                                // Error already handled in decryptFile
-                            }
-                        };
-                        
-                        reader.readAsText(file);
-                        
-                    } catch (error) {
-                        // Error already handled
-                    }
-                };
-                
-                input.click();
-            });
-            
-            // QR Code Operations
-            document.getElementById('generate-qr').addEventListener('click', () => {
-                const token = document.getElementById('encrypt-output').textContent;
-                if (token && token.length > 0) {
-                    if (token.length > 2000) {
-                        showToast('Token too large for QR code (max 2KB)', 'error');
-                        return;
-                    }
-                    generateQRCode(token);
-                    showToast('QR code generated', 'success');
-                } else {
-                    showToast('Encrypt some data first', 'error');
-                }
-            });
-            
-            // Generate Password
-            document.getElementById('generate-password').addEventListener('click', () => {
-                generatePassword();
-            });
-            
-            // Clear All
-            document.getElementById('clear-all').addEventListener('click', () => {
-                if (confirm('Clear all inputs and outputs?')) {
-                    document.getElementById('masterKey').value = '';
-                    document.getElementById('input-text').value = '';
-                    document.getElementById('encrypted-input').value = '';
-                    document.getElementById('encrypt-output').textContent = '';
-                    document.getElementById('encrypt-output').classList.add('hidden');
-                    document.getElementById('encrypt-placeholder').classList.remove('hidden');
-                    clearDecryptedText();
-                    updatePasswordStrength('');
-                    showToast('All cleared', 'info');
-                }
-            });
-            
-            // Clear Log
-            document.getElementById('clear-log').addEventListener('click', () => {
-                document.getElementById('activity-log').innerHTML = '';
-                showToast('Log cleared', 'info');
-            });
-            
-            // About Modal
-            document.getElementById('about-btn').addEventListener('click', () => {
-                document.getElementById('about-modal').classList.remove('hidden');
-                playSound('click');
-            });
-            
-            document.getElementById('close-about').addEventListener('click', () => {
-                document.getElementById('about-modal').classList.add('hidden');
-                playSound('click');
-            });
-            
-            document.getElementById('close-about-btn').addEventListener('click', () => {
-                document.getElementById('about-modal').classList.add('hidden');
-                playSound('click');
-            });
-            
-            // Language Toggle
-            document.getElementById('lang-toggle').addEventListener('click', () => {
-                const newLang = state.currentLanguage === 'en' ? 'hi' : 'en';
-                updateLanguage(newLang);
-                playSound('click');
-            });
-            
-            // Load saved language preference
-            const savedLang = localStorage.getItem('swarg_language') || 'en';
-            updateLanguage(savedLang);
-            
-            // Sound preference
-            document.addEventListener('keydown', (e) => {
-                // Ctrl+E to encrypt
-                if (e.ctrlKey && e.key === 'e') {
-                    e.preventDefault();
-                    document.getElementById('encrypt-btn').click();
-                }
-                
-                // Ctrl+D to decrypt
-                if (e.ctrlKey && e.key === 'd') {
-                    e.preventDefault();
-                    document.getElementById('decrypt-btn').click();
-                }
-                
-                // Ctrl+G to generate password
-                if (e.ctrlKey && e.key === 'g') {
-                    e.preventDefault();
-                    generatePassword();
-                }
-                
-                // Ctrl+S to toggle sounds
-                if (e.ctrlKey && e.key === 's') {
-                    e.preventDefault();
-                    state.soundsEnabled = !state.soundsEnabled;
-                    localStorage.setItem('swarg_sounds_enabled', state.soundsEnabled);
-                    showToast(`Sounds ${state.soundsEnabled ? 'enabled' : 'disabled'}`, 'info');
-                }
-                
-                // Escape to close modal
-                if (e.key === 'Escape') {
-                    document.getElementById('about-modal').classList.add('hidden');
-                }
-            });
-            
-            // Prevent form submission
-            document.querySelectorAll('form').forEach(form => {
-                form.addEventListener('submit', (e) => e.preventDefault());
-            });
-        }
-    </script>
-</body>
-</html>
- 
+     
