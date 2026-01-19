@@ -1832,4 +1832,393 @@
                     </div>
                 `).join('');
                 
-                // Add ev
+                // Add event listeners to vault buttons
+                container.querySelectorAll('.vault-copy').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const entryId = parseInt(e.target.closest('.vault-entry').dataset.id);
+                        const entry = state.vaultEntries.find(e => e.id === entryId);
+                        if (entry) {
+                            await copyToClipboard(entry.token);
+                            showToast('Token copied to clipboard', 'success');
+                        }
+                    });
+                });
+                
+                container.querySelectorAll('.vault-decrypt').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const entryId = parseInt(e.target.closest('.vault-entry').dataset.id);
+                        const entry = state.vaultEntries.find(e => e.id === entryId);
+                        if (entry) {
+                            document.getElementById('encrypted-input').value = entry.token;
+                            switchTab('decrypt');
+                            showToast('Token loaded for decryption', 'info');
+                        }
+                    });
+                });
+                
+                container.querySelectorAll('.vault-delete').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const entryId = parseInt(e.target.closest('.vault-entry').dataset.id);
+                        if (confirm('Delete this vault entry?')) {
+                            await deleteVaultEntry(entryId);
+                            showToast('Entry deleted', 'info');
+                        }
+                    });
+                });
+            }
+        }
+
+        // ==================== FILE ENCRYPTION ====================
+        async function encryptFile(file, password) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                
+                reader.onload = async (e) => {
+                    try {
+                        const fileData = e.target.result;
+                        
+                        // Generate random salt and IV
+                        const salt = crypto.getRandomValues(new Uint8Array(CONFIG.SALT_LENGTH));
+                        const iv = crypto.getRandomValues(new Uint8Array(CONFIG.IV_LENGTH));
+                        
+                        // Derive key
+                        const { derivedKey } = await deriveKey(password, salt);
+                        
+                        // Encrypt file data
+                        const encrypted = await crypto.subtle.encrypt(
+                            {
+                                name: 'AES-GCM',
+                                iv: iv
+                            },
+                            derivedKey,
+                            fileData
+                        );
+                        
+                        // Create encrypted file object
+                        const expiryTime = Date.now() + (CONFIG.TOKEN_EXPIRY_MINUTES * 60 * 1000);
+                        const fileInfo = {
+                            name: file.name,
+                            type: file.type,
+                            size: file.size,
+                            v: '1.0',
+                            t: Date.now(),
+                            e: expiryTime,
+                            s: btoa(String.fromCharCode(...salt)),
+                            i: btoa(String.fromCharCode(...iv)),
+                            d: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
+                        };
+                        
+                        const encryptedFile = JSON.stringify(fileInfo);
+                        resolve(encryptedFile);
+                        
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                
+                reader.onerror = () => reject(reader.error);
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        async function decryptFile(encryptedFile, password) {
+            try {
+                const fileInfo = JSON.parse(encryptedFile);
+                
+                // Check version and expiry
+                if (fileInfo.v !== '1.0') throw new Error('Unsupported file version');
+                if (Date.now() > fileInfo.e) throw new Error('File token has expired');
+                
+                // Decode salt, IV, and data
+                const salt = Uint8Array.from(atob(fileInfo.s), c => c.charCodeAt(0));
+                const iv = Uint8Array.from(atob(fileInfo.i), c => c.charCodeAt(0));
+                const encryptedData = Uint8Array.from(atob(fileInfo.d), c => c.charCodeAt(0));
+                
+                // Derive key
+                const { derivedKey } = await deriveKey(password, salt);
+                
+                // Decrypt
+                const decrypted = await crypto.subtle.decrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: iv
+                    },
+                    derivedKey,
+                    encryptedData
+                );
+                
+                // Create blob and download link
+                const blob = new Blob([decrypted], { type: fileInfo.type });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileInfo.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                return fileInfo.name;
+                
+            } catch (error) {
+                handleEncryptionError(error);
+                throw error;
+            }
+        }
+
+        // ==================== QR CODE SYSTEM ====================
+        function generateQRCode(text) {
+            const qrContainer = document.getElementById('qr-code');
+            qrContainer.innerHTML = '';
+            
+            QRCode.toCanvas(qrContainer, text, {
+                width: 200,
+                height: 200,
+                margin: 1,
+                color: {
+                    dark: '#00f7ff',
+                    light: '#000000'
+                }
+            }, (error) => {
+                if (error) {
+                    console.error('QR generation error:', error);
+                    showToast('Failed to generate QR code', 'error');
+                }
+            });
+        }
+
+        // ==================== AUDIO SYSTEM ====================
+        function initAudioSystem() {
+            // Preload all sounds
+            const sounds = ['type', 'click', 'encrypt', 'decrypt', 'success', 'error'];
+            sounds.forEach(soundId => {
+                const audio = document.getElementById(`${soundId}-sound`);
+                if (audio) {
+                    audio.volume = CONFIG[`${soundId.toUpperCase()}_SOUND_VOLUME`] || 0.3;
+                    audio.load();
+                }
+            });
+            
+            // Enable/disable sounds based on user preference
+            const savedPref = localStorage.getItem('swarg_sounds_enabled');
+            state.soundsEnabled = savedPref !== 'false';
+        }
+
+        function playSound(soundId) {
+            if (!state.soundsEnabled) return;
+            
+            try {
+                const audio = document.getElementById(`${soundId}-sound`);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(e => console.log('Audio play failed:', e));
+                }
+            } catch (error) {
+                // Silent fail for audio errors
+            }
+        }
+
+        // ==================== UI FUNCTIONS ====================
+        function showToast(message, type = 'info') {
+            playSound('click');
+            
+            const toast = document.createElement('div');
+            toast.className = 'cyber-toast';
+            toast.textContent = message;
+            
+            // Add type-based styling
+            if (type === 'error') {
+                toast.style.borderColor = 'var(--cyber-red)';
+                toast.style.color = 'var(--cyber-red)';
+            } else if (type === 'success') {
+                toast.style.borderColor = 'var(--cyber-green)';
+                toast.style.color = 'var(--cyber-green)';
+            } else if (type === 'warning') {
+                toast.style.borderColor = 'var(--cyber-yellow)';
+                toast.style.color = 'var(--cyber-yellow)';
+            }
+            
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            container.removeChild(toast);
+                        }
+                    }, 300);
+                }
+            }, 3000);
+        }
+
+        function logActivity(message, type = 'info') {
+            playSound('click');
+            
+            const log = document.getElementById('activity-log');
+            const entry = document.createElement('div');
+            
+            // Add type-based styling
+            if (type === 'error') {
+                entry.className = 'text-red-400';
+            } else if (type === 'success') {
+                entry.className = 'text-green-400';
+            } else if (type === 'warning') {
+                entry.className = 'text-yellow-400';
+            } else if (type === 'security') {
+                entry.className = 'text-purple-400';
+            } else if (type === 'system') {
+                entry.className = 'text-cyan-400';
+            } else {
+                entry.className = 'text-gray-300';
+            }
+            
+            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            entry.textContent = `[${timestamp}] ${message}`;
+            
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+            
+            // Limit log size
+            while (log.children.length > 50) {
+                log.removeChild(log.firstChild);
+            }
+        }
+
+        function switchTab(tabName) {
+            playSound('click');
+            
+            // Update tab buttons
+            document.querySelectorAll('.cyber-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+            
+            // Update tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.toggle('active', content.id === `${tabName}-tab`);
+                content.classList.toggle('hidden', content.id !== `${tabName}-tab`);
+            });
+            
+            // Update state
+            state.currentTab = tabName;
+            
+            // Special handling for QR tab
+            if (tabName === 'qr') {
+                const encryptedToken = document.getElementById('encrypt-output')?.textContent;
+                if (encryptedToken && encryptedToken.length > 0 && encryptedToken.length < 2000) {
+                    generateQRCode(encryptedToken);
+                }
+            }
+            
+            logActivity(`Switched to ${tabName.toUpperCase()} mode`);
+        }
+
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('Copied to clipboard', 'success');
+                
+                // Set up auto-clear timer
+                if (state.clipboardTimer) {
+                    clearTimeout(state.clipboardTimer);
+                }
+                
+                state.clipboardTimer = setTimeout(() => {
+                    navigator.clipboard.writeText('').catch(() => {});
+                    logActivity('[SECURITY] Clipboard cleared');
+                }, CONFIG.CLIPBOARD_CLEAR_SECONDS * 1000);
+                
+                logActivity('Copied to clipboard (auto-clear in 15s)');
+                
+            } catch (error) {
+                console.error('Copy failed:', error);
+                showToast('Copy failed. Please copy manually.', 'error');
+            }
+        }
+
+        function updatePasswordStrength(password) {
+            const segments = [
+                document.getElementById('strength-1'),
+                document.getElementById('strength-2'),
+                document.getElementById('strength-3'),
+                document.getElementById('strength-4'),
+                document.getElementById('strength-5')
+            ];
+            
+            const strengthText = document.getElementById('strength-text');
+            
+            // Reset all segments
+            segments.forEach(seg => {
+                seg.className = 'strength-segment';
+            });
+            
+            if (!password) {
+                strengthText.textContent = getTranslation('strength');
+                strengthText.className = 'text-gray-400';
+                return;
+            }
+            
+            let strength = 0;
+            let color = '';
+            
+            // Length check
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            
+            // Complexity checks
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            // Update segments
+            for (let i = 0; i < strength; i++) {
+                if (strength <= 2) {
+                    segments[i].classList.add('weak');
+                } else if (strength <= 4) {
+                    segments[i].classList.add('medium');
+                } else {
+                    segments[i].classList.add('active');
+                }
+            }
+            
+            // Update text
+            if (strength <= 2) {
+                strengthText.textContent = 'Weak';
+                strengthText.className = 'text-red-400';
+            } else if (strength <= 4) {
+                strengthText.textContent = 'Medium';
+                strengthText.className = 'text-yellow-400';
+            } else {
+                strengthText.textContent = 'Strong';
+                strengthText.className = 'text-green-400';
+            }
+        }
+
+        function generatePassword() {
+            const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+            let password = '';
+            
+            // Ensure at least one of each type
+            password += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.charAt(Math.floor(Math.random() * 26));
+            password += 'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26));
+            password += '0123456789'.charAt(Math.floor(Math.random() * 10));
+            password += '!@#$%^&*()_+-=[]{}|;:,.<>?'.charAt(Math.floor(Math.random() * 24));
+            
+            // Fill remaining characters
+            for (let i = 4; i < 16; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+            
+            // Shuffle the password
+            password = password.split('').sort(() => Math.random() - 0.5).join('');
+            
+            // Set the password
+            document.getElementById('masterKey').value = password;
+            updatePasswordStrength(password);
+            showToast('Strong password generated', 'success');
+        }
+
+        // ==================== AUTO-LOC
