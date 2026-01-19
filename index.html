@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWARG | Secure Lock</title>
+    <title>SWARG | Personal Vault</title>
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e40af">
+    <meta name="theme-color" content="#0f172a">
     
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,22 +16,41 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Clean, minimal styles */
+        /* CSS Variables for Themes */
         :root {
-            --primary: #1e40af;
-            --primary-light: #3b82f6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --bg-light: #f8fafc;
-            --bg-card: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            /* Dark Theme (Default) */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --border-color: #475569;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        .light-theme {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #64748b;
+            --accent-primary: #2563eb;
+            --accent-success: #059669;
+            --accent-warning: #d97706;
+            --accent-danger: #dc2626;
+            --border-color: #e2e8f0;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --shadow-color: rgba(0, 0, 0, 0.05);
         }
         
         * {
@@ -39,79 +58,142 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: var(--bg-light);
+            background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
         }
         
-        /* App container */
+        /* App Container */
         .app-container {
             max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
-            background: white;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Header with Strong Branding */
+        .app-header {
+            padding: 28px 24px 24px;
+            text-align: center;
             position: relative;
         }
         
-        /* Header */
-        .app-header {
-            padding: 20px;
-            text-align: center;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            border-radius: 0 0 24px 24px;
-        }
-        
-        .app-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            letter-spacing: -0.5px;
-        }
-        
-        .app-subtitle {
-            font-size: 14px;
-            opacity: 0.9;
-            font-weight: 400;
-        }
-        
-        /* Main content */
-        .main-content {
-            padding: 24px;
-        }
-        
-        /* Card */
-        .card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow);
+        .brand-container {
             margin-bottom: 20px;
-            border: 1px solid var(--border);
         }
         
-        /* Security badge */
-        .security-badge {
+        .brand-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 42px;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #3b82f6 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoShimmer 3s ease-in-out infinite;
+            text-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        @keyframes logoShimmer {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 200% center; }
+        }
+        
+        .brand-subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             padding: 8px 16px;
-            background: #dbeafe;
-            color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
             border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            margin: 4px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
         
-        /* Password input */
+        .verified-badge {
+            color: #3b82f6;
+            font-size: 14px;
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+        
+        .theme-toggle i {
+            font-size: 20px;
+            color: var(--text-primary);
+        }
+        
+        /* Trust Indicators */
+        .trust-indicators {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin: 24px 0;
+        }
+        
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 0 24px 24px;
+        }
+        
+        /* Card */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px var(--shadow-color);
+        }
+        
+        /* Password Input */
         .password-container {
             position: relative;
             margin: 20px 0;
@@ -119,18 +201,19 @@
         
         .password-input {
             width: 100%;
-            padding: 16px;
-            padding-right: 48px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
+            padding: 18px 20px;
+            padding-right: 56px;
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
             font-size: 16px;
-            transition: all 0.2s;
-            background: white;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
         }
         
         .password-input:focus {
             outline: none;
-            border-color: var(--primary-light);
+            border-color: var(--accent-primary);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         
@@ -143,10 +226,16 @@
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
-            padding: 4px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
         }
         
-        /* Action buttons */
+        .toggle-password:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        /* Action Buttons */
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -155,82 +244,230 @@
         }
         
         .btn {
-            padding: 16px 24px;
+            padding: 18px 24px;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
         }
         
         .btn-primary {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--accent-primary), #2563eb);
             color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
         
         .btn-primary:hover {
-            background: #1e3a8a;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
         }
         
         .btn-secondary {
-            background: #f1f5f9;
+            background: var(--bg-secondary);
             color: var(--text-primary);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
         }
         
         .btn-secondary:hover {
-            background: #e2e8f0;
+            background: var(--bg-tertiary);
+            transform: translateY(-1px);
         }
         
-        /* Text areas */
+        /* Text Areas */
         .text-area {
             width: 100%;
-            min-height: 120px;
-            padding: 16px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
+            min-height: 140px;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
             font-size: 16px;
             font-family: 'Inter', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             resize: vertical;
-            transition: all 0.2s;
-            margin: 12px 0;
+            transition: all 0.3s ease;
+            line-height: 1.6;
         }
         
         .text-area:focus {
             outline: none;
-            border-color: var(--primary-light);
+            border-color: var(--accent-primary);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         
-        /* Output display */
+        /* Output Display */
         .output-display {
-            min-height: 120px;
-            padding: 16px;
-            border: 2px dashed #cbd5e1;
-            border-radius: 12px;
-            background: #f8fafc;
-            margin: 12px 0;
+            min-height: 140px;
+            padding: 20px;
+            border: 2px dashed var(--border-color);
+            border-radius: 14px;
+            background: rgba(59, 130, 246, 0.03);
+            margin: 20px 0;
             word-break: break-all;
-            font-family: 'Courier New', monospace;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
             font-size: 14px;
             line-height: 1.5;
             color: var(--text-primary);
+            position: relative;
         }
         
         .output-placeholder {
-            color: #94a3b8;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-tertiary);
             text-align: center;
-            font-style: italic;
+            font-size: 14px;
+        }
+        
+        .output-placeholder i {
+            font-size: 24px;
+            margin-bottom: 12px;
+            display: block;
+            color: var(--text-tertiary);
+        }
+        
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: 14px;
+            padding: 6px;
+            margin: 24px 0;
+            border: 1px solid var(--border-color);
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100%;
+            gap: 10px;
+            font-size: 15px;
+        }
+        
+        .tab-btn.active {
+            background: var(--bg-primary);
+            color: var(--accent-primary);
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+        
+        /* Success Animation */
+        .success-animation {
+            text-align: center;
+            margin: 24px 0;
+        }
+        
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--accent-success), #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .success-icon i {
+            color: white;
+            font-size: 28px;
+        }
+        
+        /* Scan Animation */
+        .scan-animation {
+            position: relative;
+            overflow: hidden;
+            border-radius: 14px;
+        }
+        
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--accent-primary) 50%, 
+                transparent 100%);
+            box-shadow: 0 0 20px var(--accent-primary);
+            animation: scan 1.2s ease-in-out;
+            display: none;
+        }
+        
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        
+        /* Unlock Animation */
+        .unlock-animation {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .lock-icon {
+            width: 64px;
+            height: 64px;
+            position: relative;
+            margin: 0 auto 20px;
+        }
+        
+        .lock-body {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-primary);
+            border-radius: 8px;
+            position: absolute;
+            top: 12px;
+            left: 12px;
+        }
+        
+        .lock-shackle {
+            width: 48px;
+            height: 24px;
+            border: 4px solid var(--accent-primary);
+            border-radius: 24px 24px 0 0;
+            position: absolute;
+            top: 0;
+            left: 8px;
+            transform-origin: 50% 100%;
+            animation: unlockShackle 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes unlockShackle {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(45deg); }
+            100% { transform: rotate(0deg); }
         }
         
         /* Toast */
@@ -239,15 +476,17 @@
             bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--text-primary);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 16px 24px;
+            border-radius: 12px;
             font-size: 14px;
             font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 32px var(--shadow-color);
             z-index: 1000;
             animation: slideUp 0.3s ease-out;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
             max-width: 90%;
             text-align: center;
         }
@@ -263,93 +502,15 @@
             }
         }
         
-        /* Success animation */
-        .success-check {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--success);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            animation: scaleIn 0.3s ease-out;
-        }
-        
-        @keyframes scaleIn {
-            from {
-                transform: scale(0);
-            }
-            to {
-                transform: scale(1);
-            }
-        }
-        
-        /* Loading spinner */
-        .spinner {
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.8s linear infinite;
-            display: inline-block;
-            margin-right: 8px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Info cards */
-        .info-card {
-            background: #f0f9ff;
-            border: 1px solid #bae6fd;
-            border-radius: 12px;
-            padding: 16px;
-            margin: 16px 0;
-        }
-        
-        .info-card i {
-            color: #0284c7;
-            margin-right: 8px;
-        }
-        
-        /* Tab navigation */
-        .tab-nav {
-            display: flex;
-            background: #f1f5f9;
-            border-radius: 12px;
-            padding: 4px;
-            margin: 24px 0;
-        }
-        
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .tab-btn.active {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Settings modal */
+        /* Settings Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
             display: none;
             align-items: center;
             justify-content: center;
@@ -358,28 +519,124 @@
         }
         
         .modal-content {
-            background: white;
+            background: var(--bg-secondary);
             border-radius: 20px;
             padding: 32px;
-            max-width: 500px;
+            max-width: 440px;
             width: 100%;
             max-height: 80vh;
             overflow-y: auto;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 64px rgba(0, 0, 0, 0.3);
         }
         
-        /* Utility classes */
+        /* Setting Toggle */
+        .setting-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #475569;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--accent-primary);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        /* Auto-lock Timer */
+        .timer-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .timer-display i {
+            color: var(--accent-primary);
+            font-size: 20px;
+        }
+        
+        /* Loading State */
+        .loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Utility Classes */
         .hidden {
             display: none !important;
         }
         
-        .text-center {
-            text-align: center;
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
         }
         
-        .mt-4 { margin-top: 16px; }
-        .mt-6 { margin-top: 24px; }
-        .mb-4 { margin-bottom: 16px; }
-        .mb-6 { margin-bottom: 24px; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         
         /* Responsive */
         @media (max-width: 480px) {
@@ -388,946 +645,52 @@
             }
             
             .main-content {
-                padding: 20px;
+                padding: 0 20px 20px;
             }
             
             .action-buttons {
                 grid-template-columns: 1fr;
             }
+            
+            .brand-logo {
+                font-size: 36px;
+            }
+        }
+        
+        /* Typing Sound Effect Indicator */
+        .typing-indicator {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .typing-indicator.active {
+            opacity: 1;
+        }
+        
+        .typing-indicator i {
+            color: var(--accent-primary);
+            font-size: 18px;
         }
     </style>
 </head>
-<body>
+<body class="dark-theme">
     <!-- App Container -->
     <div class="app-container">
-        <!-- Header -->
+        <!-- Header with Strong Branding -->
         <header class="app-header">
-            <h1 class="app-title">SWARG Lock</h1>
-            <p class="app-subtitle">Your data stays private, always</p>
-        </header>
-        
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Welcome Message (First Visit) -->
-            <div id="welcome-message" class="card text-center">
-                <div class="mb-6">
-                    <i class="fas fa-lock text-4xl" style="color: var(--primary); margin-bottom: 16px;"></i>
-                    <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">Welcome to SWARG Lock</h2>
-                    <p style="color: var(--text-secondary); line-height: 1.6;">
-                        Keep your sensitive information private. Everything is secured on your device - nothing is uploaded to the internet.
-                    </p>
-                </div>
-                <button id="get-started" class="btn btn-primary" style="width: 100%;">
-                    Get Started
-                </button>
-            </div>
-            
-            <!-- Main Interface (Hidden initially) -->
-            <div id="main-interface" class="hidden">
-                <!-- Security Status -->
-                <div class="card">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h3 style="font-weight: 700; font-size: 18px;">Security Status</h3>
-                            <p style="color: var(--text-secondary); font-size: 14px;">All systems secure</p>
-                        </div>
-                        <div class="security-badge">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Protected</span>
-                        </div>
-                    </div>
-                    
-                    <div class="info-card">
-                        <p><i class="fas fa-shield-alt"></i> <strong>Your data is securely locked on this device</strong></p>
-                        <p style="margin-top: 8px; font-size: 14px; color: var(--text-secondary);">
-                            Everything stays on your phone/computer. Nothing is uploaded to the internet.
-                        </p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <p><i class="fas fa-key"></i> <strong>Without your password, nobody can open this</strong></p>
-                        <p style="margin-top: 8px; font-size: 14px; color: var(--text-secondary);">
-                            Your password is required every time. We never store it.
-                        </p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <p><i class="fas fa-exclamation-triangle"></i> <strong>Important: No password recovery</strong></p>
-                        <p style="margin-top: 8px; font-size: 14px; color: var(--text-secondary);">
-                            If you forget your password, your data cannot be recovered. Please remember it.
-                        </p>
-                    </div>
-                </div>
-                
-                <!-- Password Input -->
-                <div class="card">
-                    <h3 style="font-weight: 700; font-size: 18px; margin-bottom: 16px;">Your Master Password</h3>
-                    <div class="password-container">
-                        <input type="password" id="password" class="password-input" placeholder="Enter your master password">
-                        <button type="button" class="toggle-password" id="toggle-password">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    <p style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">
-                        Use a strong password you'll remember. This cannot be recovered.
-                    </p>
-                </div>
-                
-                <!-- Tab Navigation -->
-                <div class="tab-nav">
-                    <button class="tab-btn active" data-tab="lock">
-                        <i class="fas fa-lock"></i> Lock Data
-                    </button>
-                    <button class="tab-btn" data-tab="unlock">
-                        <i class="fas fa-unlock"></i> Unlock Data
-                    </button>
-                </div>
-                
-                <!-- Lock Tab -->
-                <div id="lock-tab" class="tab-content">
-                    <div class="card">
-                        <h3 style="font-weight: 700; font-size: 18px; margin-bottom: 16px;">Lock Your Data</h3>
-                        <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                            Enter the text you want to secure. It will be locked with your password.
-                        </p>
-                        
-                        <textarea id="text-to-lock" class="text-area" placeholder="Type or paste sensitive information here..."></textarea>
-                        
-                        <div class="action-buttons">
-                            <button id="lock-btn" class="btn btn-primary">
-                                <i class="fas fa-lock"></i> Lock Data
-                            </button>
-                            <button id="clear-lock" class="btn btn-secondary">
-                                <i class="fas fa-eraser"></i> Clear
-                            </button>
-                        </div>
-                        
-                        <div id="lock-output" class="output-display hidden">
-                            <div id="lock-output-content"></div>
-                        </div>
-                        
-                        <div id="lock-placeholder" class="output-display">
-                            <div class="output-placeholder">
-                                <i class="fas fa-lock mr-2"></i>
-                                Locked data will appear here
-                            </div>
-                        </div>
-                        
-                        <div id="lock-success" class="hidden text-center mt-6">
-                            <div class="success-check">
-                                <i class="fas fa-check text-white text-xl"></i>
-                            </div>
-                            <h4 style="font-weight: 700; font-size: 18px; color: var(--success);">Data Secured!</h4>
-                            <p style="color: var(--text-secondary); margin-top: 8px;">
-                                Your data is now locked. Copy the code below to save it.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Unlock Tab -->
-                <div id="unlock-tab" class="tab-content hidden">
-                    <div class="card">
-                        <h3 style="font-weight: 700; font-size: 18px; margin-bottom: 16px;">Unlock Your Data</h3>
-                        <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                            Paste the locked code here to unlock it with your password.
-                        </p>
-                        
-                        <textarea id="text-to-unlock" class="text-area" placeholder="Paste locked code here..."></textarea>
-                        
-                        <div class="action-buttons">
-                            <button id="unlock-btn" class="btn btn-primary">
-                                <i class="fas fa-unlock"></i> Unlock Data
-                            </button>
-                            <button id="clear-unlock" class="btn btn-secondary">
-                                <i class="fas fa-eraser"></i> Clear
-                            </button>
-                        </div>
-                        
-                        <div id="unlock-output" class="output-display hidden">
-                            <div id="unlock-output-content"></div>
-                        </div>
-                        
-                        <div id="unlock-placeholder" class="output-display">
-                            <div class="output-placeholder">
-                                <i class="fas fa-unlock mr-2"></i>
-                                Unlocked data will appear here
-                            </div>
-                        </div>
-                        
-                        <div id="unlock-success" class="hidden text-center mt-6">
-                            <div class="success-check">
-                                <i class="fas fa-check text-white text-xl"></i>
-                            </div>
-                            <h4 style="font-weight: 700; font-size: 18px; color: var(--success);">Data Unlocked!</h4>
-                            <p style="color: var(--text-secondary); margin-top: 8px;">
-                                Your data is now visible. It will auto-hide in 30 seconds.
-                            </p>
-                        </div>
-                        
-                        <!-- Auto-lock timer -->
-                        <div id="autolock-timer" class="hidden mt-4 text-center">
-                            <p style="color: var(--text-secondary); font-size: 14px;">
-                                <i class="fas fa-clock mr-2"></i>
-                                Will auto-hide in: <span id="timer-countdown">30</span> seconds
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Footer Actions -->
-                <div class="card">
-                    <div class="action-buttons">
-                        <button id="copy-btn" class="btn btn-secondary">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                        <button id="settings-btn" class="btn btn-secondary">
-                            <i class="fas fa-cog"></i> Settings
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </main>
-        
-        <!-- Toast Container -->
-        <div id="toast" class="toast hidden"></div>
-        
-        <!-- Settings Modal -->
-        <div id="settings-modal" class="modal-overlay">
-            <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                    <h2 style="font-size: 24px; font-weight: 700;">Settings & Information</h2>
-                    <button id="close-settings" style="background: none; border: none; font-size: 24px; color: var(--text-secondary); cursor: pointer;">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <!-- Security Details (Hidden by default) -->
-                <div id="security-details" class="hidden">
-                    <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                        <h3 style="font-weight: 700; font-size: 18px; margin-bottom: 16px; color: var(--primary);">
-                            <i class="fas fa-shield-alt mr-2"></i>Technical Security Details
-                        </h3>
-                        <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
-                            <p style="margin-bottom: 8px;"><strong>Encryption:</strong> AES-256-GCM</p>
-                            <p style="margin-bottom: 8px;"><strong>Key Derivation:</strong> PBKDF2 with 300,000+ iterations</p>
-                            <p style="margin-bottom: 8px;"><strong>Processing:</strong> 100% local in your browser</p>
-                            <p style="margin-bottom: 8px;"><strong>Data Storage:</strong> Nothing leaves your device</p>
-                            <p style="margin-bottom: 8px;"><strong>Token Expiry:</strong> 30 minutes</p>
-                            <p style="margin-bottom: 8px;"><strong>Memory Protection:</strong> Non-extractable keys</p>
-                        </div>
-                    </div>
-                    
-                    <div style="background: #fef3c7; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #fbbf24;">
-                        <h3 style="font-weight: 700; font-size: 18px; margin-bottom: 12px; color: #92400e;">
-                            <i class="fas fa-exclamation-triangle mr-2"></i>What This Protects
-                        </h3>
-                        <ul style="font-size: 14px; color: #92400e; padding-left: 20px; line-height: 1.6;">
-                            <li>Data stored on this device</li>
-                            <li>Clipboard snooping</li>
-                            <li>Network interception</li>
-                        </ul>
-                        
-                        <h3 style="font-weight: 700; font-size: 18px; margin-top: 16px; margin-bottom: 12px; color: #92400e;">
-                            <i class="fas fa-exclamation-circle mr-2"></i>What This Doesn't Protect
-                        </h3>
-                        <ul style="font-size: 14px; color: #92400e; padding-left: 20px; line-height: 1.6;">
-                            <li>Malware on your device</li>
-                            <li>Hardware keyloggers</li>
-                            <li>Someone watching your screen</li>
-                            <li>Physical access to your device</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <!-- App Settings -->
-                <div style="margin-bottom: 24px;">
-                    <h3 style="font-weight: 700; font-size: 18px; margin-bottom: 16px;">App Settings</h3>
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 8px;">
-                        <div>
-                            <p style="font-weight: 600;">Auto-hide unlocked data</p>
-                            <p style="font-size: 14px; color: var(--text-secondary);">Hide unlocked data after 30 seconds</p>
-                        </div>
-                        <label style="position: relative; display: inline-block; width: 50px; height: 26px;">
-                            <input type="checkbox" id="autohide-toggle" checked style="opacity: 0; width: 0; height: 0;">
-                            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px;"></span>
-                            <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
-                        </label>
-                    </div>
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 8px;">
-                        <div>
-                            <p style="font-weight: 600;">Subtle sound effects</p>
-                            <p style="font-size: 14px; color: var(--text-secondary);">Play gentle sounds for actions</p>
-                        </div>
-                        <label style="position: relative; display: inline-block; width: 50px; height: 26px;">
-                            <input type="checkbox" id="sound-toggle" checked style="opacity: 0; width: 0; height: 0;">
-                            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px;"></span>
-                            <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
-                        </label>
-                    </div>
-                    
-                    <button id="show-security-details" class="btn btn-secondary" style="width: 100%; margin-top: 16px;">
-                        <i class="fas fa-shield-alt mr-2"></i>Show Security Details
-                    </button>
-                </div>
-                
-                <!-- App Info -->
-                <div style="border-top: 1px solid var(--border); padding-top: 20px;">
-                    <p style="color: var(--text-secondary); font-size: 14px; text-align: center;">
-                        SWARG Lock v1.0<br>
-                        Made with ❤️ by Amar Kumar<br>
-                        All encryption happens on your device
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Audio Elements -->
-    <audio id="type-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" preload="auto"></audio>
-    <audio id="lock-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-lock-2851.mp3" preload="auto"></audio>
-    <audio id="unlock-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-2858.mp3" preload="auto"></audio>
-    <audio id="success-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" preload="auto"></audio>
-    <audio id="error-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
-
-    <script>
-        // Configuration
-        const CONFIG = {
-            PBKDF2_ITERATIONS: 300000,
-            SALT_LENGTH: 32,
-            IV_LENGTH: 16,
-            TOKEN_EXPIRY_MINUTES: 30,
-            AUTO_HIDE_SECONDS: 30,
-            MAX_ATTEMPTS: 5,
-            LOCK_TIME_SECONDS: 60
-        };
-
-        // App State
-        const state = {
-            password: '',
-            lockedUntil: 0,
-            failedAttempts: 0,
-            currentTab: 'lock',
-            soundsEnabled: true,
-            autoHideEnabled: true,
-            autoHideTimer: null,
-            hasSeenWelcome: localStorage.getItem('swarg_welcome_seen') === 'true'
-        };
-
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check if user has seen welcome
-            if (state.hasSeenWelcome) {
-                showMainInterface();
-            }
-            
-            setupEventListeners();
-            initAudio();
-            
-            // Set volume for sounds
-            const sounds = ['type', 'lock', 'unlock', 'success', 'error'];
-            sounds.forEach(sound => {
-                const audio = document.getElementById(`${sound}-sound`);
-                if (audio) audio.volume = 0.3;
-            });
-            
-            // Load settings
-            loadSettings();
-            
-            console.log('🔐 SWARG Lock initialized');
-        });
-
-        // Setup Event Listeners
-        function setupEventListeners() {
-            // Welcome screen
-            document.getElementById('get-started').addEventListener('click', () => {
-                localStorage.setItem('swarg_welcome_seen', 'true');
-                showMainInterface();
-                playSound('success');
-            });
-
-            // Toggle password visibility
-            document.getElementById('toggle-password').addEventListener('click', function() {
-                const passwordInput = document.getElementById('password');
-                const icon = this.querySelector('i');
-                
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    icon.className = 'fas fa-eye-slash';
-                } else {
-                    passwordInput.type = 'password';
-                    icon.className = 'fas fa-eye';
-                }
-                
-                passwordInput.focus();
-            });
-
-            // Password input
-            document.getElementById('password').addEventListener('input', function(e) {
-                state.password = e.target.value;
-                playTypingSound();
-            });
-
-            // Tab switching
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const tab = this.dataset.tab;
-                    switchTab(tab);
-                    playSound('type');
-                });
-            });
-
-            // Lock button
-            document.getElementById('lock-btn').addEventListener('click', async () => {
-                await lockData();
-            });
-
-            // Unlock button
-            document.getElementById('unlock-btn').addEventListener('click', async () => {
-                await unlockData();
-            });
-
-            // Clear buttons
-            document.getElementById('clear-lock').addEventListener('click', () => {
-                document.getElementById('text-to-lock').value = '';
-                hideLockOutput();
-                playSound('type');
-            });
-
-            document.getElementById('clear-unlock').addEventListener('click', () => {
-                document.getElementById('text-to-unlock').value = '';
-                hideUnlockOutput();
-                playSound('type');
-            });
-
-            // Copy button
-            document.getElementById('copy-btn').addEventListener('click', async () => {
-                const output = getCurrentOutput();
-                if (output) {
-                    await copyToClipboard(output);
-                    showToast('Copied to clipboard');
-                }
-            });
-
-            // Settings button
-            document.getElementById('settings-btn').addEventListener('click', () => {
-                document.getElementById('settings-modal').style.display = 'flex';
-                playSound('type');
-            });
-
-            // Close settings
-            document.getElementById('close-settings').addEventListener('click', () => {
-                document.getElementById('settings-modal').style.display = 'none';
-                playSound('type');
-            });
-
-            // Close settings when clicking outside
-            document.getElementById('settings-modal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('settings-modal')) {
-                    document.getElementById('settings-modal').style.display = 'none';
-                }
-            });
-
-            // Show security details
-            document.getElementById('show-security-details').addEventListener('click', () => {
-                document.getElementById('security-details').classList.toggle('hidden');
-                playSound('type');
-            });
-
-            // Settings toggles
-            document.getElementById('autohide-toggle').addEventListener('change', function() {
-                state.autoHideEnabled = this.checked;
-                saveSettings();
-            });
-
-            document.getElementById('sound-toggle').addEventListener('change', function() {
-                state.soundsEnabled = this.checked;
-                saveSettings();
-            });
-
-            // Enter key to submit
-            document.getElementById('text-to-lock').addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.key === 'Enter') {
-                    e.preventDefault();
-                    lockData();
-                }
-            });
-
-            document.getElementById('text-to-unlock').addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.key === 'Enter') {
-                    e.preventDefault();
-                    unlockData();
-                }
-            });
-        }
-
-        // Core Functions
-        async function lockData() {
-            const text = document.getElementById('text-to-lock').value.trim();
-            const password = state.password;
-
-            // Validation
-            if (!password || password.length < 8) {
-                showToast('Please enter a password (min 8 characters)', 'error');
-                return;
-            }
-
-            if (!text) {
-                showToast('Please enter text to lock', 'error');
-                return;
-            }
-
-            // Show loading
-            const lockBtn = document.getElementById('lock-btn');
-            const originalText = lockBtn.innerHTML;
-            lockBtn.innerHTML = '<span class="spinner"></span> Locking...';
-            lockBtn.disabled = true;
-
-            try {
-                // Play lock sound
-                playSound('lock');
-
-                // Generate random salt and IV
-                const salt = crypto.getRandomValues(new Uint8Array(CONFIG.SALT_LENGTH));
-                const iv = crypto.getRandomValues(new Uint8Array(CONFIG.IV_LENGTH));
-
-                // Derive key using PBKDF2
-                const encoder = new TextEncoder();
-                const passwordBuffer = encoder.encode(password);
-                
-                const baseKey = await crypto.subtle.importKey(
-                    'raw',
-                    passwordBuffer,
-                    { name: 'PBKDF2' },
-                    false,
-                    ['deriveBits', 'deriveKey']
-                );
-
-                const derivedKey = await crypto.subtle.deriveKey(
-                    {
-                        name: 'PBKDF2',
-                        salt: salt,
-                        iterations: CONFIG.PBKDF2_ITERATIONS,
-                        hash: 'SHA-256'
-                    },
-                    baseKey,
-                    { name: 'AES-GCM', length: 256 },
-                    false,
-                    ['encrypt', 'decrypt']
-                );
-
-                // Encrypt the data
-                const data = encoder.encode(text);
-                const encrypted = await crypto.subtle.encrypt(
-                    {
-                        name: 'AES-GCM',
-                        iv: iv
-                    },
-                    derivedKey,
-                    data
-                );
-
-                // Create token
-                const expiryTime = Date.now() + (CONFIG.TOKEN_EXPIRY_MINUTES * 60 * 1000);
-                const tokenData = {
-                    v: '1.0',
-                    t: Date.now(),
-                    e: expiryTime,
-                    s: btoa(String.fromCharCode(...salt)),
-                    i: btoa(String.fromCharCode(...iv)),
-                    d: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
-                };
-
-                // Convert to base64
-                const jsonStr = JSON.stringify(tokenData);
-                const token = btoa(unescape(encodeURIComponent(jsonStr)));
-
-                // Show output
-                showLockOutput(token);
-                playSound('success');
-                showToast('Data locked successfully');
-
-            } catch (error) {
-                console.error('Lock error:', error);
-                showToast('Failed to lock data', 'error');
-                playSound('error');
-            } finally {
-                // Restore button
-                lockBtn.innerHTML = originalText;
-                lockBtn.disabled = false;
-            }
-        }
-
-        async function unlockData() {
-            const token = document.getElementById('text-to-unlock').value.trim();
-            const password = state.password;
-
-            // Check rate limiting
-            if (state.lockedUntil > Date.now()) {
-                const remaining = Math.ceil((state.lockedUntil - Date.now()) / 1000);
-                showToast(`Too many attempts. Try again in ${remaining} seconds.`, 'error');
-                return;
-            }
-
-            // Validation
-            if (!password) {
-                showToast('Please enter your password', 'error');
-                return;
-            }
-
-            if (!token) {
-                showToast('Please enter locked code', 'error');
-                return;
-            }
-
-            // Show loading
-            const unlockBtn = document.getElementById('unlock-btn');
-            const originalText = unlockBtn.innerHTML;
-            unlockBtn.innerHTML = '<span class="spinner"></span> Unlocking...';
-            unlockBtn.disabled = true;
-
-            try {
-                // Play unlock sound
-                playSound('unlock');
-
-                // Decode token
-                const jsonStr = decodeURIComponent(escape(atob(token)));
-                const tokenData = JSON.parse(jsonStr);
-
-                // Check version and expiry
-                if (tokenData.v !== '1.0') {
-                    throw new Error('Invalid code version');
-                }
-
-                if (Date.now() > tokenData.e) {
-                    throw new Error('This code has expired (30 minutes)');
-                }
-
-                // Decode components
-                const salt = Uint8Array.from(atob(tokenData.s), c => c.charCodeAt(0));
-                const iv = Uint8Array.from(atob(tokenData.i), c => c.charCodeAt(0));
-                const encryptedData = Uint8Array.from(atob(tokenData.d), c => c.charCodeAt(0));
-
-                // Derive key
-                const encoder = new TextEncoder();
-                const passwordBuffer = encoder.encode(password);
-                
-                const baseKey = await crypto.subtle.importKey(
-                    'raw',
-                    passwordBuffer,
-                    { name: 'PBKDF2' },
-                    false,
-                    ['deriveBits', 'deriveKey']
-                );
-
-                const derivedKey = await crypto.subtle.deriveKey(
-                    {
-                        name: 'PBKDF2',
-                        salt: salt,
-                        iterations: CONFIG.PBKDF2_ITERATIONS,
-                        hash: 'SHA-256'
-                    },
-                    baseKey,
-                    { name: 'AES-GCM', length: 256 },
-                    false,
-                    ['encrypt', 'decrypt']
-                );
-
-                // Decrypt
-                const decrypted = await crypto.subtle.decrypt(
-                    {
-                        name: 'AES-GCM',
-                        iv: iv
-                    },
-                    derivedKey,
-                    encryptedData
-                );
-
-                const decoder = new TextDecoder();
-                const text = decoder.decode(decrypted);
-
-                // Success - reset attempts
-                state.failedAttempts = 0;
-
-                // Show output
-                showUnlockOutput(text);
-                playSound('success');
-                showToast('Data unlocked successfully');
-
-                // Start auto-hide timer
-                if (state.autoHideEnabled) {
-                    startAutoHideTimer();
-                }
-
-            } catch (error) {
-                console.error('Unlock error:', error);
-                
-                // Increment failed attempts
-                state.failedAttempts++;
-                
-                if (state.failedAttempts >= CONFIG.MAX_ATTEMPTS) {
-                    state.lockedUntil = Date.now() + (CONFIG.LOCK_TIME_SECONDS * 1000);
-                    showToast(`Too many incorrect attempts. Locked for ${CONFIG.LOCK_TIME_SECONDS} seconds.`, 'error');
-                } else if (error.message.includes('expired')) {
-                    showToast('This code has expired (30 minutes)', 'error');
-                } else if (error.message.includes('Invalid')) {
-                    showToast('Invalid code format', 'error');
-                } else {
-                    showToast('Incorrect password or invalid code', 'error');
-                }
-                
-                playSound('error');
-                
-            } finally {
-                // Restore button
-                unlockBtn.innerHTML = originalText;
-                unlockBtn.disabled = false;
-            }
-        }
-
-        // UI Functions
-        function showMainInterface() {
-            document.getElementById('welcome-message').classList.add('hidden');
-            document.getElementById('main-interface').classList.remove('hidden');
-        }
-
-        function switchTab(tab) {
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.tab === tab);
-            });
-
-            // Show selected tab
-            document.getElementById('lock-tab').classList.toggle('hidden', tab !== 'lock');
-            document.getElementById('unlock-tab').classList.toggle('hidden', tab !== 'unlock');
-
-            state.currentTab = tab;
-        }
-
-        function showLockOutput(token) {
-            const output = document.getElementById('lock-output-content');
-            const outputContainer = document.getElementById('lock-output');
-            const placeholder = document.getElementById('lock-placeholder');
-            const success = document.getElementById('lock-success');
-
-            output.textContent = token;
-            outputContainer.classList.remove('hidden');
-            placeholder.classList.add('hidden');
-            success.classList.remove('hidden');
-
-            // Scroll to output
-            outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function hideLockOutput() {
-            document.getElementById('lock-output').classList.add('hidden');
-            document.getElementById('lock-placeholder').classList.remove('hidden');
-            document.getElementById('lock-success').classList.add('hidden');
-        }
-
-        function showUnlockOutput(text) {
-            const output = document.getElementById('unlock-output-content');
-            const outputContainer = document.getElementById('unlock-output');
-            const placeholder = document.getElementById('unlock-placeholder');
-            const success = document.getElementById('unlock-success');
-            const timer = document.getElementById('autolock-timer');
-
-            output.textContent = text;
-            outputContainer.classList.remove('hidden');
-            placeholder.classList.add('hidden');
-            success.classList.remove('hidden');
-            
-            if (state.autoHideEnabled) {
-                timer.classList.remove('hidden');
-            }
-
-            // Scroll to output
-            outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function hideUnlockOutput() {
-            document.getElementById('unlock-output').classList.add('hidden');
-            document.getElementById('unlock-placeholder').classList.remove('hidden');
-            document.getElementById('unlock-success').classList.add('hidden');
-            document.getElementById('autolock-timer').classList.add('hidden');
-        }
-
-        function startAutoHideTimer() {
-            // Clear existing timer
-            if (state.autoHideTimer) {
-                clearInterval(state.autoHideTimer);
-            }
-
-            let secondsLeft = CONFIG.AUTO_HIDE_SECONDS;
-            const timerElement = document.getElementById('timer-countdown');
-            timerElement.textContent = secondsLeft;
-
-            state.autoHideTimer = setInterval(() => {
-                secondsLeft--;
-                timerElement.textContent = secondsLeft;
-
-                if (secondsLeft <= 0) {
-                    clearInterval(state.autoHideTimer);
-                    hideUnlockOutput();
-                    showToast('Unlocked data hidden (auto-lock)');
-                }
-            }, 1000);
-        }
-
-        function getCurrentOutput() {
-            if (state.currentTab === 'lock') {
-                return document.getElementById('lock-output-content').textContent;
-            } else {
-                return document.getElementById('unlock-output-content').textContent;
-            }
-        }
-
-        // Sound Functions
-        function initAudio() {
-            // Preload all sounds
-            const sounds = ['type', 'lock', 'unlock', 'success', 'error'];
-            sounds.forEach(sound => {
-                const audio = document.getElementById(`${sound}-sound`);
-                if (audio) {
-                    audio.load();
-                    audio.volume = 0.3;
-                }
-            });
-        }
-
-        function playSound(sound) {
-            if (!state.soundsEnabled) return;
-            
-            try {
-                const audio = document.getElementById(`${sound}-sound`);
-                if (audio) {
-                    audio.currentTime = 0;
-                    audio.play().catch(() => {
-                        // Ignore audio errors
-                    });
-                }
-            } catch (error) {
-                // Ignore audio errors
-            }
-        }
-
-        function playTypingSound() {
-            // Only play typing sound occasionally to avoid annoyance
-            if (Math.random() < 0.3) {
-                playSound('type');
-            }
-        }
-
-        // Utility Functions
-        async function copyToClipboard(text) {
-            try {
-                await navigator.clipboard.writeText(text);
-                
-                // Clear clipboard after 15 seconds
-                setTimeout(async () => {
-                    try {
-                        await navigator.clipboard.writeText('');
-                    } catch (error) {
-                        // Ignore clipboard clearing errors
-                    }
-                }, 15000);
-                
-                return true;
-            } catch (error) {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                return true;
-            }
-        }
-
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.remove('hidden');
-            
-            // Set color based on type
-            if (type === 'error') {
-                toast.style.background = '#ef4444';
-            } else if (type === 'warning') {
-                toast.style.background = '#f59e0b';
-            } else {
-                toast.style.background = '#10b981';
-            }
-
-            // Auto hide
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000);
-        }
-
-        // Settings
-        function loadSettings() {
-            const savedSounds = localStorage.getItem('swarg_sounds');
-            const savedAutoHide = localStorage.getItem('swarg_autohide');
-            
-            if (savedSounds !== null) {
-                state.soundsEnabled = savedSounds === 'true';
-                document.getElementById('sound-toggle').checked = state.soundsEnabled;
-            }
-            
-            if (savedAutoHide !== null) {
-                state.autoHideEnabled = savedAutoHide === 'true';
-                document.getElementById('autohide-toggle').checked = state.autoHideEnabled;
-            }
-        }
-
-        function saveSettings() {
-            localStorage.setItem('swarg_sounds', state.soundsEnabled);
-            localStorage.setItem('swarg_autohide', state.autoHideEnabled);
-        }
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            // Ctrl+L to lock
-            if (e.ctrlKey && e.key === 'l') {
-                e.preventDefault();
-                document.getElementById('lock-btn').click();
-            }
-            
-            // Ctrl+U to unlock
-            if (e.ctrlKey && e.key === 'u') {
-                e.preventDefault();
-                document.getElementById('unlock-btn').click();
-            }
-            
-            // Escape to close modal
-            if (e.key === 'Escape') {
-                document.getElementById('settings-modal').style.display = 'none';
-            }
-            
-            // Tab switching with 1/2
-            if (e.key === '1') {
-                e.preventDefault();
-                switchTab('lock');
-            }
-            if (e.key === '2') {
-                e.preventDefault();
-                switchTab('unlock');
-            }
-        });
-
-        // Prevent form submission
-        document.querySelectorAll('input, textarea').forEach(element => {
-            element.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.ctrlKey) {
-                    e.preventDefault();
-                }
-            });
-        });
-    </script>
-</body>
-</html>
-                        
-     
+            <!-- Theme Toggle -->
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i
