@@ -3,322 +3,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWARG | Personal Vault</title>
+    <title>SWARG | Secure Vault</title>
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#0a0a0f">
     
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <style>
-        /* CSS Variables for Themes */
+        /* ===== VARIABLES ===== */
         :root {
-            /* Dark Theme (Default) */
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-tertiary: #334155;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --text-tertiary: #94a3b8;
-            --accent-primary: #3b82f6;
-            --accent-success: #10b981;
-            --accent-warning: #f59e0b;
-            --accent-danger: #ef4444;
-            --border-color: #475569;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --shadow-color: rgba(0, 0, 0, 0.3);
+            /* Colors - Deep Space Theme */
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #111118;
+            --bg-tertiary: #1a1a24;
+            --surface: rgba(255, 255, 255, 0.05);
+            --surface-hover: rgba(255, 255, 255, 0.08);
+            
+            /* Accent Colors */
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-yellow: #f59e0b;
+            
+            /* Text Colors */
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #71717a;
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            --gradient-cyan: linear-gradient(135deg, var(--accent-cyan), #0ea5e9);
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.5);
+            
+            /* Borders */
+            --border-light: rgba(255, 255, 255, 0.1);
+            --border-medium: rgba(255, 255, 255, 0.15);
+            
+            /* Animation */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
         }
         
-        .light-theme {
-            --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --bg-tertiary: #f1f5f9;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-tertiary: #64748b;
-            --accent-primary: #2563eb;
-            --accent-success: #059669;
-            --accent-warning: #d97706;
-            --accent-danger: #dc2626;
-            --border-color: #e2e8f0;
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --shadow-color: rgba(0, 0, 0, 0.05);
-        }
-        
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        html {
+            scroll-behavior: smooth;
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            min-height: 100vh;
         }
         
-        /* App Container */
+        /* ===== ANIMATED BACKGROUND ===== */
+        .space-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite alternate;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .particle {
+            position: absolute;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            filter: blur(4px);
+            animation: float var(--duration) infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* ===== MAIN LAYOUT ===== */
         .app-container {
             max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
+            padding: 24px;
             position: relative;
-            overflow-x: hidden;
         }
         
-        /* Header with Strong Branding */
+        /* ===== HEADER ===== */
         .app-header {
-            padding: 28px 24px 24px;
             text-align: center;
+            padding: 32px 0 40px;
             position: relative;
         }
         
-        .brand-container {
+        .logo-container {
+            position: relative;
+            display: inline-block;
             margin-bottom: 20px;
         }
         
-        .brand-logo {
-            font-family: 'Outfit', sans-serif;
+        .logo-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, var(--accent-blue) 0%, transparent 70%);
+            filter: blur(40px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 56px;
             font-weight: 700;
-            font-size: 42px;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #3b82f6 100%);
-            background-size: 200% auto;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(255, 255, 255, 0.8) 50%, 
+                rgba(255, 255, 255, 0.95) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: logoShimmer 3s ease-in-out infinite;
-            text-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+            text-shadow: 0 4px 30px rgba(59, 130, 246, 0.4);
+            line-height: 1;
         }
         
-        @keyframes logoShimmer {
-            0%, 100% { background-position: 0% center; }
-            50% { background-position: 200% center; }
-        }
-        
-        .brand-subtitle {
-            color: var(--text-secondary);
-            font-size: 15px;
+        .creator-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
-            background: rgba(59, 130, 246, 0.1);
-            border-radius: 20px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-        
-        .verified-badge {
-            color: #3b82f6;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
             font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            backdrop-filter: blur(10px);
         }
         
-        /* Theme Toggle */
-        .theme-toggle {
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
+        .verified-icon {
+            color: var(--accent-blue);
+            font-size: 16px;
+        }
+        
+        /* ===== MAIN CARD ===== */
+        .main-card {
             background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px;
+            border: 1px solid var(--border-medium);
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(20px);
+            margin-bottom: 24px;
+            transition: transform var(--transition-normal);
+        }
+        
+        .main-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* ===== SECTION HEADERS ===== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px var(--shadow-color);
-        }
-        
-        .theme-toggle:hover {
-            transform: scale(1.05);
-        }
-        
-        .theme-toggle i {
             font-size: 20px;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
             color: var(--text-primary);
         }
         
-        /* Trust Indicators */
-        .trust-indicators {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            margin: 24px 0;
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
         }
         
-        .trust-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            color: #10b981;
-            border-radius: 12px;
+        /* ===== INPUT STYLES ===== */
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        .input-label {
+            display: block;
             font-size: 14px;
             font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 4px;
         }
         
-        /* Main Content */
-        .main-content {
-            padding: 0 24px 24px;
-        }
-        
-        /* Card */
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 32px var(--shadow-color);
-        }
-        
-        /* Password Input */
-        .password-container {
+        .input-wrapper {
             position: relative;
-            margin: 20px 0;
         }
         
         .password-input {
             width: 100%;
-            padding: 18px 20px;
-            padding-right: 56px;
-            border: 2px solid var(--border-color);
-            border-radius: 14px;
+            padding: 18px 52px 18px 20px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-light);
+            border-radius: 16px;
             font-size: 16px;
-            background: var(--bg-secondary);
             color: var(--text-primary);
-            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            transition: all var(--transition-fast);
+            outline: none;
         }
         
         .password-input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
         
-        .toggle-password {
+        .input-icon {
             position: absolute;
-            right: 16px;
+            right: 20px;
             top: 50%;
             transform: translateY(-50%);
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: color var(--transition-fast);
             background: none;
             border: none;
+            font-size: 18px;
+            padding: 8px;
+        }
+        
+        .input-icon:hover {
+            color: var(--accent-blue);
+        }
+        
+        /* ===== TAB NAVIGATION ===== */
+        .tab-container {
+            margin: 32px 0;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            padding: 6px;
+            border: 1px solid var(--border-light);
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 16px;
+            background: none;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
             color: var(--text-secondary);
             cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-        
-        .toggle-password:hover {
-            background: var(--bg-tertiary);
-        }
-        
-        /* Action Buttons */
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 24px 0;
-        }
-        
-        .btn {
-            padding: 18px 24px;
-            border: none;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all var(--transition-fast);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
         }
         
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-primary), #2563eb);
+        .tab-button.active {
+            background: var(--gradient-primary);
             color: white;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            box-shadow: var(--shadow-sm);
         }
         
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        /* ===== TEXT AREAS ===== */
+        .text-area-container {
+            margin-bottom: 24px;
         }
         
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-        
-        .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-        
-        .btn-secondary:hover {
-            background: var(--bg-tertiary);
-            transform: translateY(-1px);
-        }
-        
-        /* Text Areas */
         .text-area {
             width: 100%;
-            min-height: 140px;
+            min-height: 160px;
             padding: 20px;
-            border: 2px solid var(--border-color);
-            border-radius: 14px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-light);
+            border-radius: 16px;
             font-size: 16px;
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-secondary);
             color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
             resize: vertical;
-            transition: all 0.3s ease;
+            transition: all var(--transition-fast);
+            outline: none;
             line-height: 1.6;
         }
         
         .text-area:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
         
-        /* Output Display */
-        .output-display {
-            min-height: 140px;
-            padding: 20px;
-            border: 2px dashed var(--border-color);
-            border-radius: 14px;
-            background: rgba(59, 130, 246, 0.03);
-            margin: 20px 0;
-            word-break: break-all;
-            font-family: 'JetBrains Mono', 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            color: var(--text-primary);
+        /* ===== OUTPUT DISPLAY ===== */
+        .output-container {
+            margin: 24px 0;
             position: relative;
+        }
+        
+        .output-display {
+            min-height: 160px;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-light);
+            border-radius: 16px;
+            font-size: 14px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+            line-height: 1.6;
         }
         
         .output-placeholder {
@@ -326,67 +391,151 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: var(--text-tertiary);
             text-align: center;
+            color: var(--text-tertiary);
             font-size: 14px;
+            pointer-events: none;
         }
         
-        .output-placeholder i {
-            font-size: 24px;
+        .placeholder-icon {
+            font-size: 32px;
             margin-bottom: 12px;
-            display: block;
             color: var(--text-tertiary);
         }
         
-        /* Tab Navigation */
-        .tab-nav {
-            display: flex;
-            background: var(--bg-secondary);
-            border-radius: 14px;
-            padding: 6px;
-            margin: 24px 0;
-            border: 1px solid var(--border-color);
+        /* ===== ACTION BUTTONS ===== */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 32px 0;
         }
         
-        .tab-btn {
-            flex: 1;
-            padding: 16px;
+        .action-button {
+            padding: 18px 24px;
             border: none;
-            background: transparent;
-            color: var(--text-secondary);
+            border-radius: 16px;
+            font-size: 16px;
             font-weight: 600;
-            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all var(--transition-normal);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            font-size: 15px;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
         }
         
-        .tab-btn.active {
-            background: var(--bg-primary);
-            color: var(--accent-primary);
-            box-shadow: 0 2px 8px var(--shadow-color);
+        .action-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent);
+            transition: left 0.6s;
         }
         
-        /* Success Animation */
+        .action-button:hover::after {
+            left: 100%;
+        }
+        
+        .primary-button {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .primary-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
+        }
+        
+        .secondary-button {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+        }
+        
+        .secondary-button:hover {
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+        }
+        
+        /* ===== SCANNER ANIMATION ===== */
+        .scanner-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+        
+        .scanner-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--accent-cyan), 
+                transparent);
+            box-shadow: 0 0 20px var(--accent-cyan);
+            z-index: 10;
+            animation: scan 1.5s ease-in-out infinite;
+            display: none;
+        }
+        
+        @keyframes scan {
+            0% {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(calc(100% + 10px));
+                opacity: 0;
+            }
+        }
+        
+        /* ===== SUCCESS ANIMATION ===== */
         .success-animation {
             text-align: center;
-            margin: 24px 0;
+            margin: 32px 0;
+            animation: fadeIn 0.5s ease-out;
         }
         
-        .success-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, var(--accent-success), #059669);
+        .checkmark-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            position: relative;
+        }
+        
+        .checkmark-circle {
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
             animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .checkmark {
+            color: white;
+            font-size: 36px;
+            animation: checkmark 0.3s ease-out 0.3s both;
         }
         
         @keyframes scaleIn {
@@ -395,241 +544,135 @@
             100% { transform: scale(1); }
         }
         
-        .success-icon i {
-            color: white;
-            font-size: 28px;
+        @keyframes checkmark {
+            0% { transform: scale(0) rotate(45deg); }
+            100% { transform: scale(1) rotate(0); }
         }
         
-        /* Scan Animation */
-        .scan-animation {
-            position: relative;
-            overflow: hidden;
-            border-radius: 14px;
-        }
-        
-        .scan-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                var(--accent-primary) 50%, 
-                transparent 100%);
-            box-shadow: 0 0 20px var(--accent-primary);
-            animation: scan 1.2s ease-in-out;
-            display: none;
-        }
-        
-        @keyframes scan {
-            0% { top: 0%; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
-        }
-        
-        /* Unlock Animation */
+        /* ===== UNLOCK ANIMATION ===== */
         .unlock-animation {
             text-align: center;
-            margin: 20px 0;
+            margin: 32px 0;
         }
         
         .lock-icon {
-            width: 64px;
-            height: 64px;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
             position: relative;
-            margin: 0 auto 20px;
         }
         
         .lock-body {
-            width: 40px;
-            height: 40px;
-            background: var(--accent-primary);
-            border-radius: 8px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
             position: absolute;
-            top: 12px;
-            left: 12px;
+            top: 15px;
+            left: 15px;
         }
         
         .lock-shackle {
-            width: 48px;
-            height: 24px;
-            border: 4px solid var(--accent-primary);
-            border-radius: 24px 24px 0 0;
+            width: 60px;
+            height: 30px;
+            border: 4px solid var(--accent-blue);
+            border-radius: 30px 30px 0 0;
             position: absolute;
             top: 0;
-            left: 8px;
+            left: 10px;
             transform-origin: 50% 100%;
-            animation: unlockShackle 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: unlock 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
         
-        @keyframes unlockShackle {
+        @keyframes unlock {
             0% { transform: rotate(0deg); }
             50% { transform: rotate(45deg); }
             100% { transform: rotate(0deg); }
         }
         
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            padding: 16px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            box-shadow: 0 8px 32px var(--shadow-color);
-            z-index: 1000;
-            animation: slideUp 0.3s ease-out;
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
-            max-width: 90%;
-            text-align: center;
-        }
-        
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
-        }
-        
-        /* Settings Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-        
-        .modal-content {
-            background: var(--bg-secondary);
-            border-radius: 20px;
-            padding: 32px;
-            max-width: 440px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 20px 64px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Setting Toggle */
-        .setting-toggle {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border-color);
-        }
-        
-        .toggle-switch {
-            position: relative;
-            width: 52px;
-            height: 28px;
-        }
-        
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #475569;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .toggle-slider {
-            background-color: var(--accent-primary);
-        }
-        
-        input:checked + .toggle-slider:before {
-            transform: translateX(24px);
-        }
-        
-        /* Auto-lock Timer */
+        /* ===== TIMER DISPLAY ===== */
         .timer-display {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
             padding: 16px;
-            background: rgba(59, 130, 246, 0.1);
-            border-radius: 12px;
-            margin: 20px 0;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 16px;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            margin: 24px 0;
         }
         
-        .timer-display i {
-            color: var(--accent-primary);
+        .timer-icon {
+            color: var(--accent-cyan);
             font-size: 20px;
         }
         
-        /* Loading State */
-        .loading {
-            display: inline-flex;
-            align-items: center;
+        .timer-text {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .timer-count {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            font-variant-numeric: tabular-nums;
+        }
+        
+        /* ===== TOAST NOTIFICATIONS ===== */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
             gap: 12px;
+            pointer-events: none;
         }
         
-        .loading-spinner {
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.8s linear infinite;
+        .toast {
+            padding: 16px 24px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-medium);
+            backdrop-filter: blur(20px);
+            animation: slideUp 0.3s ease-out;
+            max-width: 400px;
+            text-align: center;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
-        /* Utility Classes */
-        .hidden {
-            display: none !important;
-        }
-        
-        .fade-in {
+        /* ===== SETTINGS MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
             animation: fadeIn 0.3s ease-out;
         }
         
@@ -638,1099 +681,18 @@
             to { opacity: 1; }
         }
         
-        /* Responsive */
-        @media (max-width: 480px) {
-            .app-container {
-                border-radius: 0;
-            }
-            
-            .main-content {
-                padding: 0 20px 20px;
-            }
-            
-            .action-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .brand-logo {
-                font-size: 36px;
-            }
-        }
-        
-        /* Typing Sound Effect Indicator */
-        .typing-indicator {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
+        .modal-content {
             background: var(--bg-secondary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 12px var(--shadow-color);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 440px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-medium);
+            box-shadow: var(--shadow-lg);
+            animation: modalIn 0.3s ease-out;
         }
         
-        .typing-indicator.active {
-            opacity: 1;
-        }
-        
-        .typing-indicator i {
-            color: var(--accent-primary);
-            font-size: 18px;
-        }
-    </style>
-</head>
-<body class="dark-theme">
-    <!-- App Container -->
-    <div class="app-container">
-        <!-- Header with Strong Branding -->
-        <header class="app-header">
-            <!-- Theme Toggle -->
-            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-                <i class="fas fa-moon"></i>
-            </button>
-            
-            <!-- Branding -->
-            <div class="brand-container">
-                <h1 class="brand-logo">SWARG</h1>
-                <div class="brand-subtitle">
-                    <span>by Amar Kumar</span>
-                    <i class="fas fa-check-circle verified-badge"></i>
-                </div>
-            </div>
-            
-            <!-- Trust Indicators -->
-            <div class="trust-indicators">
-                <div class="trust-badge">
-                    <i class="fas fa-lock"></i>
-                    <span>Military-Grade Encryption</span>
-                </div>
-                <div class="trust-badge">
-                    <i class="fas fa-user-shield"></i>
-                    <span>100% Private</span>
-                </div>
-            </div>
-        </header>
-        
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Password Section -->
-            <div class="card">
-                <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">
-                    <i class="fas fa-key mr-2" style="color: var(--accent-primary);"></i>
-                    Your Master Password
-                </h2>
-                <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
-                    Create a strong password that only you know. This cannot be recovered if forgotten.
-                </p>
-                
-                <div class="password-container">
-                    <input type="password" 
-                           id="password" 
-                           class="password-input" 
-                           placeholder="Enter your master password (min 8 characters)"
-                           autocomplete="off">
-                    <button type="button" class="toggle-password" id="toggle-password" aria-label="Show password">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-                
-                <div style="display: flex; gap: 12px;">
-                    <button id="generate-password" class="btn btn-secondary" style="flex: 1;">
-                        <i class="fas fa-dice"></i>
-                        Generate Strong
-                    </button>
-                    <button id="clear-password" class="btn btn-secondary" style="width: 60px;">
-                        <i class="fas fa-eraser"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Tab Navigation -->
-            <div class="tab-nav">
-                <button class="tab-btn active" data-tab="lock">
-                    <i class="fas fa-lock"></i>
-                    <span>Lock Data</span>
-                </button>
-                <button class="tab-btn" data-tab="unlock">
-                    <i class="fas fa-unlock"></i>
-                    <span>Unlock Data</span>
-                </button>
-            </div>
-            
-            <!-- Lock Tab -->
-            <div id="lock-tab" class="tab-content fade-in">
-                <div class="card scan-animation" id="lock-card">
-                    <div class="scan-line" id="lock-scan-line"></div>
-                    
-                    <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">
-                        <i class="fas fa-lock mr-2" style="color: var(--accent-primary);"></i>
-                        Secure Your Data
-                    </h2>
-                    <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
-                        Anything you type here will be encrypted and secured. Only someone with your password can unlock it.
-                    </p>
-                    
-                    <textarea id="text-to-lock" 
-                              class="text-area" 
-                              placeholder="Type or paste sensitive information here... (Bank details, passwords, personal notes)"
-                              rows="6"></textarea>
-                    
-                    <div class="action-buttons">
-                        <button id="lock-btn" class="btn btn-primary">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Encrypt & Lock</span>
-                        </button>
-                        <button id="clear-lock" class="btn btn-secondary">
-                            <i class="fas fa-trash"></i>
-                            <span>Clear</span>
-                        </button>
-                    </div>
-                    
-                    <!-- Encrypted Output -->
-                    <div id="lock-output" class="output-display hidden">
-                        <div id="lock-output-content" style="word-break: break-word;"></div>
-                    </div>
-                    
-                    <div id="lock-placeholder" class="output-display">
-                        <div class="output-placeholder">
-                            <i class="fas fa-lock"></i>
-                            Encrypted data will appear here
-                        </div>
-                    </div>
-                    
-                    <!-- Success Animation -->
-                    <div id="lock-success" class="success-animation hidden">
-                        <div class="success-icon">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <h3 style="font-size: 18px; font-weight: 700; color: var(--accent-success); margin-bottom: 8px;">
-                            Data Secured!
-                        </h3>
-                        <p style="color: var(--text-secondary); font-size: 14px;">
-                            Your data is now encrypted and copied to clipboard.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Unlock Tab -->
-            <div id="unlock-tab" class="tab-content hidden fade-in">
-                <div class="card" id="unlock-card">
-                    <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">
-                        <i class="fas fa-unlock mr-2" style="color: var(--accent-primary);"></i>
-                        Access Your Data
-                    </h2>
-                    <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
-                        Paste the encrypted code here to unlock it with your password.
-                    </p>
-                    
-                    <textarea id="text-to-unlock" 
-                              class="text-area" 
-                              placeholder="Paste encrypted code here..."
-                              rows="6"></textarea>
-                    
-                    <div class="action-buttons">
-                        <button id="unlock-btn" class="btn btn-primary">
-                            <i class="fas fa-key"></i>
-                            <span>Decrypt & Unlock</span>
-                        </button>
-                        <button id="clear-unlock" class="btn btn-secondary">
-                            <i class="fas fa-trash"></i>
-                            <span>Clear</span>
-                        </button>
-                    </div>
-                    
-                    <!-- Decrypted Output -->
-                    <div id="unlock-output" class="output-display hidden">
-                        <div id="unlock-output-content" style="word-break: break-word;"></div>
-                    </div>
-                    
-                    <div id="unlock-placeholder" class="output-display">
-                        <div class="output-placeholder">
-                            <i class="fas fa-unlock"></i>
-                            Decrypted data will appear here
-                        </div>
-                    </div>
-                    
-                    <!-- Success Animation -->
-                    <div id="unlock-success" class="unlock-animation hidden">
-                        <div class="lock-icon">
-                            <div class="lock-body"></div>
-                            <div class="lock-shackle"></div>
-                        </div>
-                        <h3 style="font-size: 18px; font-weight: 700; color: var(--accent-success); margin-bottom: 8px;">
-                            Access Granted!
-                        </h3>
-                        <p style="color: var(--text-secondary); font-size: 14px;">
-                            Your data is now visible. It will auto-hide in 30 seconds.
-                        </p>
-                    </div>
-                    
-                    <!-- Auto-lock Timer -->
-                    <div id="autolock-timer" class="timer-display hidden">
-                        <i class="fas fa-clock"></i>
-                        <div>
-                            <p style="font-weight: 600; color: var(--text-primary);">Auto-hide in</p>
-                            <p style="font-size: 18px; font-weight: 700; color: var(--accent-primary);" id="timer-countdown">30</p>
-                        </div>
-                        <span style="color: var(--text-secondary);">seconds</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Action Footer -->
-            <div class="card">
-                <div class="action-buttons">
-                    <button id="copy-btn" class="btn btn-secondary">
-                        <i class="fas fa-copy"></i>
-                        Copy
-                    </button>
-                    <button id="settings-btn" class="btn btn-secondary">
-                        <i class="fas fa-sliders-h"></i>
-                        Settings
-                    </button>
-                </div>
-            </div>
-        </main>
-        
-        <!-- Toast -->
-        <div id="toast" class="toast hidden"></div>
-        
-        <!-- Typing Indicator -->
-        <div class="typing-indicator" id="typing-indicator">
-            <i class="fas fa-keyboard"></i>
-        </div>
-        
-        <!-- Settings Modal -->
-        <div id="settings-modal" class="modal-overlay">
-            <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
-                    <h2 style="font-size: 24px; font-weight: 700; color: var(--text-primary);">
-                        <i class="fas fa-cog mr-2" style="color: var(--accent-primary);"></i>
-                        Settings
-                    </h2>
-                    <button id="close-settings" style="background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer;">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <!-- Auto-copy Setting -->
-                <div class="setting-toggle">
-                    <div>
-                        <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
-                            Auto-copy after encryption
-                        </p>
-                        <p style="font-size: 14px; color: var(--text-secondary);">
-                            Automatically copy encrypted text to clipboard
-                        </p>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="autocopy-toggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                
-                <!-- Sound Effects -->
-                <div class="setting-toggle">
-                    <div>
-                        <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
-                            Sound effects
-                        </p>
-                        <p style="font-size: 14px; color: var(--text-secondary);">
-                            Play subtle sounds for actions
-                        </p>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="sound-toggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                
-                <!-- Auto-hide -->
-                <div class="setting-toggle">
-                    <div>
-                        <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
-                            Auto-hide unlocked data
-                        </p>
-                        <p style="font-size: 14px; color: var(--text-secondary);">
-                            Hide decrypted text after 30 seconds
-                        </p>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="autohide-toggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                
-                <!-- Security Details Button -->
-                <button id="security-details-btn" class="btn btn-secondary" style="width: 100%; margin-top: 24px;">
-                    <i class="fas fa-shield-alt"></i>
-                    View Security Details
-                </button>
-                
-                <!-- Security Details (Hidden) -->
-                <div id="security-details" class="hidden" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
-                    <h3 style="font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">
-                        Technical Specifications
-                    </h3>
-                    <div style="background: var(--bg-tertiary); padding: 20px; border-radius: 12px; font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
-                        <p style="margin-bottom: 8px;"><strong>Encryption Algorithm:</strong> AES-256-GCM</p>
-                        <p style="margin-bottom: 8px;"><strong>Key Derivation:</strong> PBKDF2 with 300,000+ iterations</p>
-                        <p style="margin-bottom: 8px;"><strong>Processing:</strong> 100% local - no data leaves your device</p>
-                        <p style="margin-bottom: 8px;"><strong>Authentication:</strong> GCM authenticated encryption</p>
-                        <p style="margin-bottom: 8px;"><strong>Random Generation:</strong> Crypto.getRandomValues()</p>
-                        <p style="margin-bottom: 8px;"><strong>Token Expiry:</strong> 30 minutes</p>
-                    </div>
-                </div>
-                
-                <!-- App Info -->
-                <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border-color);">
-                    <p style="color: var(--text-tertiary); font-size: 14px;">
-                        SWARG v1.0<br>
-                        <span style="color: var(--text-secondary);">by Amar Kumar</span><br>
-                        All encryption happens on your device
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Audio Elements -->
-    <audio id="type-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" preload="auto"></audio>
-    <audio id="lock-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-security-lock-2854.mp3" preload="auto"></audio>
-    <audio id="unlock-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-2858.mp3" preload="auto"></audio>
-    <audio id="success-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" preload="auto"></audio>
-    <audio id="error-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
-
-    <script>
-        // Configuration
-        const CONFIG = {
-            PBKDF2_ITERATIONS: 300000,
-            SALT_LENGTH: 32,
-            IV_LENGTH: 16,
-            TOKEN_EXPIRY_MINUTES: 30,
-            AUTO_HIDE_SECONDS: 30,
-            MAX_ATTEMPTS: 5,
-            LOCK_TIME_SECONDS: 60
-        };
-
-        // App State
-        const state = {
-            password: '',
-            lockedUntil: 0,
-            failedAttempts: 0,
-            currentTab: 'lock',
-            soundsEnabled: true,
-            autoHideEnabled: true,
-            autoCopyEnabled: true,
-            autoHideTimer: null,
-            typingTimer: null,
-            isDarkMode: true
-        };
-
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeApp();
-        });
-
-        async function initializeApp() {
-            // Load settings
-            loadSettings();
-            
-            // Setup event listeners
-            setupEventListeners();
-            
-            // Initialize audio
-            initAudio();
-            
-            // Set initial theme
-            updateTheme();
-            
-            console.log('🔐 SWARG initialized with premium UX');
-        }
-
-        function setupEventListeners() {
-            // Theme toggle
-            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-            
-            // Password toggle
-            document.getElementById('toggle-password').addEventListener('click', function() {
-                const passwordInput = document.getElementById('password');
-                const icon = this.querySelector('i');
-                
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    icon.className = 'fas fa-eye-slash';
-                } else {
-                    passwordInput.type = 'password';
-                    icon.className = 'fas fa-eye';
-                }
-                
-                passwordInput.focus();
-                playSound('click');
-            });
-            
-            // Password input with typing sound
-            document.getElementById('password').addEventListener('input', function(e) {
-                state.password = e.target.value;
-                showTypingIndicator();
-            });
-            
-            // Generate password
-            document.getElementById('generate-password').addEventListener('click', generatePassword);
-            
-            // Clear password
-            document.getElementById('clear-password').addEventListener('click', () => {
-                document.getElementById('password').value = '';
-                state.password = '';
-                playSound('click');
-            });
-            
-            // Tab switching
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const tab = this.dataset.tab;
-                    switchTab(tab);
-                    playSound('click');
-                });
-            });
-            
-            // Lock button
-            document.getElementById('lock-btn').addEventListener('click', async () => {
-                await lockData();
-            });
-            
-            // Unlock button
-            document.getElementById('unlock-btn').addEventListener('click', async () => {
-                await unlockData();
-            });
-            
-            // Clear buttons
-            document.getElementById('clear-lock').addEventListener('click', () => {
-                document.getElementById('text-to-lock').value = '';
-                hideLockOutput();
-                playSound('click');
-            });
-            
-            document.getElementById('clear-unlock').addEventListener('click', () => {
-                document.getElementById('text-to-unlock').value = '';
-                hideUnlockOutput();
-                playSound('click');
-            });
-            
-            // Copy button
-            document.getElementById('copy-btn').addEventListener('click', async () => {
-                const output = getCurrentOutput();
-                if (output) {
-                    await copyToClipboard(output);
-                    showToast('Copied to clipboard');
-                }
-            });
-            
-            // Settings button
-            document.getElementById('settings-btn').addEventListener('click', () => {
-                document.getElementById('settings-modal').style.display = 'flex';
-                playSound('click');
-            });
-            
-            // Close settings
-            document.getElementById('close-settings').addEventListener('click', () => {
-                document.getElementById('settings-modal').style.display = 'none';
-                playSound('click');
-            });
-            
-            // Close settings when clicking outside
-            document.getElementById('settings-modal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('settings-modal')) {
-                    document.getElementById('settings-modal').style.display = 'none';
-                }
-            });
-            
-            // Security details toggle
-            document.getElementById('security-details-btn').addEventListener('click', () => {
-                document.getElementById('security-details').classList.toggle('hidden');
-                playSound('click');
-            });
-            
-            // Settings toggles
-            document.getElementById('autocopy-toggle').addEventListener('change', function() {
-                state.autoCopyEnabled = this.checked;
-                saveSettings();
-            });
-            
-            document.getElementById('sound-toggle').addEventListener('change', function() {
-                state.soundsEnabled = this.checked;
-                saveSettings();
-            });
-            
-            document.getElementById('autohide-toggle').addEventListener('change', function() {
-                state.autoHideEnabled = this.checked;
-                saveSettings();
-            });
-            
-            // Text input with typing indicator
-            ['text-to-lock', 'text-to-unlock'].forEach(id => {
-                document.getElementById(id).addEventListener('input', () => {
-                    showTypingIndicator();
-                });
-            });
-            
-            // Keyboard shortcuts
-            document.addEventListener('keydown', (e) => {
-                // Ctrl+L to lock
-                if (e.ctrlKey && e.key === 'l') {
-                    e.preventDefault();
-                    document.getElementById('lock-btn').click();
-                }
-                
-                // Ctrl+U to unlock
-                if (e.ctrlKey && e.key === 'u') {
-                    e.preventDefault();
-                    document.getElementById('unlock-btn').click();
-                }
-                
-                // Ctrl+G to generate password
-                if (e.ctrlKey && e.key === 'g') {
-                    e.preventDefault();
-                    generatePassword();
-                }
-                
-                // Ctrl+, for settings
-                if (e.ctrlKey && e.key === ',') {
-                    e.preventDefault();
-                    document.getElementById('settings-btn').click();
-                }
-                
-                // Escape to close modal
-                if (e.key === 'Escape') {
-                    document.getElementById('settings-modal').style.display = 'none';
-                }
-                
-                // Tab switching with 1/2
-                if (e.key === '1') {
-                    e.preventDefault();
-                    switchTab('lock');
-                }
-                if (e.key === '2') {
-                    e.preventDefault();
-                    switchTab('unlock');
-                }
-            });
-        }
-
-        function initAudio() {
-            // Set volume for sounds
-            const sounds = ['type', 'lock', 'unlock', 'success', 'error'];
-            sounds.forEach(sound => {
-                const audio = document.getElementById(`${sound}-sound`);
-                if (audio) {
-                    audio.volume = 0.2; // Very subtle volume
-                    audio.load();
-                }
-            });
-        }
-
-        function playSound(sound) {
-            if (!state.soundsEnabled) return;
-            
-            try {
-                const audio = document.getElementById(`${sound}-sound`);
-                if (audio) {
-                    audio.currentTime = 0;
-                    audio.play().catch(() => {});
-                }
-            } catch (error) {
-                // Ignore audio errors
-            }
-        }
-
-        function showTypingIndicator() {
-            const indicator = document.getElementById('typing-indicator');
-            
-            // Show indicator
-            indicator.classList.add('active');
-            
-            // Clear existing timer
-            if (state.typingTimer) {
-                clearTimeout(state.typingTimer);
-            }
-            
-            // Play typing sound occasionally
-            if (Math.random() < 0.2) {
-                playSound('type');
-            }
-            
-            // Hide indicator after delay
-            state.typingTimer = setTimeout(() => {
-                indicator.classList.remove('active');
-            }, 1000);
-        }
-
-        async function lockData() {
-            const text = document.getElementById('text-to-lock').value.trim();
-            const password = state.password;
-
-            // Validation
-            if (!password || password.length < 8) {
-                showToast('Password must be at least 8 characters', 'error');
-                return;
-            }
-
-            if (!text) {
-                showToast('Please enter text to encrypt', 'error');
-                return;
-            }
-
-            // Show loading and animation
-            const lockBtn = document.getElementById('lock-btn');
-            const originalText = lockBtn.innerHTML;
-            lockBtn.innerHTML = '<span class="loading"><span class="loading-spinner"></span> Encrypting...</span>';
-            lockBtn.disabled = true;
-            
-            // Show scan animation
-            const scanLine = document.getElementById('lock-scan-line');
-            scanLine.style.display = 'block';
-            
-            // Play lock sound
-            playSound('lock');
-
-            try {
-                // Generate random salt and IV
-                const salt = crypto.getRandomValues(new Uint8Array(CONFIG.SALT_LENGTH));
-                const iv = crypto.getRandomValues(new Uint8Array(CONFIG.IV_LENGTH));
-
-                // Derive key
-                const encoder = new TextEncoder();
-                const passwordBuffer = encoder.encode(password);
-                
-                const baseKey = await crypto.subtle.importKey(
-                    'raw',
-                    passwordBuffer,
-                    { name: 'PBKDF2' },
-                    false,
-                    ['deriveBits', 'deriveKey']
-                );
-
-                const derivedKey = await crypto.subtle.deriveKey(
-                    {
-                        name: 'PBKDF2',
-                        salt: salt,
-                        iterations: CONFIG.PBKDF2_ITERATIONS,
-                        hash: 'SHA-256'
-                    },
-                    baseKey,
-                    { name: 'AES-GCM', length: 256 },
-                    false,
-                    ['encrypt', 'decrypt']
-                );
-
-                // Encrypt
-                const data = encoder.encode(text);
-                const encrypted = await crypto.subtle.encrypt(
-                    {
-                        name: 'AES-GCM',
-                        iv: iv
-                    },
-                    derivedKey,
-                    data
-                );
-
-                // Create token
-                const expiryTime = Date.now() + (CONFIG.TOKEN_EXPIRY_MINUTES * 60 * 1000);
-                const tokenData = {
-                    v: '1.0',
-                    t: Date.now(),
-                    e: expiryTime,
-                    s: btoa(String.fromCharCode(...salt)),
-                    i: btoa(String.fromCharCode(...iv)),
-                    d: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
-                };
-
-                const jsonStr = JSON.stringify(tokenData);
-                const token = btoa(unescape(encodeURIComponent(jsonStr)));
-
-                // Show output
-                showLockOutput(token);
-                
-                // Auto-copy if enabled
-                if (state.autoCopyEnabled) {
-                    await copyToClipboard(token);
-                    showToast('Encrypted text copied to clipboard');
-                }
-                
-                playSound('success');
-                
-                // Hide scan animation
-                setTimeout(() => {
-                    scanLine.style.display = 'none';
-                }, 1200);
-
-            } catch (error) {
-                console.error('Encryption error:', error);
-                showToast('Failed to encrypt data', 'error');
-                playSound('error');
-            } finally {
-                // Restore button
-                lockBtn.innerHTML = originalText;
-                lockBtn.disabled = false;
-            }
-        }
-
-        async function unlockData() {
-            const token = document.getElementById('text-to-unlock').value.trim();
-            const password = state.password;
-
-            // Check rate limiting
-            if (state.lockedUntil > Date.now()) {
-                const remaining = Math.ceil((state.lockedUntil - Date.now()) / 1000);
-                showToast(`Too many attempts. Try again in ${remaining} seconds.`, 'error');
-                return;
-            }
-
-            // Validation
-            if (!password) {
-                showToast('Please enter your password', 'error');
-                return;
-            }
-
-            if (!token) {
-                showToast('Please enter encrypted code', 'error');
-                return;
-            }
-
-            // Show loading
-            const unlockBtn = document.getElementById('unlock-btn');
-            const originalText = unlockBtn.innerHTML;
-            unlockBtn.innerHTML = '<span class="loading"><span class="loading-spinner"></span> Decrypting...</span>';
-            unlockBtn.disabled = true;
-            
-            // Play unlock sound
-            playSound('unlock');
-
-            try {
-                // Decode token
-                const jsonStr = decodeURIComponent(escape(atob(token)));
-                const tokenData = JSON.parse(jsonStr);
-
-                // Check version and expiry
-                if (tokenData.v !== '1.0') {
-                    throw new Error('Invalid code version');
-                }
-
-                if (Date.now() > tokenData.e) {
-                    throw new Error('This code has expired (30 minutes)');
-                }
-
-                // Decode components
-                const salt = Uint8Array.from(atob(tokenData.s), c => c.charCodeAt(0));
-                const iv = Uint8Array.from(atob(tokenData.i), c => c.charCodeAt(0));
-                const encryptedData = Uint8Array.from(atob(tokenData.d), c => c.charCodeAt(0));
-
-                // Derive key
-                const encoder = new TextEncoder();
-                const passwordBuffer = encoder.encode(password);
-                
-                const baseKey = await crypto.subtle.importKey(
-                    'raw',
-                    passwordBuffer,
-                    { name: 'PBKDF2' },
-                    false,
-                    ['deriveBits', 'deriveKey']
-                );
-
-                const derivedKey = await crypto.subtle.deriveKey(
-                    {
-                        name: 'PBKDF2',
-                        salt: salt,
-                        iterations: CONFIG.PBKDF2_ITERATIONS,
-                        hash: 'SHA-256'
-                    },
-                    baseKey,
-                    { name: 'AES-GCM', length: 256 },
-                    false,
-                    ['encrypt', 'decrypt']
-                );
-
-                // Decrypt
-                const decrypted = await crypto.subtle.decrypt(
-                    {
-                        name: 'AES-GCM',
-                        iv: iv
-                    },
-                    derivedKey,
-                    encryptedData
-                );
-
-                const decoder = new TextDecoder();
-                const text = decoder.decode(decrypted);
-
-                // Success - reset attempts
-                state.failedAttempts = 0;
-
-                // Show output
-                showUnlockOutput(text);
-                playSound('success');
-
-                // Start auto-hide timer
-                if (state.autoHideEnabled) {
-                    startAutoHideTimer();
-                }
-
-            } catch (error) {
-                console.error('Decryption error:', error);
-                
-                // Increment failed attempts
-                state.failedAttempts++;
-                
-                if (state.failedAttempts >= CONFIG.MAX_ATTEMPTS) {
-                    state.lockedUntil = Date.now() + (CONFIG.LOCK_TIME_SECONDS * 1000);
-                    showToast(`Too many incorrect attempts. Locked for ${CONFIG.LOCK_TIME_SECONDS} seconds.`, 'error');
-                } else if (error.message.includes('expired')) {
-                    showToast('This code has expired (30 minutes)', 'error');
-                } else if (error.message.includes('Invalid')) {
-                    showToast('Invalid code format', 'error');
-                } else {
-                    showToast('Incorrect password or invalid code', 'error');
-                }
-                
-                playSound('error');
-                
-            } finally {
-                // Restore button
-                unlockBtn.innerHTML = originalText;
-                unlockBtn.disabled = false;
-            }
-        }
-
-        function showLockOutput(token) {
-            const output = document.getElementById('lock-output-content');
-            const outputContainer = document.getElementById('lock-output');
-            const placeholder = document.getElementById('lock-placeholder');
-            const success = document.getElementById('lock-success');
-
-            output.textContent = token;
-            outputContainer.classList.remove('hidden');
-            placeholder.classList.add('hidden');
-            
-            // Show success animation after a delay
-            setTimeout(() => {
-                success.classList.remove('hidden');
-                outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 300);
-        }
-
-        function hideLockOutput() {
-            document.getElementById('lock-output').classList.add('hidden');
-            document.getElementById('lock-placeholder').classList.remove('hidden');
-            document.getElementById('lock-success').classList.add('hidden');
-        }
-
-        function showUnlockOutput(text) {
-            const output = document.getElementById('unlock-output-content');
-            const outputContainer = document.getElementById('unlock-output');
-            const placeholder = document.getElementById('unlock-placeholder');
-            const success = document.getElementById('unlock-success');
-            const timer = document.getElementById('autolock-timer');
-
-            output.textContent = text;
-            outputContainer.classList.remove('hidden');
-            placeholder.classList.add('hidden');
-            
-            // Show success animation after a delay
-            setTimeout(() => {
-                success.classList.remove('hidden');
-                if (state.autoHideEnabled) {
-                    timer.classList.remove('hidden');
-                }
-                outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 300);
-        }
-
-        function hideUnlockOutput() {
-            document.getElementById('unlock-output').classList.add('hidden');
-            document.getElementById('unlock-placeholder').classList.remove('hidden');
-            document.getElementById('unlock-success').classList.add('hidden');
-            document.getElementById('autolock-timer').classList.add('hidden');
-        }
-
-        function startAutoHideTimer() {
-            // Clear existing timer
-            if (state.autoHideTimer) {
-                clearInterval(state.autoHideTimer);
-            }
-
-            let secondsLeft = CONFIG.AUTO_HIDE_SECONDS;
-            const timerElement = document.getElementById('timer-countdown');
-            timerElement.textContent = secondsLeft;
-
-            state.autoHideTimer = setInterval(() => {
-                secondsLeft--;
-                timerElement.textContent = secondsLeft;
-
-                if (secondsLeft <= 0) {
-                    clearInterval(state.autoHideTimer);
-                    hideUnlockOutput();
-                    showToast('Unlocked data hidden (auto-lock)');
-                }
-            }, 1000);
-        }
-
-        function generatePassword() {
-            const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-            let password = '';
-            
-            // Ensure complexity
-            password += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.charAt(Math.floor(Math.random() * 26));
-            password += 'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26));
-            password += '0123456789'.charAt(Math.floor(Math.random() * 10));
-            password += '!@#$%^&*'.charAt(Math.floor(Math.random() * 8));
-            
-            // Fill remaining characters
-            for (let i = 4; i < 16; i++) {
-                password += charset.charAt(Math.floor(Math.random() * charset.length));
-            }
-            
-            // Shuffle
-            password = password.split('').sort(() => Math.random() - 0.5).join('');
-            
-            // Set password
-            document.getElementById('password').value = password;
-            state.password = password;
-            playSound('success');
-            showToast('Strong password generated');
-        }
-
-        function switchTab(tab) {
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.tab === tab);
-            });
-
-            // Show selected tab
-            document.getElementById('lock-tab').classList.toggle('hidden', tab !== 'lock');
-            document.getElementById('unlock-tab').classList.toggle('hidden', tab !== 'unlock');
-
-            state.currentTab = tab;
-        }
-
-        async function copyToClipboard(text) {
-            try {
-                await navigator.clipboard.writeText(text);
-                
-                // Clear clipboard after 15 seconds
-                setTimeout(async () => {
-                    try {
-                        await navigator.clipboard.writeText('');
-                    } catch (error) {
-                        // Ignore
-                    }
-                }, 15000);
-                
-                return true;
-            } catch (error) {
-                // Fallback
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                return true;
-            }
-        }
-
-        function getCurrentOutput() {
-            if (state.currentTab === 'lock') {
-                return document.getElementById('lock-output-content').textContent;
-            } else {
-                return document.getElementById('unlock-output-content').textContent;
-            }
-        }
-
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.remove('hidden');
-            
-            // Set color based on type
-            if (type === 'error') {
-                toast.style.background = 'var(--accent-danger)';
-            } else if (type === 'warning') {
-                toast.style.background = 'var(--accent-warning)';
-            } else {
-                toast.style.background = 'var(--accent-success)';
-            }
-
-            // Auto hide
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000);
-        }
-
-        function toggleTheme() {
-            state.isDarkMode = !state.isDarkMode;
-            updateTheme();
-            playSound('click');
-        }
-
-        function updateTheme() {
-            const themeToggle = document.getElementById('theme-toggle');
-            const icon = themeToggle.querySelector('i');
-            
-            if (state.isDarkMode) {
-                document.body.classList.remove('light-theme');
-                document.body.classList.add('dark-theme');
-                icon.className = 'fas fa-moon';
-                document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0f172a');
-            } else {
-                document.body.classList.remove('dark-theme');
-                document.body.classList.add('light-theme');
-                icon.className = 'fas fa-sun';
-                document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f8fafc');
-            }
-            
-            saveSettings();
-        }
-
-        function loadSettings() {
-            const savedSounds = localStorage.getItem('swarg_sounds');
-            const savedAutoHide = localStorage.getItem('swarg_autohide');
-            const savedAutoCopy = localStorage.getItem('swarg_autocopy');
-            const savedTheme = localStorage.getItem('swarg_theme');
-            
-            if (savedSounds !== null) {
-                state.soundsEnabled = savedSounds === 'true';
-                document.getElementById('sound-toggle').checked = state.soundsEnabled;
-            }
-            
-            if (savedAutoHide !== null) {
-                state.autoHideEnabled = savedAutoHide === 'true';
-                document.getElementById('autohide-toggle').checked = state.autoHideEnabled;
-            }
-            
-            if (savedAutoCopy !== null) {
-                state.autoCopyEnabled = savedAutoCopy === 'true';
-                document.getElementById('autocopy-toggle').checked = state.autoCopyEnabled;
-            }
-            
-            if (savedTheme !== null) {
-                state.isDarkMode = savedTheme === 'dark';
-            }
-        }
-
-        function saveSettings() {
-            localStorage.setItem('swarg_sounds', state.soundsEnabled);
-            localStorage.setItem('swarg_autohide', state.autoHideEnabled);
-            localStorage.setItem('swarg_autocopy', state.autoCopyEnabled);
-            localStorage.setItem('swarg_theme', state.isDarkMode ? 'dark' : 'light');
-        }
-    </script>
-</body>
-</html>
+        @keyframes modalIn {
+            from
