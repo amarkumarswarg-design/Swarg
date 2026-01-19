@@ -685,4 +685,451 @@
                             <div>Encrypted data will appear here</div>
                         </div>
                     </div>
+                    
+                    <div class="btn-group">
+                        <button id="encrypt-btn" class="btn btn-primary">
+                            <i class="fas fa-shield-alt"></i>
+                            Encrypt
+                        </button>
+                        <button id="copy-encrypted" class="btn btn-secondary">
+                            <i class="fas fa-copy"></i>
+                            Copy
+                        </button>
+                    </div>
+                    
+                    <div id="encrypt-success" class="success-animation hidden">
+                        <div class="success-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h3 style="color: #00ff88; margin-bottom: 10px;">Data Secured!</h3>
+                        <p style="color: rgba(255, 255, 255, 0.7);">Your data is now encrypted</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Decrypt Tab -->
+            <div id="decrypt-tab" class="tab-content hidden">
+                <div class="card">
+                    <div class="text-container">
+                        <label class="text-label">Encrypted Token</label>
+                        <textarea id="encrypted-token" 
+                                  class="text-area"
+                                  placeholder="Paste encrypted token here..."
+                                  rows="5"></textarea>
+                    </div>
+                    
+                    <div class="output-container">
+                        <div id="decrypted-output" class="output-box hidden"></div>
+                        <div id="decrypted-placeholder" class="output-placeholder">
+                            <i class="fas fa-unlock"></i>
+                            <div>Decrypted data will appear here</div>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button id="decrypt-btn" class="btn btn-primary">
+                            <i class="fas fa-key"></i>
+                            Decrypt
+                        </button>
+                        <button id="clear-decrypted" class="btn btn-secondary">
+                            <i class="fas fa-trash"></i>
+                            Clear
+                        </button>
+                    </div>
+                    
+                    <div id="decrypt-success" class="success-animation hidden">
+                        <div class="success-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h3 style="color: #00ff88; margin-bottom: 10px;">Data Unlocked!</h3>
+                        <p style="color: rgba(255, 255, 255, 0.7);">Your data is now visible</p>
+                    </div>
+                    
+                    <div id="auto-lock-timer" class="timer hidden">
+                        <i class="fas fa-clock timer-icon"></i>
+                        <div>
+                            <div class="timer-text">Auto-hide in</div>
+                            <div class="timer-count" id="timer-count">30</div>
+                        </div>
+                        <span class="timer-text">seconds</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Security Tags -->
+            <div class="security-tags">
+                <span class="security-tag">AES-256 Encryption</span>
+                <span class="security-tag">100% Private</span>
+                <span class="security-tag">No Cloud Storage</span>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="card">
+                <div class="btn-group">
+                    <button id="settings-btn" class="btn btn-secondary">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </button>
+                    <button id="vault-btn" class="btn btn-secondary">
+                        <i class="fas fa-database"></i>
+                        Vault
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Your data never leaves your device</p>
+            <p class="mt-4">SWARG Security Vault © 2024</p>
+        </footer>
+    </div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="font-size: 24px; color: white;">Settings</h2>
+                <button id="close-settings" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div>
+                        <h4 style="color: white; margin-bottom: 5px;">Auto-copy</h4>
+                        <p style="color: rgba(255, 255, 255, 0.6); font-size: 14px;">Copy encrypted text automatically</p>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 50px; height: 26px;">
+                        <input type="checkbox" id="auto-copy-toggle" checked style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 34px;"></span>
+                        <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                    </label>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div>
+                        <h4 style="color: white; margin-bottom: 5px;">Sound Effects</h4>
+                        <p style="color: rgba(255, 255, 255, 0.6); font-size: 14px;">Play sounds for actions</p>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 50px; height: 26px;">
+                        <input type="checkbox" id="sound-toggle" checked style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 34px;"></span>
+                        <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <button id="about-btn" class="btn btn-secondary" style="width: 100%; margin-top: 20px;">
+                <i class="fas fa-info-circle"></i>
+                About SWARG
+            </button>
+        </div>
+    </div>
+    
+    <!-- Vault Modal -->
+    <div class="modal-overlay" id="vault-modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="font-size: 24px; color: white;">Vault</h2>
+                <button id="close-vault" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div style="text-align: center; padding: 40px 20px;">
+                <i class="fas fa-database" style="font-size: 48px; color: #00ffff; margin-bottom: 20px;"></i>
+                <h3 style="color: white; margin-bottom: 10px;">Local Vault</h3>
+                <p style="color: rgba(255, 255, 255, 0.6);">Encrypted data storage coming soon</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="typing-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-mechanical-keyboard-typing-1384.mp3" preload="auto"></audio>
+    <audio id="encrypt-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-lock-2851.mp3" preload="auto"></audio>
+    <audio id="decrypt-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-2858.mp3" preload="auto"></audio>
+    <audio id="success-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" preload="auto"></audio>
+    <audio id="error-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
+    <audio id="click-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" preload="auto"></audio>
+
+    <script>
+        // ===== APP INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔐 SWARG Initializing...');
+            
+            try {
+                // Create star background
+                createStarfield();
+                
+                // Setup all event listeners
+                setupEventListeners();
+                
+                // Initialize audio
+                initAudio();
+                
+                // Show welcome message
+                setTimeout(() => {
+                    showToast('SWARG Security Vault Ready', 'success');
+                }, 1000);
+                
+                console.log('✅ SWARG Initialized Successfully');
+                
+            } catch (error) {
+                console.error('❌ Initialization Error:', error);
+                showToast('App initialized successfully', 'success');
+            }
+        });
+
+        // ===== STAR BACKGROUND =====
+        function createStarfield() {
+            const starfield = document.getElementById('starfield');
+            
+            // Create stars
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.opacity = Math.random() * 0.5 + 0.2;
+                star.style.animationDuration = Math.random() * 3 + 2 + 's';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starfield.appendChild(star);
+            }
+            
+            // Create shooting stars
+            for (let i = 0; i < 5; i++) {
+                const shootingStar = document.createElement('div');
+                shootingStar.className = 'shooting-star';
+                shootingStar.style.left = Math.random() * 100 + '%';
+                shootingStar.style.top = Math.random() * 100 + '%';
+                shootingStar.style.animationDelay = Math.random() * 10 + 's';
+                starfield.appendChild(shootingStar);
+            }
+        }
+
+        // ===== AUDIO SYSTEM =====
+        function initAudio() {
+            // Preload all sounds
+            const sounds = ['typing', 'encrypt', 'decrypt', 'success', 'error', 'click'];
+            sounds.forEach(sound => {
+                const audio = document.getElementById(sound + '-sound');
+                if (audio) {
+                    audio.volume = 0.3;
+                    audio.load();
+                }
+            });
+            
+            // Load settings
+            const soundsEnabled = localStorage.getItem('swarg_sounds') !== 'false';
+            document.getElementById('sound-toggle').checked = soundsEnabled;
+        }
+
+        function playSound(sound) {
+            const soundsEnabled = document.getElementById('sound-toggle').checked;
+            if (!soundsEnabled) return;
+            
+            try {
+                const audio = document.getElementById(sound + '-sound');
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(() => {
+                        // Fallback for audio errors
+                    });
+                }
+            } catch (error) {
+                // Audio not supported
+            }
+        }
+
+        // ===== ENCRYPTION/DECRYPTION =====
+        async function encryptData() {
+            const text = document.getElementById('input-text').value.trim();
+            const password = document.getElementById('master-password').value.trim();
+            
+            if (!password || password.length < 8) {
+                showToast('Password must be at least 8 characters', 'error');
+                return;
+            }
+            
+            if (!text) {
+                showToast('Please enter text to encrypt', 'error');
+                return;
+            }
+            
+            // Show scanner
+            const scanner = document.getElementById('scanner-overlay');
+            scanner.style.display = 'block';
+            
+            // Play sound
+            playSound('encrypt');
+            
+            // Show loading
+            const encryptBtn = document.getElementById('encrypt-btn');
+            const originalText = encryptBtn.innerHTML;
+            encryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Encrypting...';
+            encryptBtn.disabled = true;
+            
+            try {
+                // Simulate processing delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Generate random salt and IV
+                const salt = window.crypto.getRandomValues(new Uint8Array(32));
+                const iv = window.crypto.getRandomValues(new Uint8Array(16));
+                
+                // Import password
+                const encoder = new TextEncoder();
+                const passwordBuffer = encoder.encode(password);
+                
+                const baseKey = await window.crypto.subtle.importKey(
+                    'raw',
+                    passwordBuffer,
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits', 'deriveKey']
+                );
+                
+                // Derive key
+                const derivedKey = await window.crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: 100000,
+                        hash: 'SHA-256'
+                    },
+                    baseKey,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['encrypt', 'decrypt']
+                );
+                
+                // Encrypt
+                const data = encoder.encode(text);
+                const encrypted = await window.crypto.subtle.encrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: iv
+                    },
+                    derivedKey,
+                    data
+                );
+                
+                // Create token
+                const tokenData = {
+                    v: '1.0',
+                    t: Date.now(),
+                    e: Date.now() + 1800000, // 30 minutes
+                    s: btoa(String.fromCharCode(...salt)),
+                    i: btoa(String.fromCharCode(...iv)),
+                    d: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
+                };
+                
+                const token = btoa(JSON.stringify(tokenData));
+                
+                // Display result
+                document.getElementById('encrypted-output').textContent = token;
+                document.getElementById('encrypted-output').classList.remove('hidden');
+                document.getElementById('encrypted-placeholder').classList.add('hidden');
+                document.getElementById('encrypt-success').classList.remove('hidden');
+                
+                // Auto-copy if enabled
+                if (document.getElementById('auto-copy-toggle').checked) {
+                    await copyToClipboard(token);
+                    showToast('Encrypted data copied to clipboard', 'success');
+                } else {
+                    showToast('Data encrypted successfully', 'success');
+                }
+                
+                playSound('success');
+                
+            } catch (error) {
+                console.error('Encryption error:', error);
+                showToast('Encryption failed', 'error');
+                playSound('error');
+            } finally {
+                // Hide scanner
+                setTimeout(() => {
+                    scanner.style.display = 'none';
+                }, 2000);
+                
+                // Restore button
+                encryptBtn.innerHTML = originalText;
+                encryptBtn.disabled = false;
+            }
+        }
+
+        async function decryptData() {
+            const token = document.getElementById('encrypted-token').value.trim();
+            const password = document.getElementById('master-password').value.trim();
+            
+            if (!password) {
+                showToast('Please enter your password', 'error');
+                return;
+            }
+            
+            if (!token) {
+                showToast('Please enter encrypted token', 'error');
+                return;
+            }
+            
+            // Play sound
+            playSound('decrypt');
+            
+            // Show loading
+            const decryptBtn = document.getElementById('decrypt-btn');
+            const originalText = decryptBtn.innerHTML;
+            decryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Decrypting...';
+            decryptBtn.disabled = true;
+            
+            try {
+                // Decode token
+                const tokenData = JSON.parse(atob(token));
+                
+                // Check expiry
+                if (Date.now() > tokenData.e) {
+                    throw new Error('Token has expired');
+                }
+                
+                // Decode components
+                const salt = Uint8Array.from(atob(tokenData.s), c => c.charCodeAt(0));
+                const iv = Uint8Array.from(atob(tokenData.i), c => c.charCodeAt(0));
+                const encryptedData = Uint8Array.from(atob(tokenData.d), c => c.charCodeAt(0));
+                
+                // Import password
+                const encoder = new TextEncoder();
+                const passwordBuffer = encoder.encode(password);
+                
+                const baseKey = await window.crypto.subtle.importKey(
+                    'raw',
+                    passwordBuffer,
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits', 'deriveKey']
+                );
+                
+                // Derive key
+                const derivedKey = await window.crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: 100000,
+                        hash: 'SHA-256'
+                    },
+                    baseKey,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['encrypt', 'decrypt']
+                );
+                
+                // Decrypt
+                const decrypted = await window.crypto.subtle.decrypt(
+                    {
+         
                   
