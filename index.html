@@ -1002,4 +1002,409 @@
         </div>
     </div>
 
-    <!-- Audio Elem
+    <!-- Audio Elements -->
+    <audio id="type-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" preload="auto"></audio>
+    <audio id="lock-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-security-lock-2854.mp3" preload="auto"></audio>
+    <audio id="unlock-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-2858.mp3" preload="auto"></audio>
+    <audio id="success-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" preload="auto"></audio>
+    <audio id="error-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            PBKDF2_ITERATIONS: 300000,
+            SALT_LENGTH: 32,
+            IV_LENGTH: 16,
+            TOKEN_EXPIRY_MINUTES: 30,
+            AUTO_HIDE_SECONDS: 30,
+            MAX_ATTEMPTS: 5,
+            LOCK_TIME_SECONDS: 60
+        };
+
+        // App State
+        const state = {
+            password: '',
+            lockedUntil: 0,
+            failedAttempts: 0,
+            currentTab: 'lock',
+            soundsEnabled: true,
+            autoHideEnabled: true,
+            autoCopyEnabled: true,
+            autoHideTimer: null,
+            typingTimer: null,
+            isDarkMode: true
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+        });
+
+        async function initializeApp() {
+            // Load settings
+            loadSettings();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Initialize audio
+            initAudio();
+            
+            // Set initial theme
+            updateTheme();
+            
+            console.log('🔐 SWARG initialized with premium UX');
+        }
+
+        function setupEventListeners() {
+            // Theme toggle
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+            
+            // Password toggle
+            document.getElementById('toggle-password').addEventListener('click', function() {
+                const passwordInput = document.getElementById('password');
+                const icon = this.querySelector('i');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.className = 'fas fa-eye-slash';
+                } else {
+                    passwordInput.type = 'password';
+                    icon.className = 'fas fa-eye';
+                }
+                
+                passwordInput.focus();
+                playSound('click');
+            });
+            
+            // Password input with typing sound
+            document.getElementById('password').addEventListener('input', function(e) {
+                state.password = e.target.value;
+                showTypingIndicator();
+            });
+            
+            // Generate password
+            document.getElementById('generate-password').addEventListener('click', generatePassword);
+            
+            // Clear password
+            document.getElementById('clear-password').addEventListener('click', () => {
+                document.getElementById('password').value = '';
+                state.password = '';
+                playSound('click');
+            });
+            
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tab = this.dataset.tab;
+                    switchTab(tab);
+                    playSound('click');
+                });
+            });
+            
+            // Lock button
+            document.getElementById('lock-btn').addEventListener('click', async () => {
+                await lockData();
+            });
+            
+            // Unlock button
+            document.getElementById('unlock-btn').addEventListener('click', async () => {
+                await unlockData();
+            });
+            
+            // Clear buttons
+            document.getElementById('clear-lock').addEventListener('click', () => {
+                document.getElementById('text-to-lock').value = '';
+                hideLockOutput();
+                playSound('click');
+            });
+            
+            document.getElementById('clear-unlock').addEventListener('click', () => {
+                document.getElementById('text-to-unlock').value = '';
+                hideUnlockOutput();
+                playSound('click');
+            });
+            
+            // Copy button
+            document.getElementById('copy-btn').addEventListener('click', async () => {
+                const output = getCurrentOutput();
+                if (output) {
+                    await copyToClipboard(output);
+                    showToast('Copied to clipboard');
+                }
+            });
+            
+            // Settings button
+            document.getElementById('settings-btn').addEventListener('click', () => {
+                document.getElementById('settings-modal').style.display = 'flex';
+                playSound('click');
+            });
+            
+            // Close settings
+            document.getElementById('close-settings').addEventListener('click', () => {
+                document.getElementById('settings-modal').style.display = 'none';
+                playSound('click');
+            });
+            
+            // Close settings when clicking outside
+            document.getElementById('settings-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('settings-modal')) {
+                    document.getElementById('settings-modal').style.display = 'none';
+                }
+            });
+            
+            // Security details toggle
+            document.getElementById('security-details-btn').addEventListener('click', () => {
+                document.getElementById('security-details').classList.toggle('hidden');
+                playSound('click');
+            });
+            
+            // Settings toggles
+            document.getElementById('autocopy-toggle').addEventListener('change', function() {
+                state.autoCopyEnabled = this.checked;
+                saveSettings();
+            });
+            
+            document.getElementById('sound-toggle').addEventListener('change', function() {
+                state.soundsEnabled = this.checked;
+                saveSettings();
+            });
+            
+            document.getElementById('autohide-toggle').addEventListener('change', function() {
+                state.autoHideEnabled = this.checked;
+                saveSettings();
+            });
+            
+            // Text input with typing indicator
+            ['text-to-lock', 'text-to-unlock'].forEach(id => {
+                document.getElementById(id).addEventListener('input', () => {
+                    showTypingIndicator();
+                });
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Ctrl+L to lock
+                if (e.ctrlKey && e.key === 'l') {
+                    e.preventDefault();
+                    document.getElementById('lock-btn').click();
+                }
+                
+                // Ctrl+U to unlock
+                if (e.ctrlKey && e.key === 'u') {
+                    e.preventDefault();
+                    document.getElementById('unlock-btn').click();
+                }
+                
+                // Ctrl+G to generate password
+                if (e.ctrlKey && e.key === 'g') {
+                    e.preventDefault();
+                    generatePassword();
+                }
+                
+                // Ctrl+, for settings
+                if (e.ctrlKey && e.key === ',') {
+                    e.preventDefault();
+                    document.getElementById('settings-btn').click();
+                }
+                
+                // Escape to close modal
+                if (e.key === 'Escape') {
+                    document.getElementById('settings-modal').style.display = 'none';
+                }
+                
+                // Tab switching with 1/2
+                if (e.key === '1') {
+                    e.preventDefault();
+                    switchTab('lock');
+                }
+                if (e.key === '2') {
+                    e.preventDefault();
+                    switchTab('unlock');
+                }
+            });
+        }
+
+        function initAudio() {
+            // Set volume for sounds
+            const sounds = ['type', 'lock', 'unlock', 'success', 'error'];
+            sounds.forEach(sound => {
+                const audio = document.getElementById(`${sound}-sound`);
+                if (audio) {
+                    audio.volume = 0.2; // Very subtle volume
+                    audio.load();
+                }
+            });
+        }
+
+        function playSound(sound) {
+            if (!state.soundsEnabled) return;
+            
+            try {
+                const audio = document.getElementById(`${sound}-sound`);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(() => {});
+                }
+            } catch (error) {
+                // Ignore audio errors
+            }
+        }
+
+        function showTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            
+            // Show indicator
+            indicator.classList.add('active');
+            
+            // Clear existing timer
+            if (state.typingTimer) {
+                clearTimeout(state.typingTimer);
+            }
+            
+            // Play typing sound occasionally
+            if (Math.random() < 0.2) {
+                playSound('type');
+            }
+            
+            // Hide indicator after delay
+            state.typingTimer = setTimeout(() => {
+                indicator.classList.remove('active');
+            }, 1000);
+        }
+
+        async function lockData() {
+            const text = document.getElementById('text-to-lock').value.trim();
+            const password = state.password;
+
+            // Validation
+            if (!password || password.length < 8) {
+                showToast('Password must be at least 8 characters', 'error');
+                return;
+            }
+
+            if (!text) {
+                showToast('Please enter text to encrypt', 'error');
+                return;
+            }
+
+            // Show loading and animation
+            const lockBtn = document.getElementById('lock-btn');
+            const originalText = lockBtn.innerHTML;
+            lockBtn.innerHTML = '<span class="loading"><span class="loading-spinner"></span> Encrypting...</span>';
+            lockBtn.disabled = true;
+            
+            // Show scan animation
+            const scanLine = document.getElementById('lock-scan-line');
+            scanLine.style.display = 'block';
+            
+            // Play lock sound
+            playSound('lock');
+
+            try {
+                // Generate random salt and IV
+                const salt = crypto.getRandomValues(new Uint8Array(CONFIG.SALT_LENGTH));
+                const iv = crypto.getRandomValues(new Uint8Array(CONFIG.IV_LENGTH));
+
+                // Derive key
+                const encoder = new TextEncoder();
+                const passwordBuffer = encoder.encode(password);
+                
+                const baseKey = await crypto.subtle.importKey(
+                    'raw',
+                    passwordBuffer,
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits', 'deriveKey']
+                );
+
+                const derivedKey = await crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: CONFIG.PBKDF2_ITERATIONS,
+                        hash: 'SHA-256'
+                    },
+                    baseKey,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['encrypt', 'decrypt']
+                );
+
+                // Encrypt
+                const data = encoder.encode(text);
+                const encrypted = await crypto.subtle.encrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: iv
+                    },
+                    derivedKey,
+                    data
+                );
+
+                // Create token
+                const expiryTime = Date.now() + (CONFIG.TOKEN_EXPIRY_MINUTES * 60 * 1000);
+                const tokenData = {
+                    v: '1.0',
+                    t: Date.now(),
+                    e: expiryTime,
+                    s: btoa(String.fromCharCode(...salt)),
+                    i: btoa(String.fromCharCode(...iv)),
+                    d: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
+                };
+
+                const jsonStr = JSON.stringify(tokenData);
+                const token = btoa(unescape(encodeURIComponent(jsonStr)));
+
+                // Show output
+                showLockOutput(token);
+                
+                // Auto-copy if enabled
+                if (state.autoCopyEnabled) {
+                    await copyToClipboard(token);
+                    showToast('Encrypted text copied to clipboard');
+                }
+                
+                playSound('success');
+                
+                // Hide scan animation
+                setTimeout(() => {
+                    scanLine.style.display = 'none';
+                }, 1200);
+
+            } catch (error) {
+                console.error('Encryption error:', error);
+                showToast('Failed to encrypt data', 'error');
+                playSound('error');
+            } finally {
+                // Restore button
+                lockBtn.innerHTML = originalText;
+                lockBtn.disabled = false;
+            }
+        }
+
+        async function unlockData() {
+            const token = document.getElementById('text-to-unlock').value.trim();
+            const password = state.password;
+
+            // Check rate limiting
+            if (state.lockedUntil > Date.now()) {
+                const remaining = Math.ceil((state.lockedUntil - Date.now()) / 1000);
+                showToast(`Too many attempts. Try again in ${remaining} seconds.`, 'error');
+                return;
+            }
+
+            // Validation
+            if (!password) {
+                showToast('Please enter your password', 'error');
+                return;
+            }
+
+            if (!token) {
+                showToast('Please enter encrypted code', 'error');
+                return;
+            }
+
+            // Show loading
+            const unlockBtn = document.getElementById('unlock-btn');
+            const origin
