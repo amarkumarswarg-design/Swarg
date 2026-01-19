@@ -881,4 +881,194 @@
                         </div>
                     </div>
                     
-                    <!-- Decryp
+                    <!-- Decrypt Tab -->
+                    <div id="decrypt-tab" class="tab-content hidden">
+                        <textarea 
+                            id="encrypted-input"
+                            class="cyber-textarea mb-6"
+                            placeholder="Paste encrypted token here..."
+                            rows="6"
+                        ></textarea>
+                        
+                        <div class="cyber-output mb-6">
+                            <div class="output-placeholder" id="decrypt-placeholder">
+                                DECRYPTED TEXT WILL APPEAR HERE
+                            </div>
+                            <div id="decrypt-output" class="hidden"></div>
+                        </div>
+                        
+                        <button id="decrypt-btn" class="cyber-button w-full" style="background: linear-gradient(135deg, var(--cyber-purple), var(--cyber-blue));">
+                            <i class="fas fa-eye"></i>
+                            <span data-i18n="decrypt">Decrypt</span>
+                        </button>
+                        
+                        <!-- Auto-lock Timer -->
+                        <div class="mt-6 flex items-center justify-between">
+                            <div class="session-timer">
+                                <i class="fas fa-clock"></i>
+                                <span data-i18n="auto_lock">Auto-lock:</span>
+                                <span id="lock-timer">30s</span>
+                            </div>
+                            <button id="clear-decrypted" class="text-sm text-cyan-400 hover:text-cyan-300 font-mono">
+                                <i class="fas fa-trash mr-2"></i>
+                                <span data-i18n="clear">Clear</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Vault Tab -->
+                    <div id="vault-tab" class="tab-content hidden">
+                        <div class="mb-6">
+                            <div class="flex flex-col md:flex-row gap-4 mb-4">
+                                <input 
+                                    type="text" 
+                                    id="vault-label"
+                                    class="cyber-input flex-1"
+                                    placeholder="Entry label (optional)"
+                                />
+                                <button id="add-vault-entry" class="cyber-button">
+                                    <i class="fas fa-plus"></i>
+                                    <span data-i18n="add_entry">Add Entry</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Vault Stats -->
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                <div class="bg-black/30 p-4 rounded-2xl text-center">
+                                    <div class="text-2xl font-bold text-cyan-400" id="vault-count">0</div>
+                                    <div class="text-xs text-gray-400" data-i18n="entries">Entries</div>
+                                </div>
+                                <div class="bg-black/30 p-4 rounded-2xl text-center">
+                                    <div class="text-2xl font-bold text-purple-400" id="vault-size">0 KB</div>
+                                    <div class="text-xs text-gray-400" data-i18n="size">Size</div>
+                                </div>
+                                <div class="bg-black/30 p-4 rounded-2xl text-center">
+                                    <div class="text-2xl font-bold text-green-400" id="last-backup">-</div>
+                                    <div class="text-xs text-gray-400" data-i18n="last_backup">Last Backup</div>
+                                </div>
+                                <div class="bg-black/30 p-4 rounded-2xl text-center">
+                                    <div class="text-2xl font-bold text-yellow-400" id="performance">Good</div>
+                                    <div class="text-xs text-gray-400" data-i18n="performance">Performance</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Vault Entries -->
+                        <div id="vault-entries" class="space-y-4 max-h-96 overflow-y-auto p-2">
+                            <div class="text-center py-12 text-gray-500" id="vault-empty">
+                                <i class="fas fa-database text-4xl mb-4"></i>
+                                <p data-i18n="vault_empty">Vault is empty. Add your first encrypted entry.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Vault Actions -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                            <button id="export-vault" class="cyber-button" style="background: rgba(0, 247, 255, 0.1); color: var(--cyber-cyan);">
+                                <i class="fas fa-download"></i>
+                                <span data-i18n="export_vault">Export Vault</span>
+                            </button>
+                            <button id="import-vault" class="cyber-button" style="background: rgba(157, 0, 255, 0.1); color: var(--cyber-purple);">
+                                <i class="fas fa-upload"></i>
+                                <span data-i18n="import_vault">Import Vault</span>
+                            </button>
+                            <button id="wipe-vault" class="cyber-button" style="background: rgba(255, 51, 102, 0.1); color: var(--cyber-red);">
+                                <i class="fas fa-skull-crossbones"></i>
+                                <span data-i18n="wipe_vault">Wipe Vault</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Files Tab -->
+                    <div id="files-tab" class="tab-content hidden">
+                        <div class="mb-6">
+                            <div class="file-upload mb-6">
+                                <input type="file" id="file-input" accept=".txt,.pdf">
+                                <div class="text-center">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-cyan-400 mb-3"></i>
+                                    <p class="text-lg font-semibold" data-i18n="drag_drop">Drag & drop or click to upload</p>
+                                    <p class="text-sm text-gray-400 mt-2" data-i18n="supported_files">Supported: .txt, .pdf (Max 10MB)</p>
+                                </div>
+                            </div>
+                            
+                            <div id="file-info" class="hidden bg-black/30 p-4 rounded-2xl mb-4">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h4 class="font-semibold" id="file-name"></h4>
+                                        <p class="text-sm text-gray-400" id="file-size"></p>
+                                    </div>
+                                    <button id="clear-file" class="text-red-400 hover:text-red-300">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <button id="encrypt-file" class="cyber-button">
+                                <i class="fas fa-file-shield"></i>
+                                <span data-i18n="encrypt_file">Encrypt File</span>
+                            </button>
+                            <button id="decrypt-file" class="cyber-button" style="background: linear-gradient(135deg, var(--cyber-purple), var(--cyber-blue));">
+                                <i class="fas fa-file-lock"></i>
+                                <span data-i18n="decrypt_file">Decrypt File</span>
+                            </button>
+                        </div>
+                        
+                        <div class="mt-6 text-xs text-gray-400">
+                            <p data-i18n="file_warning">
+                                Note: Files are encrypted locally and never uploaded to any server. 
+                                Large files may take longer to process.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- QR Code Tab -->
+                    <div id="qr-tab" class="tab-content hidden">
+                        <div class="qr-container mb-6">
+                            <div id="qr-code" class="qr-code"></div>
+                            <div class="text-center">
+                                <p class="text-sm text-gray-400 mb-2" data-i18n="qr_instruction">
+                                    Scan this QR code to share the encrypted token
+                                </p>
+                                <p class="text-xs text-red-400" data-i18n="qr_warning">
+                                    Warning: QR codes are less secure than manual transfer. 
+                                    Tokens auto-expire in 30 minutes.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <button id="generate-qr" class="cyber-button">
+                                <i class="fas fa-qrcode"></i>
+                                <span data-i18n="generate_qr">Generate QR</span>
+                            </button>
+                            <button id="scan-qr" class="cyber-button" style="background: rgba(0, 247, 255, 0.1); color: var(--cyber-cyan);">
+                                <i class="fas fa-camera"></i>
+                                <span data-i18n="scan_qr">Scan QR</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Activity Log -->
+                <div class="mt-8 pt-6 border-t border-white/10">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-cyan-400 font-mono text-sm uppercase tracking-widest">
+                            <i class="fas fa-terminal mr-2"></i>
+                            <span data-i18n="system_log">SYSTEM LOG</span>
+                        </h3>
+                        <button id="clear-log" class="text-xs text-gray-400 hover:text-white">
+                            <i class="fas fa-trash mr-1"></i>
+                            <span data-i18n="clear_log">Clear</span>
+                        </button>
+                    </div>
+                    <div id="activity-log" class="space-y-2 max-h-40 overflow-y-auto font-mono text-xs">
+                        <div class="text-cyan-400">[SYSTEM] SWARG v1.0 Initialized</div>
+                        <div class="text-green-400">[SECURITY] AES-256-GCM Ready</div>
+                        <div class="text-purple-400">[INFO] All processing is local</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Foot
