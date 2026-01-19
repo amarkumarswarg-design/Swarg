@@ -2221,4 +2221,459 @@
             showToast('Strong password generated', 'success');
         }
 
-        // ==================== AUTO-LOC
+        // ==================== AUTO-LOCK SYSTEM ====================
+        function startAutoLockTimer() {
+            // Clear existing timer
+            if (state.autoLockTimer) {
+                clearInterval(state.autoLockTimer);
+            }
+            
+            // Start new timer
+            state.autoLockTimer = setInterval(() => {
+                const timerEl = document.getElementById('lock-timer');
+                const decryptedText = document.getElementById('decrypt-output');
+                
+                if (decryptedText && !decryptedText.classList.contains('hidden')) {
+                    const lastDecrypt = parseInt(decryptedText.dataset.timestamp || '0');
+                    const elapsed = Date.now() - lastDecrypt;
+                    const remaining = Math.max(0, Math.floor((CONFIG.AUTO_LOCK_SECONDS * 1000 - elapsed) / 1000));
+                    
+                    timerEl.textContent = `${remaining}s`;
+                    
+                    if (remaining === 0) {
+                        clearDecryptedText();
+                        showToast('Decrypted text cleared (auto-lock)', 'info');
+                    }
+                }
+            }, 1000);
+        }
+
+        function clearDecryptedText() {
+            const output = document.getElementById('decrypt-output');
+            const placeholder = document.getElementById('decrypt-placeholder');
+            
+            if (output) {
+                output.textContent = '';
+                output.classList.add('hidden');
+            }
+            
+            if (placeholder) {
+                placeholder.classList.remove('hidden');
+            }
+            
+            document.getElementById('lock-timer').textContent = '30s';
+        }
+
+        function setupActivityMonitoring() {
+            // Track user activity
+            const activityEvents = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
+            
+            activityEvents.forEach(event => {
+                document.addEventListener(event, () => {
+                    state.lastActivity = Date.now();
+                }, { passive: true });
+            });
+            
+            // Check for inactivity every minute
+            setInterval(() => {
+                const inactiveTime = Date.now() - state.lastActivity;
+                const inactiveMinutes = Math.floor(inactiveTime / (60 * 1000));
+                
+                if (inactiveMinutes >= 5) {
+                    // Clear sensitive data after 5 minutes of inactivity
+                    document.getElementById('masterKey').value = '';
+                    clearDecryptedText();
+                    state.masterKey = '';
+                    logActivity('[SECURITY] Cleared sensitive data (inactivity)', 'security');
+                    state.lastActivity = Date.now(); // Reset timer
+                }
+            }, 60 * 1000);
+        }
+
+        // ==================== ERROR HANDLING ====================
+        function handleEncryptionError(error) {
+            console.error('Encryption error:', error);
+            
+            let userMessage = 'Encryption/decryption failed';
+            
+            if (error.message.includes('Rate limited')) {
+                userMessage = error.message;
+            } else if (error.message.includes('expired')) {
+                userMessage = 'Token has expired (30 minutes)';
+            } else if (error.message.includes('Unsupported')) {
+                userMessage = 'Unsupported token or file version';
+            } else if (error.message.includes('wrong') || error.message.includes('incorrect')) {
+                userMessage = 'Incorrect password or corrupted token';
+            } else if (error.message.includes('quota')) {
+                userMessage = 'Storage quota exceeded. Please export and clear some entries.';
+            }
+            
+            showToast(userMessage, 'error');
+            playSound('error');
+            logActivity(`[ERROR] ${error.message}`, 'error');
+        }
+
+        // ==================== PERFORMANCE CHECK ====================
+        function checkPerformance() {
+            // Simple performance test for dynamic iterations
+            const start = performance.now();
+            let iterations = 0;
+            
+            // Run a small calculation loop
+            for (let i = 0; i < 1000000; i++) {
+                iterations += Math.sqrt(i) * Math.random();
+            }
+            
+            const duration = performance.now() - start;
+            
+            // Store performance factor (1.0 = average, higher = faster)
+            window.cryptoPerformance = Math.max(0.5, Math.min(2.0, 1000 / duration));
+            
+            logActivity(`[PERFORMANCE] System performance: ${window.cryptoPerformance.toFixed(2)}x`, 'info');
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function getTranslation(key) {
+            return translations[state.currentLanguage][key] || key;
+        }
+
+        function updateLanguage(lang) {
+            state.currentLanguage = lang;
+            document.getElementById('lang-text').textContent = lang.toUpperCase();
+            
+            // Update all translatable elements
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                const translation = getTranslation(key);
+                if (translation && translation !== key) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = translation;
+                    } else {
+                        element.textContent = translation;
+                    }
+                }
+            });
+            
+            showToast(`Language: ${lang === 'en' ? 'English' : 'Hindi'}`, 'info');
+            localStorage.setItem('swarg_language', lang);
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        function setupEventListeners() {
+            // Master Key Events
+            const masterKeyInput = document.getElementById('masterKey');
+            masterKeyInput.addEventListener('input', (e) => {
+                playSound('type');
+                updatePasswordStrength(e.target.value);
+                state.masterKey = e.target.value;
+            });
+            
+            // Toggle password visibility
+            document.getElementById('toggleKey').addEventListener('click', () => {
+                const input = document.getElementById('masterKey');
+                const icon = document.querySelector('#toggleKey i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.className = 'fas fa-eye-slash';
+                } else {
+                    input.type = 'password';
+                    icon.className = 'fas fa-eye';
+                }
+                
+                playSound('click');
+            });
+            
+            // Tab Switching
+            document.querySelectorAll('.cyber-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    switchTab(tab.dataset.tab);
+                });
+            });
+            
+            // Encrypt Button
+            document.getElementById('encrypt-btn').addEventListener('click', async () => {
+                const text = document.getElementById('input-text').value.trim();
+                const password = document.getElementById('masterKey').value;
+                
+                if (!password || password.length < 12) {
+                    showToast('Password must be at least 12 characters', 'error');
+                    return;
+                }
+                
+                if (!text) {
+                    showToast('Please enter text to encrypt', 'error');
+                    return;
+                }
+                
+                try {
+                    playSound('encrypt');
+                    document.getElementById('scanner').style.display = 'block';
+                    
+                    const token = await encryptData(text, password);
+                    
+                    // Display token
+                    const output = document.getElementById('encrypt-output');
+                    const placeholder = document.getElementById('encrypt-placeholder');
+                    
+                    output.textContent = token;
+                    output.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                    
+                    document.getElementById('scanner').style.display = 'none';
+                    playSound('success');
+                    showToast('Data encrypted successfully', 'success');
+                    logActivity('Data encrypted (30 min expiry)');
+                    
+                } catch (error) {
+                    document.getElementById('scanner').style.display = 'none';
+                    // Error already handled in encryptData
+                }
+            });
+            
+            // Decrypt Button
+            document.getElementById('decrypt-btn').addEventListener('click', async () => {
+                const token = document.getElementById('encrypted-input').value.trim();
+                const password = document.getElementById('masterKey').value;
+                
+                if (!password) {
+                    showToast('Enter master key to decrypt', 'error');
+                    return;
+                }
+                
+                if (!token) {
+                    showToast('Please enter token to decrypt', 'error');
+                    return;
+                }
+                
+                try {
+                    playSound('decrypt');
+                    document.getElementById('scanner').style.display = 'block';
+                    
+                    const text = await decryptData(token, password);
+                    
+                    // Display decrypted text
+                    const output = document.getElementById('decrypt-output');
+                    const placeholder = document.getElementById('decrypt-placeholder');
+                    
+                    output.textContent = text;
+                    output.dataset.timestamp = Date.now();
+                    output.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                    
+                    document.getElementById('scanner').style.display = 'none';
+                    playSound('success');
+                    showToast('Data decrypted successfully', 'success');
+                    logActivity('Data decrypted (auto-lock in 30s)');
+                    
+                } catch (error) {
+                    document.getElementById('scanner').style.display = 'none';
+                    // Error already handled in decryptData
+                }
+            });
+            
+            // Copy Encrypted
+            document.getElementById('copy-encrypted').addEventListener('click', async () => {
+                const token = document.getElementById('encrypt-output').textContent;
+                if (token) {
+                    await copyToClipboard(token);
+                } else {
+                    showToast('No encrypted text to copy', 'error');
+                }
+            });
+            
+            // Save to Vault
+            document.getElementById('save-to-vault').addEventListener('click', async () => {
+                const token = document.getElementById('encrypt-output').textContent;
+                const label = prompt('Enter label for this entry (optional):', '');
+                
+                if (token) {
+                    try {
+                        const id = await saveToVault(token, label);
+                        showToast(`Saved to vault (ID: ${id})`, 'success');
+                        logActivity(`Saved entry to vault: ${label || 'Unlabeled'}`);
+                    } catch (error) {
+                        showToast('Failed to save to vault', 'error');
+                    }
+                } else {
+                    showToast('No encrypted text to save', 'error');
+                }
+            });
+            
+            // Clear Decrypted
+            document.getElementById('clear-decrypted').addEventListener('click', () => {
+                clearDecryptedText();
+                showToast('Cleared decrypted text', 'info');
+            });
+            
+            // Add Vault Entry
+            document.getElementById('add-vault-entry').addEventListener('click', async () => {
+                const token = document.getElementById('encrypt-output').textContent;
+                const label = document.getElementById('vault-label').value.trim();
+                
+                if (token) {
+                    try {
+                        const id = await saveToVault(token, label || undefined);
+                        document.getElementById('vault-label').value = '';
+                        showToast(`Added to vault (ID: ${id})`, 'success');
+                    } catch (error) {
+                        showToast('Failed to add to vault', 'error');
+                    }
+                } else {
+                    showToast('Encrypt some data first', 'error');
+                }
+            });
+            
+            // Vault Actions
+            document.getElementById('export-vault').addEventListener('click', () => {
+                if (state.vaultEntries.length === 0) {
+                    showToast('Vault is empty', 'error');
+                    return;
+                }
+                
+                const vaultData = {
+                    version: '1.0',
+                    timestamp: Date.now(),
+                    entries: state.vaultEntries
+                };
+                
+                const dataStr = JSON.stringify(vaultData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `swarg_vault_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showToast('Vault exported successfully', 'success');
+                logActivity('Vault exported');
+            });
+            
+            document.getElementById('import-vault').addEventListener('click', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        try {
+                            const vaultData = JSON.parse(e.target.result);
+                            
+                            if (vaultData.version !== '1.0') {
+                                throw new Error('Unsupported vault version');
+                            }
+                            
+                            // Ask for confirmation
+                            if (!confirm(`Import ${vaultData.entries.length} entries? This will add to existing vault.`)) {
+                                return;
+                            }
+                            
+                            // Import entries
+                            for (const entry of vaultData.entries) {
+                                await saveToVault(entry.token, entry.label);
+                            }
+                            
+                            showToast(`Imported ${vaultData.entries.length} entries`, 'success');
+                            logActivity(`Vault imported: ${vaultData.entries.length} entries`);
+                            
+                        } catch (error) {
+                            showToast('Failed to import vault file', 'error');
+                        }
+                    };
+                    
+                    reader.readAsText(file);
+                };
+                
+                input.click();
+            });
+            
+            document.getElementById('wipe-vault').addEventListener('click', async () => {
+                if (state.vaultEntries.length === 0) {
+                    showToast('Vault is already empty', 'info');
+                    return;
+                }
+                
+                if (confirm(`Wipe all ${state.vaultEntries.length} vault entries? This cannot be undone.`)) {
+                    try {
+                        await wipeVault();
+                        showToast('Vault wiped clean', 'success');
+                        logActivity('Vault wiped (all entries deleted)', 'security');
+                    } catch (error) {
+                        showToast('Failed to wipe vault', 'error');
+                    }
+                }
+            });
+            
+            // File Operations
+            const fileInput = document.getElementById('file-input');
+            const fileInfo = document.getElementById('file-info');
+            const fileName = document.getElementById('file-name');
+            const fileSize = document.getElementById('file-size');
+            let currentFile = null;
+            
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                // Check file type
+                const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+                if (!CONFIG.SUPPORTED_FILE_TYPES.includes(fileExt)) {
+                    showToast(`Unsupported file type: ${fileExt}`, 'error');
+                    fileInput.value = '';
+                    return;
+                }
+                
+                // Check file size
+                if (file.size > CONFIG.MAX_FILE_SIZE) {
+                    showToast(`File too large (max ${CONFIG.MAX_FILE_SIZE / (1024 * 1024)}MB)`, 'error');
+                    fileInput.value = '';
+                    return;
+                }
+                
+                currentFile = file;
+                fileName.textContent = file.name;
+                fileSize.textContent = `${(file.size / 1024).toFixed(2)} KB`;
+                fileInfo.classList.remove('hidden');
+                
+                showToast(`File ready: ${file.name}`, 'info');
+            });
+            
+            document.getElementById('clear-file').addEventListener('click', () => {
+                fileInput.value = '';
+                currentFile = null;
+                fileInfo.classList.add('hidden');
+            });
+            
+            document.getElementById('encrypt-file').addEventListener('click', async () => {
+                if (!currentFile) {
+                    showToast('Select a file first', 'error');
+                    return;
+                }
+                
+                const password = document.getElementById('masterKey').value;
+                if (!password || password.length < 12) {
+                    showToast('Password must be at least 12 characters', 'error');
+                    return;
+                }
+                
+                try {
+                    playSound('encrypt');
+                    showToast('Encrypting file...', 'info');
+                    
+                    const encryptedFile = await encryptFile(currentFile, password);
+                    
+                    // Download encrypted file
+ 
