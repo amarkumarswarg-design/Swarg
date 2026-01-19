@@ -1840,5 +1840,229 @@
                 logActivity('Encryption failed: ' + error.message, 'error');
                 
             } finally {
-                // Res
+                // Reset UI
+                decryptBtn.innerHTML = originalText;
+                decryptBtn.disabled = false;
+                state.isProcessing = false;
+            }
+        }
+
+        // ===== UI FUNCTIONS =====
+        function showEncryptedOutput(token) {
+            const output = document.getElementById('encrypted-output');
+            const placeholder = document.getElementById('encrypted-placeholder');
+            const success = document.getElementById('encrypt-success');
+            
+            output.textContent = token;
+            output.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            
+            // Show success animation
+            setTimeout(() => {
+                success.classList.remove('hidden');
+                output.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+
+        function showDecryptedOutput(text) {
+            const output = document.getElementById('decrypted-output');
+            const placeholder = document.getElementById('decrypted-placeholder');
+            const success = document.getElementById('decrypt-success');
+            const timer = document.getElementById('auto-lock-timer');
+            
+            output.textContent = text;
+            output.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            
+            // Show success animation
+            setTimeout(() => {
+                success.classList.remove('hidden');
+                if (state.autoHideEnabled) {
+                    timer.classList.remove('hidden');
+                }
+                output.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+
+        function startAutoHideTimer() {
+            // Clear existing timer
+            if (state.autoHideTimer) {
+                clearInterval(state.autoHideTimer);
+            }
+
+            let secondsLeft = CONFIG.AUTO_HIDE_SECONDS;
+            const timerElement = document.getElementById('timer-count');
+            timerElement.textContent = secondsLeft;
+
+            state.autoHideTimer = setInterval(() => {
+                secondsLeft--;
+                timerElement.textContent = secondsLeft;
+
+                if (secondsLeft <= 0) {
+                    clearInterval(state.autoHideTimer);
+                    hideDecryptedOutput();
+                    showToast('Decrypted data hidden (auto-lock)', 'info');
+                }
+            }, 1000);
+        }
+
+        function hideDecryptedOutput() {
+            document.getElementById('decrypted-output').classList.add('hidden');
+            document.getElementById('decrypted-placeholder').classList.remove('hidden');
+            document.getElementById('decrypt-success').classList.add('hidden');
+            document.getElementById('auto-lock-timer').classList.add('hidden');
+        }
+
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tab);
+            });
+
+            // Show selected tab
+            document.getElementById('encrypt-tab').classList.toggle('hidden', tab !== 'encrypt');
+            document.getElementById('decrypt-tab').classList.toggle('hidden', tab !== 'decrypt');
+
+            state.currentTab = tab;
+            
+            // Play click sound
+            playSound('click');
+        }
+
+        // ===== UTILITY FUNCTIONS =====
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                
+                // Auto-clear clipboard after 15 seconds
+                setTimeout(async () => {
+                    try {
+                        await navigator.clipboard.writeText('');
+                    } catch (error) {
+                        // Ignore clipboard clearing errors
+                    }
+                }, 15000);
+                
+                return true;
+            } catch (error) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                return true;
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            
+            // Style based on type
+            switch(type) {
+                case 'error':
+                    toast.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.9))';
+                    break;
+                case 'warning':
+                    toast.style.background = 'linear-gradient(135deg, rgba(245, 158, 11, 0.9), rgba(217, 119, 6, 0.9))';
+                    break;
+                case 'info':
+                    toast.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(37, 99, 235, 0.9))';
+                    break;
+                default:
+                    toast.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9))';
+            }
+            
+            container.appendChild(toast);
+            
+            // Auto remove
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        container.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        function generatePassword() {
+            const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+            let password = '';
+            
+            // Ensure complexity
+            password += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.charAt(Math.floor(Math.random() * 26));
+            password += 'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26));
+            password += '0123456789'.charAt(Math.floor(Math.random() * 10));
+            password += '!@#$%^&*()_+-=[]{}|;:,.<>?'.charAt(Math.floor(Math.random() * 24));
+            
+            // Fill remaining characters
+            for (let i = 4; i < 16; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+            
+            // Shuffle
+            password = password.split('').sort(() => Math.random() - 0.5).join('');
+            
+            // Set password
+            document.getElementById('master-password').value = password;
+            state.password = password;
+            
+            // Update strength meter
+            updateStrengthMeter(password);
+            
+            // Play sound and show toast
+            playSound('success');
+            showToast('Strong password generated', 'success');
+        }
+
+        function updateStrengthMeter(password) {
+            const bars = document.querySelectorAll('.strength-bar');
+            const strengthText = document.getElementById('strength-text');
+            
+            let strength = 0;
+            
+            // Length check
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            
+            // Complexity checks
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            // Update bars
+            bars.forEach((bar, index) => {
+                if (index < strength) {
+                    if (strength <= 2) {
+                        bar.style.background = '#ef4444';
+                    } else if (strength <= 4) {
+                        bar.style.background = '#f59e0b';
+                    } else {
+                        bar.style.background = '#10b981';
+                    }
+                } else {
+                    bar.style.background = 'rgba(255, 255, 255, 0.1)';
+                }
+            });
+            
+            // Update text
+            if (strength <= 2) {
+                strengthText.textContent = 'Weak';
+                strengthText.style.color = '#ef4444';
+            } else if (strength <= 4) {
+                strengthText.textContent = 'Medium';
+                strengthText.style.color = '#f59e0b';
+            } else {
+                strengthText.textContent = 'Strong';
+                strengthText.style.color = '#10b981';
+            }
+        }
+
+        // ===== SETTINGS MANAGEMEN
     
