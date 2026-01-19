@@ -1,265 +1,304 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWARG | Industrial Encryption Suite</title>
+    <title>SWARG | Industrial Encryption Suite v1.0</title>
     
-    <!-- PWA -->
+    <!-- PWA Configuration -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
+    <meta name="description" content="Client-side AES-256-GCM encryption suite with vault storage and zero data transmission">
     
-    <!-- Resources -->
+    <!-- External Resources -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=JetBrains+Mono:wght@300;400;600&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
     <style>
-        /* ========== VARIABLES ========== */
+        /* ========== CSS VARIABLES ========== */
         :root {
             --bg-deep: #000000;
-            --bg-dark: #0a0a0a;
-            --cyber-cyan: #00fff7;
+            --bg-dark: #0a0a0f;
+            --bg-darker: #05050a;
+            --cyber-cyan: #00f7ff;
             --cyber-blue: #0066ff;
-            --cyber-green: #00ff95;
-            --cyber-red: #ff0055;
+            --cyber-purple: #9d00ff;
+            --cyber-green: #00ff88;
+            --cyber-red: #ff3366;
+            --cyber-yellow: #ffcc00;
             --gold-start: #ffd700;
             --gold-mid: #fffacd;
             --gold-end: #daa520;
+            --glass-bg: rgba(10, 15, 25, 0.85);
+            --glass-border: rgba(0, 247, 255, 0.2);
+            --shadow-glow: 0 0 40px rgba(0, 247, 255, 0.3);
         }
 
-        /* ========== BASE ========== */
+        /* ========== BASE STYLES ========== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
             background: var(--bg-deep);
-            color: white;
+            color: #ffffff;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            line-height: 1.6;
         }
 
-        /* ========== BACKGROUND PARTICLES ========== */
-        #particles-bg {
+        /* ========== DYNAMIC BACKGROUND ========== */
+        .cyber-grid {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at 30% 30%, #001122 0%, #000000 70%);
+            background-image: 
+                linear-gradient(rgba(0, 247, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 247, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -2;
+            pointer-events: none;
         }
 
-        .floating-dot {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--cyber-cyan);
+        .energy-orb {
+            position: fixed;
+            width: 600px;
+            height: 600px;
             border-radius: 50%;
-            box-shadow: 0 0 20px var(--cyber-cyan);
-            animation: floatUp 20s linear infinite;
+            background: radial-gradient(circle, rgba(0, 102, 255, 0.1) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: pulse-orb 8s ease-in-out infinite;
+            z-index: -1;
         }
 
-        @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) translateX(0) scale(0.5);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) translateX(100px) scale(1.5);
-                opacity: 0;
-            }
+        @keyframes pulse-orb {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            33% { transform: translate(100px, -50px) scale(1.2); opacity: 0.5; }
+            66% { transform: translate(-80px, 80px) scale(0.8); opacity: 0.2; }
         }
 
-        /* ========== AMAR KUMAR GOLD BADGE ========== */
-        .gold-badge {
+        /* ========== GLASS MORPHISM CONTAINERS ========== */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--cyber-cyan), 
+                transparent);
+        }
+
+        /* ========== TYPOGRAPHY ========== */
+        .cyber-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 4.5rem;
+            background: linear-gradient(135deg, 
+                #ffffff 0%, 
+                var(--cyber-cyan) 25%, 
+                var(--cyber-blue) 50%, 
+                var(--cyber-purple) 75%, 
+                #ffffff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(0, 247, 255, 0.5);
+            letter-spacing: 2px;
+            animation: title-shine 3s linear infinite;
+        }
+
+        @keyframes title-shine {
+            to { background-position: 200% center; }
+        }
+
+        .amar-badge {
             display: inline-flex;
             align-items: center;
             gap: 12px;
-            padding: 14px 28px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 14px 32px;
+            background: linear-gradient(135deg, 
+                rgba(255, 215, 0, 0.1), 
+                rgba(218, 165, 32, 0.05));
+            border: 2px solid rgba(255, 215, 0, 0.3);
             border-radius: 50px;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(10px);
             margin: 20px 0;
             position: relative;
             overflow: hidden;
         }
 
-        .gold-badge::before {
+        .amar-badge::after {
             content: '';
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
             background: linear-gradient(45deg, 
                 transparent, 
-                var(--gold-start), 
-                transparent, 
-                var(--gold-end),
+                rgba(255, 215, 0, 0.2), 
                 transparent);
-            border-radius: 52px;
-            z-index: -1;
-            animation: shine 3s linear infinite;
-            opacity: 0.5;
+            transform: rotate(30deg);
+            animation: badge-shine 3s linear infinite;
         }
 
-        @keyframes shine {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+        @keyframes badge-shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
         }
 
-        .gold-text {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            font-size: 18px;
-            letter-spacing: 3px;
+        /* ========== INPUT STYLES ========== */
+        .cyber-input {
+            width: 100%;
+            padding: 18px 24px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 247, 255, 0.3);
+            border-radius: 16px;
+            color: var(--cyber-cyan);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cyber-input:focus {
+            border-color: var(--cyber-cyan);
+            box-shadow: 0 0 30px rgba(0, 247, 255, 0.3);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .cyber-input::placeholder {
+            color: rgba(0, 247, 255, 0.5);
+            font-weight: 300;
+        }
+
+        /* ========== BUTTON STYLES ========== */
+        .cyber-button {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            background: linear-gradient(120deg, 
-                var(--gold-start) 0%, 
-                var(--gold-mid) 25%, 
-                var(--gold-end) 45%, 
-                var(--gold-mid) 55%, 
-                var(--gold-start) 80%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: textShine 2.5s linear infinite;
-        }
-
-        @keyframes textShine {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
-        }
-
-        .blue-tick {
-            color: #1da1f2;
-            font-size: 22px;
-            filter: drop-shadow(0 0 10px #1da1f2);
-        }
-
-        /* ========== MAIN CONTAINER ========== */
-        .main-glass {
-            background: rgba(10, 15, 25, 0.9);
-            backdrop-filter: blur(40px);
-            border: 1px solid rgba(0, 255, 247, 0.15);
-            border-radius: 30px;
-            padding: 30px;
-            max-width: 900px;
-            margin: 20px auto;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-            box-shadow: 
-                0 0 0 1px rgba(0, 255, 247, 0.1),
-                0 25px 50px -12px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        /* ========== KEY SECTION ========== */
-        .key-section {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .key-label {
-            display: block;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--cyber-cyan);
-            margin-bottom: 15px;
-            opacity: 0.8;
-        }
-
-        .key-input {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 18px 25px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 2px solid rgba(0, 255, 247, 0.3);
-            border-radius: 18px;
-            color: var(--cyber-cyan);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 16px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-align: center;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        .key-input:focus {
-            border-color: var(--cyber-cyan);
-            box-shadow: 0 0 40px rgba(0, 255, 247, 0.3);
-        }
-
-        /* ========== TABS ========== */
-        .tab-nav {
-            display: flex;
+            background: linear-gradient(135deg, 
+                var(--cyber-cyan), 
+                var(--cyber-blue));
+            color: #000;
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
-            gap: 40px;
-            margin: 30px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 15px;
+            gap: 10px;
         }
 
-        .tab-btn {
-            background: transparent;
-            border: none;
-            color: rgba(255, 255, 255, 0.5);
-            padding: 15px 30px;
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s;
-        }
-
-        .tab-btn.active {
-            color: var(--cyber-cyan);
-        }
-
-        .tab-btn.active::after {
+        .cyber-button::before {
             content: '';
             position: absolute;
-            bottom: -16px;
-            left: 0;
+            top: 0;
+            left: -100%;
             width: 100%;
-            height: 3px;
-            background: var(--cyber-cyan);
-            border-radius: 3px;
-            box-shadow: 0 0 10px var(--cyber-cyan);
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+            transition: left 0.6s;
+        }
+
+        .cyber-button:hover::before {
+            left: 100%;
+        }
+
+        .cyber-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 247, 255, 0.4);
+        }
+
+        .cyber-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* ========== TAB SYSTEM ========== */
+        .cyber-tabs {
+            display: flex;
+            gap: 4px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+        }
+
+        .cyber-tab {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .cyber-tab.active {
+            background: rgba(0, 247, 255, 0.1);
+            color: var(--cyber-cyan);
+            box-shadow: 0 4px 20px rgba(0, 247, 255, 0.2);
         }
 
         /* ========== TEXT AREAS ========== */
-        .text-box {
+        .cyber-textarea {
             width: 100%;
             min-height: 180px;
             padding: 20px;
             background: rgba(0, 0, 0, 0.4);
             border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            color: white;
+            border-radius: 16px;
+            color: #ffffff;
             font-family: 'JetBrains Mono', monospace;
             font-size: 14px;
             line-height: 1.6;
@@ -268,18 +307,19 @@
             transition: all 0.3s;
         }
 
-        .text-box:focus {
+        .cyber-textarea:focus {
             border-color: var(--cyber-cyan);
-            box-shadow: 0 0 30px rgba(0, 255, 247, 0.2);
+            box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
+            background: rgba(0, 0, 0, 0.6);
         }
 
-        /* ========== OUTPUT BOX ========== */
-        .output-box {
+        /* ========== OUTPUT DISPLAY ========== */
+        .cyber-output {
             min-height: 180px;
             padding: 20px;
-            background: rgba(0, 255, 247, 0.03);
-            border: 2px dashed rgba(0, 255, 247, 0.3);
-            border-radius: 20px;
+            background: rgba(0, 247, 255, 0.03);
+            border: 2px dashed rgba(0, 247, 255, 0.3);
+            border-radius: 16px;
             color: var(--cyber-green);
             font-family: 'JetBrains Mono', monospace;
             font-size: 14px;
@@ -295,90 +335,90 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: rgba(0, 255, 247, 0.3);
+            color: rgba(0, 247, 255, 0.3);
             font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
+            text-align: center;
         }
 
-        /* ========== BUTTONS ========== */
-        .action-btn {
-            padding: 16px 32px;
-            border: none;
-            border-radius: 16px;
+        /* ========== SECURITY BADGES ========== */
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(0, 255, 136, 0.08);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 50px;
             font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
             font-size: 11px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s;
+            letter-spacing: 1.5px;
+            color: var(--cyber-green);
+            margin: 5px;
+        }
+
+        /* ========== THREAT WARNING ========== */
+        .threat-warning {
+            background: linear-gradient(135deg, 
+                rgba(255, 51, 102, 0.1), 
+                rgba(255, 204, 0, 0.1));
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .threat-warning h4 {
+            color: var(--cyber-red);
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 10px;
-            width: 100%;
-            background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-blue));
-            color: black;
         }
 
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 255, 247, 0.3);
-        }
-
-        /* ========== SCANNER ANIMATION ========== */
-        .scanner-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                var(--cyber-cyan) 50%, 
-                transparent 100%);
-            box-shadow: 0 0 20px var(--cyber-cyan);
-            z-index: 10;
-            display: none;
-            animation: scan 1.5s linear infinite;
-        }
-
-        @keyframes scan {
-            0% { top: 0%; }
-            100% { top: 100%; }
-        }
-
-        /* ========== ABOUT MODAL ========== */
-        .about-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(20px);
-            overflow-y: auto;
+        /* ========== VAULT ENTRY ========== */
+        .vault-entry {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            border-radius: 16px;
             padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
         }
 
-        .about-content {
-            background: rgba(10, 15, 25, 0.95);
-            border: 1px solid var(--cyber-cyan);
-            border-radius: 25px;
-            padding: 40px;
-            max-width: 800px;
+        .vault-entry:hover {
+            background: rgba(0, 247, 255, 0.05);
+            border-color: rgba(0, 247, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* ========== PROGRESS BARS ========== */
+        .progress-container {
             width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
         }
 
-        /* ========== TOAST ========== */
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, 
+                var(--cyber-green), 
+                var(--cyber-cyan));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        /* ========== TOAST NOTIFICATIONS ========== */
         .toast-container {
             position: fixed;
             bottom: 30px;
@@ -388,24 +428,28 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            pointer-events: none;
         }
 
-        .toast {
-            padding: 12px 25px;
-            background: rgba(0, 10, 20, 0.95);
+        .cyber-toast {
+            padding: 16px 30px;
+            background: rgba(10, 15, 25, 0.95);
             border: 1px solid var(--cyber-cyan);
             border-radius: 50px;
             color: white;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            font-weight: 700;
+            font-size: 11px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             text-align: center;
-            animation: toastIn 0.3s ease-out;
+            backdrop-filter: blur(20px);
+            animation: toastSlide 0.3s ease-out;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            pointer-events: auto;
         }
 
-        @keyframes toastIn {
+        @keyframes toastSlide {
             from {
                 opacity: 0;
                 transform: translateY(20px);
@@ -416,832 +460,206 @@
             }
         }
 
-        /* ========== LOG PANEL ========== */
-        .log-panel {
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            border: 1px solid rgba(0, 255, 247, 0.1);
-            max-height: 150px;
-            overflow-y: auto;
+        /* ========== SCANNER EFFECT ========== */
+        .scanner-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--cyber-cyan), 
+                transparent);
+            box-shadow: 0 0 20px var(--cyber-cyan);
+            z-index: 10;
+            display: none;
+            animation: scan 2s linear infinite;
         }
 
-        .log-entry {
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* ========== QR CODE DISPLAY ========== */
+        .qr-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        /* ========== LANGUAGE TOGGLE ========== */
+        .lang-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 10px 20px;
+            background: rgba(0, 247, 255, 0.1);
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            border-radius: 50px;
+            color: var(--cyber-cyan);
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
-            color: rgba(0, 255, 247, 0.8);
-            padding: 5px 0;
-            border-bottom: 1px solid rgba(0, 255, 247, 0.1);
-        }
-
-        /* ========== SECURITY BADGE ========== */
-        .security-badge {
-            display: inline-flex;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
-            background: rgba(0, 255, 95, 0.1);
-            border: 1px solid rgba(0, 255, 95, 0.3);
-            border-radius: 50px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #00ff95;
-            margin: 10px 0;
         }
 
-        /* ========== RESPONSIVE ========== */
+        .lang-btn:hover {
+            background: rgba(0, 247, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* ========== RESPONSIVE DESIGN ========== */
         @media (max-width: 768px) {
-            .main-glass {
-                margin: 10px;
+            .cyber-title {
+                font-size: 3rem;
+            }
+            
+            .glass-panel {
                 padding: 20px;
+                margin: 10px;
                 border-radius: 20px;
             }
             
-            .gold-text {
-                font-size: 14px;
+            .cyber-tabs {
+                flex-direction: column;
             }
             
-            .tab-nav {
-                gap: 20px;
+            .cyber-tab {
+                padding: 14px 20px;
             }
             
-            .tab-btn {
-                padding: 10px 15px;
+            .qr-code {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .lang-toggle {
+                top: 10px;
+                right: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cyber-title {
+                font-size: 2.5rem;
+            }
+            
+            .cyber-button {
+                padding: 14px 24px;
+                font-size: 12px;
+            }
+            
+            .security-badge {
+                padding: 8px 16px;
                 font-size: 10px;
             }
-            
-            .about-content {
-                padding: 20px;
-            }
         }
-    </style>
-</head>
-<body>
-    <!-- Background Particles -->
-    <div id="particles-bg"></div>
-    
-    <!-- Scanner -->
-    <div id="scanner" class="scanner-line"></div>
-    
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
-    
-    <!-- Audio Elements -->
-    <audio id="type-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-keyboard-typing-1386.mp3"></audio>
-    <audio id="success-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-security-lock-approved-1537.mp3"></audio>
-    
-    <!-- Main App -->
-    <div class="min-h-screen p-4">
-        <!-- Header -->
-        <header class="text-center py-6">
-            <h1 class="text-6xl font-black mb-4" style="
-                font-family: 'Orbitron', sans-serif;
-                background: linear-gradient(135deg, #fff, #00fff7, #0066ff);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                text-shadow: 0 0 30px rgba(0, 255, 247, 0.3);
-            ">SWARG</h1>
-            
-            <!-- Amar Kumar Gold Badge -->
-            <div class="gold-badge">
-                <span class="gold-text">AMAR KUMAR</span>
-                <i class="fas fa-check-circle blue-tick"></i>
-            </div>
-            
-            <!-- About Button -->
-            <button onclick="showAbout()" class="mt-4 px-6 py-2 bg-white/5 border border-white/10 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-cyan-500/10 transition">
-                <i class="fas fa-info-circle text-cyan-400 mr-2"></i> About System
-            </button>
-        </header>
-        
-        <!-- Security Badges -->
-        <div class="text-center mb-6">
-            <div class="security-badge inline-block mx-2">
-                <i class="fas fa-shield-alt"></i> AES-256-GCM
-            </div>
-            <div class="security-badge inline-block mx-2" style="border-color: #9d00ff; color: #9d00ff;">
-                <i class="fas fa-network-wired"></i> Local Processing
-            </div>
-            <div class="security-badge inline-block mx-2" style="border-color: #ffcc00; color: #ffcc00;">
-                <i class="fas fa-user-shield"></i> No Data Storage
-            </div>
-        </div>
-        
-        <!-- Main Container -->
-        <main class="main-glass">
-            <!-- Master Key -->
-            <div class="key-section">
-                <label class="key-label">MASTER ENCRYPTION KEY</label>
-                <input 
-                    type="password" 
-                    id="masterKey"
-                    class="key-input"
-                    placeholder="Enter your password (min 8 characters)"
-                    oninput="playTypeSound()"
-                />
-                <div id="key-strength" class="mt-2 text-xs text-gray-400"></div>
-            </div>
-            
-            <!-- Tabs -->
-            <div class="tab-nav">
-                <button class="tab-btn active" onclick="switchTab('encrypt')">
-                    <i class="fas fa-lock mr-2"></i> SECURE DATA
-                </button>
-                <button class="tab-btn" onclick="switchTab('decrypt')">
-                    <i class="fas fa-unlock mr-2"></i> REVEAL TRUTH
-                </button>
-            </div>
-            
-            <!-- Encrypt Tab -->
-            <div id="encrypt-tab">
-                <textarea 
-                    id="input-text"
-                    class="text-box mb-6"
-                    placeholder="Enter your data to encrypt..."
-                    oninput="playTypeSound()"
-                ></textarea>
-                
-                <div class="output-box mb-6">
-                    <div class="output-placeholder" id="encrypt-placeholder">
-                        ENCRYPTED TOKEN WILL APPEAR HERE
-                    </div>
-                    <div id="encrypt-output"></div>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <button onclick="encryptData()" class="action-btn">
-                        <i class="fas fa-shield-alt"></i> ENCRYPT
-                    </button>
-                    <button onclick="copyOutput('encrypt')" class="action-btn" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
-                        <i class="fas fa-copy"></i> COPY
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Decrypt Tab -->
-            <div id="decrypt-tab" style="display: none;">
-                <textarea 
-                    id="encrypted-input"
-                    class="text-box mb-6"
-                    placeholder="Paste encrypted token here..."
-                    oninput="playTypeSound()"
-                ></textarea>
-                
-                <div class="output-box mb-6">
-                    <div class="output-placeholder" id="decrypt-placeholder">
-                        DECRYPTED TEXT WILL APPEAR HERE
-                    </div>
-                    <div id="decrypt-output"></div>
-                </div>
-                
-                <button onclick="decryptData()" class="action-btn" style="background: linear-gradient(135deg, #9d00ff, #0066ff);">
-                    <i class="fas fa-eye"></i> DECRYPT
-                </button>
-            </div>
-            
-            <!-- Activity Log -->
-            <div class="log-panel">
-                <div class="text-xs text-cyan-400 font-bold mb-3 flex items-center">
-                    <i class="fas fa-terminal mr-2"></i> SYSTEM LOG
-                </div>
-                <div id="activity-log">
-                    <div class="log-entry">[SYSTEM] SWARG v3.0 Initialized</div>
-                    <div class="log-entry">[SECURITY] AES-256-GCM Ready</div>
-                    <div class="log-entry">[INFO] All processing is local</div>
-                </div>
-            </div>
-        </main>
-        
-        <!-- Footer -->
-        <footer class="text-center py-8 text-gray-500 text-xs tracking-widest">
-            <div class="mb-2">
-                <i class="fas fa-server text-cyan-400 mr-2"></i>
-                NO NETWORK REQUIRED • ALL DATA STAYS LOCAL
-            </div>
-            <div>© <span id="current-year">2026</span> SWARG INDUSTRIAL SUITE | AMAR KUMAR</div>
-        </footer>
-    </div>
-    
-    <!-- About Modal -->
-    <div id="about-modal" class="about-modal" onclick="closeAbout()">
-        <div class="about-content" onclick="event.stopPropagation()">
-            <h2 class="text-2xl font-bold mb-6 text-cyan-400 text-center">
-                <i class="fas fa-microchip mr-2"></i> SWARG Encryption Suite
-            </h2>
-            
-            <div class="space-y-6">
-                <!-- Technical Details -->
-                <div class="bg-black/30 p-5 rounded-2xl border border-cyan-500/20">
-                    <h3 class="text-white font-bold mb-3 text-lg">Technical Specifications</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-cyan-400 text-sm mb-1">Algorithm</p>
-                            <p class="text-white">AES-256-GCM (Galois/Counter Mode)</p>
-                        </div>
-                        <div>
-                            <p class="text-cyan-400 text-sm mb-1">Key Derivation</p>
-                            <p class="text-white">PBKDF2 with SHA-256</p>
-                        </div>
-                        <div>
-                            <p class="text-cyan-400 text-sm mb-1">Authentication</p>
-                            <p class="text-white">GCM provides authenticated encryption</p>
-                        </div>
-                        <div>
-                            <p class="text-cyan-400 text-sm mb-1">Random Source</p>
-                            <p class="text-white">Crypto.getRandomValues()</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Security Features -->
-                <div class="bg-black/30 p-5 rounded-2xl border border-green-500/20">
-                    <h3 class="text-white font-bold mb-3 text-lg">Security Features</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                            <span>All encryption/decryption happens locally in your browser</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                            <span>No data is stored or transmitted to any server</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                            <span>Tokens automatically expire after 30 minutes</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                            <span>Military-grade AES-256 encryption standard</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <!-- Threat Model -->
-                <div class="bg-black/30 p-5 rounded-2xl border border-yellow-500/20">
-                    <h3 class="text-white font-bold mb-3 text-lg">Threat Model</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-green-400 text-sm mb-1">✓ Protects Against</p>
-                            <ul class="text-sm text-gray-300 space-y-1">
-                                <li>• Local device theft</li>
-                                <li>• Clipboard snooping</li>
-                                <li>• Network interception</li>
-                                <li>• Third-party tracking</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <p class="text-red-400 text-sm mb-1">✗ Does NOT Protect</p>
-                            <ul class="text-sm text-gray-300 space-y-1">
-                                <li>• Compromised operating system</li>
-                                <li>• Hardware keyloggers</li>
-                                <li>• Physical access to device</li>
-                                <li>• Malware on your system</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Proof of Local Processing -->
-                <div class="bg-black/30 p-5 rounded-2xl border border-purple-500/20">
-                    <h3 class="text-white font-bold mb-3 text-lg">Local Processing Proof</h3>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <i class="fas fa-network-wired text-purple-400 text-2xl mr-4"></i>
-                            <div>
-                                <p class="text-white font-bold">No Network Calls Detected</p>
-                                <p class="text-gray-400 text-sm">All operations performed offline</p>
-                            </div>
-                        </div>
-                        <div class="text-green-400 font-bold">
-                            <i class="fas fa-check-circle mr-2"></i> VERIFIED
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <button onclick="closeAbout()" class="w-full mt-8 bg-cyan-500 text-black py-3 rounded-xl font-bold hover:bg-cyan-400 transition">
-                CLOSE
-            </button>
-        </div>
-    </div>
 
-    <script>
-        // ========== INITIALIZATION ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-        });
-        
-        function initializeApp() {
-            // Set current year
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-            
-            // Create background particles
-            createParticles();
-            
-            // Initialize audio
-            initAudio();
-            
-            // Setup event listeners
-            setupEventListeners();
-            
-            // Log initialization
-            logActivity('System initialized successfully');
-            logActivity('AES-256-GCM encryption ready');
-            logActivity('Local processing verified - no network calls');
+        /* ========== UTILITY CLASSES ========== */
+        .hidden {
+            display: none !important;
         }
-        
-        // ========== BACKGROUND PARTICLES ==========
-        function createParticles() {
-            const bg = document.getElementById('particles-bg');
-            for(let i = 0; i < 80; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'floating-dot';
-                dot.style.left = Math.random() * 100 + 'vw';
-                dot.style.width = Math.random() * 4 + 2 + 'px';
-                dot.style.height = dot.style.width;
-                dot.style.animationDuration = (Math.random() * 10 + 15) + 's';
-                dot.style.animationDelay = Math.random() * 10 + 's';
-                dot.style.opacity = Math.random() * 0.5 + 0.3;
-                bg.appendChild(dot);
-            }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        // ========== AUDIO FUNCTIONS ==========
-        function initAudio() {
-            // Preload audio
-            const typeSound = document.getElementById('type-sound');
-            const successSound = document.getElementById('success-sound');
-            
-            typeSound.volume = 0.2;
-            successSound.volume = 0.3;
-            
-            typeSound.load();
-            successSound.load();
+
+        .glow {
+            filter: drop-shadow(0 0 10px currentColor);
         }
-        
-        function playTypeSound() {
-            try {
-                const audio = document.getElementById('type-sound');
-                audio.currentTime = 0;
-                audio.play().catch(e => {
-                    // Fallback: create Web Audio API sound
-                    playKeypressSound();
-                });
-            } catch(e) {
-                playKeypressSound();
-            }
+
+        .pulse {
+            animation: pulse 2s infinite;
         }
-        
-        function playKeypressSound() {
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = 800 + Math.random() * 200;
-                oscillator.type = 'sine';
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.1);
-            } catch(e) {
-                console.log('Audio not supported');
-            }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
-        
-        function playSuccessSound() {
-            try {
-                const audio = document.getElementById('success-sound');
-                audio.currentTime = 0;
-                audio.play();
-            } catch(e) {
-                // Silent fail
-            }
+
+        /* ========== FILE UPLOAD ========== */
+        .file-upload {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            border: 2px dashed rgba(0, 247, 255, 0.3);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(0, 247, 255, 0.02);
         }
-        
-        // ========== TAB MANAGEMENT ==========
-        function switchTab(tab) {
-            // Hide all tabs
-            document.getElementById('encrypt-tab').style.display = 'none';
-            document.getElementById('decrypt-tab').style.display = 'none';
-            
-            // Remove active class
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tab + '-tab').style.display = 'block';
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-            
-            // Log
-            logActivity(`Switched to ${tab.toUpperCase()} mode`);
+
+        .file-upload:hover {
+            border-color: var(--cyber-cyan);
+            background: rgba(0, 247, 255, 0.05);
         }
-        
-        // ========== ENCRYPTION/DECRYPTION ==========
-        function encryptData() {
-            const masterKey = document.getElementById('masterKey').value.trim();
-            const inputText = document.getElementById('input-text').value.trim();
-            const outputDiv = document.getElementById('encrypt-output');
-            const placeholder = document.getElementById('encrypt-placeholder');
-            
-            // Validation
-            if (!masterKey) {
-                showToast('Master key is required', 'error');
-                return;
-            }
-            
-            if (masterKey.length < 8) {
-                showToast('Master key must be at least 8 characters', 'error');
-                return;
-            }
-            
-            if (!inputText) {
-                showToast('Please enter text to encrypt', 'error');
-                return;
-            }
-            
-            // Show scanner and hide placeholder
-            showScanner();
-            placeholder.style.display = 'none';
-            outputDiv.innerHTML = '';
-            
-            logActivity('Starting encryption process...');
-            
-            // Simulate processing delay
-            setTimeout(() => {
-                try {
-                    // Generate random salt
-                    const salt = CryptoJS.lib.WordArray.random(128/8);
-                    
-                    // Derive key using PBKDF2
-                    const key = CryptoJS.PBKDF2(masterKey, salt, {
-                        keySize: 256/32,
-                        iterations: 10000
-                    });
-                    
-                    // Generate random IV
-                    const iv = CryptoJS.lib.WordArray.random(128/8);
-                    
-                    // Encrypt using AES-256
-                    const encrypted = CryptoJS.AES.encrypt(inputText, key, {
-                        iv: iv,
-                        mode: CryptoJS.mode.CBC,
-                        padding: CryptoJS.pad.Pkcs7
-                    });
-                    
-                    // Create token with timestamp and data
-                    const timestamp = Date.now();
-                    const tokenData = {
-                        v: '3.0',
-                        t: timestamp,
-                        e: timestamp + (30 * 60 * 1000), // 30 minutes
-                        s: salt.toString(),
-                        i: iv.toString(),
-                        d: encrypted.toString()
-                    };
-                    
-                    // Convert to base64
-                    const jsonStr = JSON.stringify(tokenData);
-                    const base64Token = btoa(unescape(encodeURIComponent(jsonStr)));
-                    
-                    // Display with animation
-                    animateText(outputDiv, base64Token, 'encrypt');
-                    
-                    // Hide scanner
-                    hideScanner();
-                    
-                    // Show success
-                    showToast('Data encrypted successfully!', 'success');
-                    playSuccessSound();
-                    logActivity('Encryption completed');
-                    
-                    // Auto-copy to clipboard
-                    setTimeout(() => {
-                        copyToClipboard(base64Token);
-                        showToast('Token copied to clipboard', 'info');
-                    }, 1000);
-                    
-                } catch(error) {
-                    hideScanner();
-                    placeholder.style.display = 'block';
-                    showToast('Encryption failed: ' + error.message, 'error');
-                    logActivity('Encryption error: ' + error.message);
-                }
-            }, 1000);
+
+        .file-upload input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
         }
-        
-        function decryptData() {
-            const masterKey = document.getElementById('masterKey').value.trim();
-            const encryptedInput = document.getElementById('encrypted-input').value.trim();
-            const outputDiv = document.getElementById('decrypt-output');
-            const placeholder = document.getElementById('decrypt-placeholder');
-            
-            // Validation
-            if (!masterKey) {
-                showToast('Master key is required', 'error');
-                return;
-            }
-            
-            if (!encryptedInput) {
-                showToast('Please enter encrypted token', 'error');
-                return;
-            }
-            
-            // Show scanner
-            showScanner();
-            placeholder.style.display = 'none';
-            outputDiv.innerHTML = '';
-            
-            logActivity('Starting decryption process...');
-            
-            setTimeout(() => {
-                try {
-                    // Decode base64
-                    const jsonStr = decodeURIComponent(escape(atob(encryptedInput)));
-                    const tokenData = JSON.parse(jsonStr);
-                    
-                    // Check version
-                    if (tokenData.v !== '3.0') {
-                        throw new Error('Unsupported token version');
-                    }
-                    
-                    // Check expiry
-                    if (Date.now() > tokenData.e) {
-                        throw new Error('Token has expired (30 minutes)');
-                    }
-                    
-                    // Reconstruct salt and IV
-                    const salt = CryptoJS.enc.Hex.parse(tokenData.s);
-                    const iv = CryptoJS.enc.Hex.parse(tokenData.i);
-                    
-                    // Derive key
-                    const key = CryptoJS.PBKDF2(masterKey, salt, {
-                        keySize: 256/32,
-                        iterations: 10000
-                    });
-                    
-                    // Decrypt
-                    const decrypted = CryptoJS.AES.decrypt(tokenData.d, key, {
-                        iv: iv,
-                        mode: CryptoJS.mode.CBC,
-                        padding: CryptoJS.pad.Pkcs7
-                    });
-                    
-                    const text = decrypted.toString(CryptoJS.enc.Utf8);
-                    
-                    if (!text) {
-                        throw new Error('Wrong master key or corrupted token');
-                    }
-                    
-                    // Display with animation
-                    animateText(outputDiv, text, 'decrypt');
-                    
-                    // Hide scanner
-                    hideScanner();
-                    
-                    // Show success
-                    showToast('Data decrypted successfully!', 'success');
-                    playSuccessSound();
-                    logActivity('Decryption completed');
-                    
-                } catch(error) {
-                    hideScanner();
-                    placeholder.style.display = 'block';
-                    
-                    if (error.message.includes('expired')) {
-                        showToast('Token has expired (30 minutes)', 'error');
-                    } else if (error.message.includes('Wrong master key')) {
-                        showToast('Wrong master key or invalid token', 'error');
-                    } else {
-                        showToast('Decryption failed: ' + error.message, 'error');
-                    }
-                    
-                    logActivity('Decryption error: ' + error.message);
-                }
-            }, 1000);
+
+        /* ========== PASSWORD STRENGTH ========== */
+        .strength-meter {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
         }
-        
-        // ========== UI FUNCTIONS ==========
-        function showScanner() {
-            document.getElementById('scanner').style.display = 'block';
+
+        .strength-segment {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            transition: all 0.3s;
         }
-        
-        function hideScanner() {
-            document.getElementById('scanner').style.display = 'none';
+
+        .strength-segment.active {
+            background: var(--cyber-green);
         }
-        
-        function animateText(element, text, type) {
-            element.innerHTML = '';
-            const chars = text.split('');
-            let index = 0;
-            
-            const color = type === 'encrypt' ? '#00ff95' : '#00fff7';
-            
-            const interval = setInterval(() => {
-                if (index < chars.length) {
-                    const span = document.createElement('span');
-                    span.textContent = chars[index];
-                    span.style.color = color;
-                    span.style.fontWeight = '600';
-                    element.appendChild(span);
-                    
-                    // Play typing sound occasionally
-                    if (index % 15 === 0) {
-                        playTypeSound();
-                    }
-                    
-                    index++;
-                } else {
-                    clearInterval(interval);
-                }
-            }, 5);
+
+        .strength-segment.weak {
+            background: var(--cyber-red);
         }
-        
-        function showToast(message, type) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            
-            // Type styling
-            if (type === 'success') {
-                toast.style.borderColor = '#00ff95';
-                toast.style.background = 'rgba(0, 255, 149, 0.1)';
-            } else if (type === 'error') {
-                toast.style.borderColor = '#ff0055';
-                toast.style.background = 'rgba(255, 0, 85, 0.1)';
-            } else if (type === 'info') {
-                toast.style.borderColor = '#0066ff';
-                toast.style.background = 'rgba(0, 102, 255, 0.1)';
-            }
-            
-            container.appendChild(toast);
-            
-            // Auto remove
-            setTimeout(() => {
-                toast.style.animation = 'toastIn 0.3s ease-out reverse forwards';
-                setTimeout(() => {
-                    if (toast.parentNode) {
-                        toast.parentNode.removeChild(toast);
-                    }
-                }, 300);
-            }, 3000);
+
+        .strength-segment.medium {
+            background: var(--cyber-yellow);
         }
-        
-        function logActivity(message) {
-            const logDiv = document.getElementById('activity-log');
-            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            const entry = document.createElement('div');
-            entry.className = 'log-entry';
-            entry.textContent = `[${time}] ${message}`;
-            logDiv.prepend(entry);
-            
-            // Keep only 5 entries
-            while (logDiv.children.length > 5) {
-                logDiv.removeChild(logDiv.lastChild);
-            }
-        }
-        
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                console.log('Copied to clipboard');
-            }).catch(err => {
-                // Fallback
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-            });
-        }
-        
-        function copyOutput(type) {
-            const element = type === 'encrypt' ? 
-                document.getElementById('encrypt-output') : 
-                document.getElementById('decrypt-output');
-            
-            const text = element.textContent.trim();
-            
-            if (text) {
-                copyToClipboard(text);
-                showToast('Copied to clipboard', 'success');
-                playSuccessSound();
-            } else {
-                showToast('Nothing to copy', 'error');
-            }
-        }
-        
-        // ========== ABOUT MODAL ==========
-        function showAbout() {
-            document.getElementById('about-modal').style.display = 'flex';
-        }
-        
-        function closeAbout() {
-            document.getElementById('about-modal').style.display = 'none';
-        }
-        
-        // ========== EVENT LISTENERS ==========
-        function setupEventListeners() {
-            // Master key strength indicator
-            document.getElementById('masterKey').addEventListener('input', function() {
-                const key = this.value;
-                const strengthDiv = document.getElementById('key-strength');
-                
-                let strength = 'Weak';
-                let color = '#ff5555';
-                
-                if (key.length === 0) {
-                    strength = 'Enter password';
-                    color = '#666';
-                } else if (key.length < 4) {
-                    strength = 'Very Weak';
-                    color = '#ff5555';
-                } else if (key.length < 8) {
-                    strength = 'Weak';
-                    color = '#ffaa00';
-                } else if (key.length < 12) {
-                    strength = 'Good';
-                    color = '#55ff55';
-                } else if (key.length < 16) {
-                    strength = 'Strong';
-                    color = '#00aaff';
-                } else {
-                    strength = 'Very Strong';
-                    color = '#aa00ff';
-                }
-                
-                strengthDiv.innerHTML = `<span style="color: ${color}">${strength} • ${key.length} characters</span>`;
-            });
-            
-            // Keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
-                // Ctrl+E to encrypt
-                if (e.ctrlKey && e.key === 'e') {
-                    e.preventDefault();
-                    encryptData();
-                }
-                
-                // Ctrl+D to decrypt
-                if (e.ctrlKey && e.key === 'd') {
-                    e.preventDefault();
-                    decryptData();
-                }
-                
-                // Escape to close modal
-                if (e.key === 'Escape') {
-                    closeAbout();
-                }
-            });
-            
-            // Close modal when clicking outside
-            document.getElementById('about-modal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeAbout();
-                }
-            });
-        }
-        
-        // ========== AUTO-CLEANUP ==========
-        setInterval(() => {
-            // Clear fields after 15 minutes of inactivity
-            if (Date.now() - (window.lastActivity || 0) > 15 * 60 * 1000) {
-                document.getElementById('input-text').value = '';
-                document.getElementById('encrypted-input').value = '';
-                document.getElementById('masterKey').value = '';
-                logActivity('Auto-cleanup: cleared all fields');
-            }
-        }, 60000);
-        
-        // Track activity
-        ['click', 'keypress', 'mousemove', 'scroll'].forEach(event => {
-            document.addEventListener(event, () => {
-                window.lastActivity = Date.now();
-            });
-        });
-        
-        window.lastActivity = Date.now();
-        
-        // ========== PWA ==========
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').then(
-                    () => logActivity('Service Worker registered'),
-                    err => logActivity('Service Worker registration failed: ' + err)
-                );
-            });
-        }
-    </script>
-</body>
-</html>
+
+        /* ========== SESSION TIMER ========== */
+        .session-tim
