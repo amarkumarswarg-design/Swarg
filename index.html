@@ -1058,5 +1058,422 @@
             to { transform: rotate(360deg); }
         }
         
-        /* ===== RESPO
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .logo-text {
+                font-size: 48px;
+            }
+            
+            .creator-badge {
+                padding: 14px 24px;
+            }
+            
+            .main-content {
+                padding: 0 20px 32px;
+            }
+            
+            .glass-card {
+                padding: 24px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+            
+            .section-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+            
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 32px 24px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 40px;
+            }
+            
+            .app-header {
+                padding: 32px 20px 24px;
+            }
+            
+            .password-input {
+                padding: 20px 56px 20px 20px;
+                font-size: 16px;
+            }
+            
+            .tab-button {
+                padding: 18px 16px;
+                font-size: 15px;
+            }
+            
+            .text-area {
+                min-height: 150px;
+                padding: 20px;
+                font-size: 15px;
+            }
+            
+            .output-display {
+                min-height: 150px;
+                padding: 20px;
+                font-size: 14px;
+            }
+        }
+        
+        /* ===== UTILITY CLASSES ===== */
+        .hidden {
+            display: none !important;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-4 { margin-top: 16px; }
+        .mt-6 { margin-top: 24px; }
+        .mt-8 { margin-top: 32px; }
+        .mb-4 { margin-bottom: 16px; }
+        .mb-6 { margin-bottom: 24px; }
+        .mb-8 { margin-bottom: 32px; }
+        
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Space Background -->
+    <div class="space-canvas" id="space-canvas"></div>
+    
+    <!-- Main App Container -->
+    <div class="app-container">
+        <!-- Header with Glowing Branding -->
+        <header class="app-header">
+            <div class="brand-container">
+                <div class="logo-orb"></div>
+                <h1 class="logo-text">SWARG</h1>
+            </div>
+            
+            <div class="creator-badge">
+                <span class="creator-name">by Amar Kumar</span>
+                <i class="fas fa-check-circle verified-icon"></i>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Password Card -->
+            <div class="glass-card">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div>
+                        <h2 class="section-title">Master Password</h2>
+                        <p class="section-subtitle">Create a strong password. It cannot be recovered if forgotten.</p>
+                    </div>
+                </div>
+                
+                <div class="password-container">
+                    <label class="password-label">Your Encryption Key</label>
+                    <div class="password-wrapper">
+                        <input type="password" 
+                               id="master-password"
+                               class="password-input"
+                               placeholder="Enter your master password (minimum 12 characters)"
+                               autocomplete="off">
+                        <button type="button" class="password-toggle" id="toggle-password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Password Strength Meter -->
+                <div class="mt-6" id="strength-meter">
+                    <div style="display: flex; gap: 4px; margin-bottom: 8px;">
+                        <div class="strength-bar" style="background: #ef4444;"></div>
+                        <div class="strength-bar" style="background: #f59e0b;"></div>
+                        <div class="strength-bar" style="background: #f59e0b;"></div>
+                        <div class="strength-bar" style="background: #10b981;"></div>
+                        <div class="strength-bar" style="background: #10b981;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="font-size: 12px; color: rgba(255, 255, 255, 0.5);">Password Strength</span>
+                        <span style="font-size: 12px; color: #10b981; font-weight: 600;" id="strength-text">Strong</span>
+                    </div>
+                </div>
+                
+                <!-- Password Tools -->
+                <div class="action-grid mt-6">
+                    <button id="generate-password" class="action-button secondary-action">
+                        <i class="fas fa-dice"></i>
+                        Generate Strong
+                    </button>
+                    <button id="clear-password" class="action-button secondary-action">
+                        <i class="fas fa-eraser"></i>
+                        Clear
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <div class="tab-buttons">
+                    <button class="tab-button active" data-tab="encrypt">
+                        <i class="fas fa-lock"></i>
+                        Encrypt Data
+                    </button>
+                    <button class="tab-button" data-tab="decrypt">
+                        <i class="fas fa-unlock"></i>
+                        Decrypt Data
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Encrypt Tab -->
+            <div id="encrypt-tab" class="tab-content">
+                <div class="glass-card">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <h2 class="section-title">Secure Your Data</h2>
+                            <p class="section-subtitle">Encrypt sensitive information with military-grade encryption</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-area-container">
+                        <label class="text-area-label">Data to Encrypt</label>
+                        <textarea id="input-text" 
+                                  class="text-area"
+                                  placeholder="Enter sensitive information here... (passwords, private notes, financial details)"
+                                  rows="6"></textarea>
+                    </div>
+                    
+                    <!-- Scanner Animation -->
+                    <div class="scanner-wrapper">
+                        <div class="scanner-line" id="scanner-line"></div>
+                        
+                        <div class="output-container">
+                            <div id="encrypted-output" class="output-display hidden"></div>
+                            <div id="encrypted-placeholder" class="output-placeholder">
+                                <i class="fas fa-lock placeholder-icon"></i>
+                                <div>Encrypted data will appear here</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Encrypt Actions -->
+                    <div class="action-grid">
+                        <button id="encrypt-btn" class="action-button primary-action">
+                            <i class="fas fa-shield-alt"></i>
+                            Encrypt Data
+                        </button>
+                        <button id="copy-encrypted" class="action-button secondary-action">
+                            <i class="fas fa-copy"></i>
+                            Copy
+                        </button>
+                    </div>
+                    
+                    <!-- Encrypt Success -->
+                    <div id="encrypt-success" class="success-animation encrypt-success hidden">
+                        <div class="success-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h3 class="section-title">Data Secured!</h3>
+                        <p class="section-subtitle">Your data is now encrypted and stored in local vault</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Decrypt Tab -->
+            <div id="decrypt-tab" class="tab-content hidden">
+                <div class="glass-card">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <div>
+                            <h2 class="section-title">Access Your Data</h2>
+                            <p class="section-subtitle">Decrypt your encrypted data using your master password</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-area-container">
+                        <label class="text-area-label">Encrypted Token</label>
+                        <textarea id="encrypted-token" 
+                                  class="text-area"
+                                  placeholder="Paste encrypted token here..."
+                                  rows="6"></textarea>
+                    </div>
+                    
+                    <div class="output-container">
+                        <div id="decrypted-output" class="output-display hidden"></div>
+                        <div id="decrypted-placeholder" class="output-placeholder">
+                            <i class="fas fa-unlock placeholder-icon"></i>
+                            <div>Decrypted data will appear here</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Decrypt Actions -->
+                    <div class="action-grid">
+                        <button id="decrypt-btn" class="action-button primary-action">
+                            <i class="fas fa-key"></i>
+                            Decrypt Data
+                        </button>
+                        <button id="clear-decrypted" class="action-button secondary-action">
+                            <i class="fas fa-trash"></i>
+                            Clear
+                        </button>
+                    </div>
+                    
+                    <!-- Decrypt Success -->
+                    <div id="decrypt-success" class="success-animation unlock-success hidden">
+                        <div class="unlock-icon">
+                            <div class="lock-body"></div>
+                            <div class="lock-shackle"></div>
+                        </div>
+                        <h3 class="section-title">Access Granted!</h3>
+                        <p class="section-subtitle">Your data is now visible. It will auto-hide in 30 seconds.</p>
+                    </div>
+                    
+                    <!-- Auto-lock Timer -->
+                    <div id="auto-lock-timer" class="timer-container hidden">
+                        <i class="fas fa-clock timer-icon"></i>
+                        <div class="timer-content">
+                            <div class="timer-label">Auto-hide in</div>
+                            <div class="timer-count" id="timer-count">30</div>
+                        </div>
+                        <span style="color: rgba(255, 255, 255, 0.6);">seconds</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Security Features -->
+            <div class="security-grid">
+                <div class="security-badge">
+                    <i class="fas fa-shield-alt badge-icon"></i>
+                    <div class="badge-title">AES-256-GCM</div>
+                    <div class="badge-desc">Military-grade encryption</div>
+                </div>
+                <div class="security-badge">
+                    <i class="fas fa-user-shield badge-icon"></i>
+                    <div class="badge-title">100% Private</div>
+                    <div class="badge-desc">No data leaves your device</div>
+                </div>
+                <div class="security-badge">
+                    <i class="fas fa-bolt badge-icon"></i>
+                    <div class="badge-title">Local Processing</div>
+                    <div class="badge-desc">No internet required</div>
+                </div>
+                <div class="security-badge">
+                    <i class="fas fa-history badge-icon"></i>
+                    <div class="badge-title">Auto-expiry</div>
+                    <div class="badge-desc">Tokens expire in 30 minutes</div>
+                </div>
+            </div>
+            
+            <!-- Action Footer -->
+            <div class="glass-card">
+                <div class="action-grid">
+                    <button id="settings-btn" class="action-button secondary-action">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </button>
+                    <button id="vault-btn" class="action-button secondary-action">
+                        <i class="fas fa-database"></i>
+                        View Vault
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-tagline">Your Privacy, Our Priority</div>
+            <p>All encryption happens locally on your device • No data transmission</p>
+            <p class="mt-4" style="color: rgba(255, 255, 255, 0.3);">SWARG Security Vault © 2024 • by Amar Kumar</p>
+        </footer>
+    </div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                <h2 class="section-title">Settings</h2>
+                <button id="close-settings" style="background: none; border: none; color: rgba(255, 255, 255, 0.5); font-size: 28px; cursor: pointer; padding: 8px;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Auto-copy Setting -->
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Auto-copy after encryption</h4>
+                    <p>Automatically copy encrypted text to clipboard</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="auto-copy-toggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <!-- Sound Effects -->
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Sound effects</h4>
+                    <p>Play subtle sounds for actions and feedback</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="sound-toggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <!-- Auto-hide -->
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Auto-hide unlocked data</h4>
+                    <p>Hide decrypted text after 30 seconds</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="auto-hide-toggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <!-- Secur
     
