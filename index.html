@@ -2676,4 +2676,174 @@
                     const encryptedFile = await encryptFile(currentFile, password);
                     
                     // Download encrypted file
+                    const blob = new Blob([encryptedFile], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${currentFile.name}.swarg`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    playSound('success');
+                    showToast('File encrypted successfully', 'success');
+                    logActivity(`File encrypted: ${currentFile.name}`);
+                    
+                } catch (error) {
+                    showToast('File encryption failed', 'error');
+                }
+            });
+            
+            document.getElementById('decrypt-file').addEventListener('click', async () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.swarg,.json';
+                
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    const password = document.getElementById('masterKey').value;
+                    if (!password) {
+                        showToast('Enter master key to decrypt', 'error');
+                        return;
+                    }
+                    
+                    try {
+                        playSound('decrypt');
+                        showToast('Decrypting file...', 'info');
+                        
+                        const reader = new FileReader();
+                        reader.onload = async (e) => {
+                            try {
+                                const decryptedName = await decryptFile(e.target.result, password);
+                                playSound('success');
+                                showToast(`File decrypted: ${decryptedName}`, 'success');
+                                logActivity(`File decrypted: ${decryptedName}`);
+                            } catch (error) {
+                                // Error already handled in decryptFile
+                            }
+                        };
+                        
+                        reader.readAsText(file);
+                        
+                    } catch (error) {
+                        // Error already handled
+                    }
+                };
+                
+                input.click();
+            });
+            
+            // QR Code Operations
+            document.getElementById('generate-qr').addEventListener('click', () => {
+                const token = document.getElementById('encrypt-output').textContent;
+                if (token && token.length > 0) {
+                    if (token.length > 2000) {
+                        showToast('Token too large for QR code (max 2KB)', 'error');
+                        return;
+                    }
+                    generateQRCode(token);
+                    showToast('QR code generated', 'success');
+                } else {
+                    showToast('Encrypt some data first', 'error');
+                }
+            });
+            
+            // Generate Password
+            document.getElementById('generate-password').addEventListener('click', () => {
+                generatePassword();
+            });
+            
+            // Clear All
+            document.getElementById('clear-all').addEventListener('click', () => {
+                if (confirm('Clear all inputs and outputs?')) {
+                    document.getElementById('masterKey').value = '';
+                    document.getElementById('input-text').value = '';
+                    document.getElementById('encrypted-input').value = '';
+                    document.getElementById('encrypt-output').textContent = '';
+                    document.getElementById('encrypt-output').classList.add('hidden');
+                    document.getElementById('encrypt-placeholder').classList.remove('hidden');
+                    clearDecryptedText();
+                    updatePasswordStrength('');
+                    showToast('All cleared', 'info');
+                }
+            });
+            
+            // Clear Log
+            document.getElementById('clear-log').addEventListener('click', () => {
+                document.getElementById('activity-log').innerHTML = '';
+                showToast('Log cleared', 'info');
+            });
+            
+            // About Modal
+            document.getElementById('about-btn').addEventListener('click', () => {
+                document.getElementById('about-modal').classList.remove('hidden');
+                playSound('click');
+            });
+            
+            document.getElementById('close-about').addEventListener('click', () => {
+                document.getElementById('about-modal').classList.add('hidden');
+                playSound('click');
+            });
+            
+            document.getElementById('close-about-btn').addEventListener('click', () => {
+                document.getElementById('about-modal').classList.add('hidden');
+                playSound('click');
+            });
+            
+            // Language Toggle
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                const newLang = state.currentLanguage === 'en' ? 'hi' : 'en';
+                updateLanguage(newLang);
+                playSound('click');
+            });
+            
+            // Load saved language preference
+            const savedLang = localStorage.getItem('swarg_language') || 'en';
+            updateLanguage(savedLang);
+            
+            // Sound preference
+            document.addEventListener('keydown', (e) => {
+                // Ctrl+E to encrypt
+                if (e.ctrlKey && e.key === 'e') {
+                    e.preventDefault();
+                    document.getElementById('encrypt-btn').click();
+                }
+                
+                // Ctrl+D to decrypt
+                if (e.ctrlKey && e.key === 'd') {
+                    e.preventDefault();
+                    document.getElementById('decrypt-btn').click();
+                }
+                
+                // Ctrl+G to generate password
+                if (e.ctrlKey && e.key === 'g') {
+                    e.preventDefault();
+                    generatePassword();
+                }
+                
+                // Ctrl+S to toggle sounds
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    state.soundsEnabled = !state.soundsEnabled;
+                    localStorage.setItem('swarg_sounds_enabled', state.soundsEnabled);
+                    showToast(`Sounds ${state.soundsEnabled ? 'enabled' : 'disabled'}`, 'info');
+                }
+                
+                // Escape to close modal
+                if (e.key === 'Escape') {
+                    document.getElementById('about-modal').classList.add('hidden');
+                }
+            });
+            
+            // Prevent form submission
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', (e) => e.preventDefault());
+            });
+        }
+    </script>
+</body>
+</html>
  
