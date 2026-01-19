@@ -693,4 +693,313 @@
         <header class="app-header">
             <!-- Theme Toggle -->
             <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-                <i class="fas fa-moon"></i
+                <i class="fas fa-moon"></i>
+            </button>
+            
+            <!-- Branding -->
+            <div class="brand-container">
+                <h1 class="brand-logo">SWARG</h1>
+                <div class="brand-subtitle">
+                    <span>by Amar Kumar</span>
+                    <i class="fas fa-check-circle verified-badge"></i>
+                </div>
+            </div>
+            
+            <!-- Trust Indicators -->
+            <div class="trust-indicators">
+                <div class="trust-badge">
+                    <i class="fas fa-lock"></i>
+                    <span>Military-Grade Encryption</span>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-user-shield"></i>
+                    <span>100% Private</span>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Password Section -->
+            <div class="card">
+                <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">
+                    <i class="fas fa-key mr-2" style="color: var(--accent-primary);"></i>
+                    Your Master Password
+                </h2>
+                <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
+                    Create a strong password that only you know. This cannot be recovered if forgotten.
+                </p>
+                
+                <div class="password-container">
+                    <input type="password" 
+                           id="password" 
+                           class="password-input" 
+                           placeholder="Enter your master password (min 8 characters)"
+                           autocomplete="off">
+                    <button type="button" class="toggle-password" id="toggle-password" aria-label="Show password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                
+                <div style="display: flex; gap: 12px;">
+                    <button id="generate-password" class="btn btn-secondary" style="flex: 1;">
+                        <i class="fas fa-dice"></i>
+                        Generate Strong
+                    </button>
+                    <button id="clear-password" class="btn btn-secondary" style="width: 60px;">
+                        <i class="fas fa-eraser"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="lock">
+                    <i class="fas fa-lock"></i>
+                    <span>Lock Data</span>
+                </button>
+                <button class="tab-btn" data-tab="unlock">
+                    <i class="fas fa-unlock"></i>
+                    <span>Unlock Data</span>
+                </button>
+            </div>
+            
+            <!-- Lock Tab -->
+            <div id="lock-tab" class="tab-content fade-in">
+                <div class="card scan-animation" id="lock-card">
+                    <div class="scan-line" id="lock-scan-line"></div>
+                    
+                    <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">
+                        <i class="fas fa-lock mr-2" style="color: var(--accent-primary);"></i>
+                        Secure Your Data
+                    </h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
+                        Anything you type here will be encrypted and secured. Only someone with your password can unlock it.
+                    </p>
+                    
+                    <textarea id="text-to-lock" 
+                              class="text-area" 
+                              placeholder="Type or paste sensitive information here... (Bank details, passwords, personal notes)"
+                              rows="6"></textarea>
+                    
+                    <div class="action-buttons">
+                        <button id="lock-btn" class="btn btn-primary">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Encrypt & Lock</span>
+                        </button>
+                        <button id="clear-lock" class="btn btn-secondary">
+                            <i class="fas fa-trash"></i>
+                            <span>Clear</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Encrypted Output -->
+                    <div id="lock-output" class="output-display hidden">
+                        <div id="lock-output-content" style="word-break: break-word;"></div>
+                    </div>
+                    
+                    <div id="lock-placeholder" class="output-display">
+                        <div class="output-placeholder">
+                            <i class="fas fa-lock"></i>
+                            Encrypted data will appear here
+                        </div>
+                    </div>
+                    
+                    <!-- Success Animation -->
+                    <div id="lock-success" class="success-animation hidden">
+                        <div class="success-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h3 style="font-size: 18px; font-weight: 700; color: var(--accent-success); margin-bottom: 8px;">
+                            Data Secured!
+                        </h3>
+                        <p style="color: var(--text-secondary); font-size: 14px;">
+                            Your data is now encrypted and copied to clipboard.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Unlock Tab -->
+            <div id="unlock-tab" class="tab-content hidden fade-in">
+                <div class="card" id="unlock-card">
+                    <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">
+                        <i class="fas fa-unlock mr-2" style="color: var(--accent-primary);"></i>
+                        Access Your Data
+                    </h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
+                        Paste the encrypted code here to unlock it with your password.
+                    </p>
+                    
+                    <textarea id="text-to-unlock" 
+                              class="text-area" 
+                              placeholder="Paste encrypted code here..."
+                              rows="6"></textarea>
+                    
+                    <div class="action-buttons">
+                        <button id="unlock-btn" class="btn btn-primary">
+                            <i class="fas fa-key"></i>
+                            <span>Decrypt & Unlock</span>
+                        </button>
+                        <button id="clear-unlock" class="btn btn-secondary">
+                            <i class="fas fa-trash"></i>
+                            <span>Clear</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Decrypted Output -->
+                    <div id="unlock-output" class="output-display hidden">
+                        <div id="unlock-output-content" style="word-break: break-word;"></div>
+                    </div>
+                    
+                    <div id="unlock-placeholder" class="output-display">
+                        <div class="output-placeholder">
+                            <i class="fas fa-unlock"></i>
+                            Decrypted data will appear here
+                        </div>
+                    </div>
+                    
+                    <!-- Success Animation -->
+                    <div id="unlock-success" class="unlock-animation hidden">
+                        <div class="lock-icon">
+                            <div class="lock-body"></div>
+                            <div class="lock-shackle"></div>
+                        </div>
+                        <h3 style="font-size: 18px; font-weight: 700; color: var(--accent-success); margin-bottom: 8px;">
+                            Access Granted!
+                        </h3>
+                        <p style="color: var(--text-secondary); font-size: 14px;">
+                            Your data is now visible. It will auto-hide in 30 seconds.
+                        </p>
+                    </div>
+                    
+                    <!-- Auto-lock Timer -->
+                    <div id="autolock-timer" class="timer-display hidden">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <p style="font-weight: 600; color: var(--text-primary);">Auto-hide in</p>
+                            <p style="font-size: 18px; font-weight: 700; color: var(--accent-primary);" id="timer-countdown">30</p>
+                        </div>
+                        <span style="color: var(--text-secondary);">seconds</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Footer -->
+            <div class="card">
+                <div class="action-buttons">
+                    <button id="copy-btn" class="btn btn-secondary">
+                        <i class="fas fa-copy"></i>
+                        Copy
+                    </button>
+                    <button id="settings-btn" class="btn btn-secondary">
+                        <i class="fas fa-sliders-h"></i>
+                        Settings
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Toast -->
+        <div id="toast" class="toast hidden"></div>
+        
+        <!-- Typing Indicator -->
+        <div class="typing-indicator" id="typing-indicator">
+            <i class="fas fa-keyboard"></i>
+        </div>
+        
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+                    <h2 style="font-size: 24px; font-weight: 700; color: var(--text-primary);">
+                        <i class="fas fa-cog mr-2" style="color: var(--accent-primary);"></i>
+                        Settings
+                    </h2>
+                    <button id="close-settings" style="background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <!-- Auto-copy Setting -->
+                <div class="setting-toggle">
+                    <div>
+                        <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
+                            Auto-copy after encryption
+                        </p>
+                        <p style="font-size: 14px; color: var(--text-secondary);">
+                            Automatically copy encrypted text to clipboard
+                        </p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autocopy-toggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <!-- Sound Effects -->
+                <div class="setting-toggle">
+                    <div>
+                        <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
+                            Sound effects
+                        </p>
+                        <p style="font-size: 14px; color: var(--text-secondary);">
+                            Play subtle sounds for actions
+                        </p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="sound-toggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <!-- Auto-hide -->
+                <div class="setting-toggle">
+                    <div>
+                        <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
+                            Auto-hide unlocked data
+                        </p>
+                        <p style="font-size: 14px; color: var(--text-secondary);">
+                            Hide decrypted text after 30 seconds
+                        </p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autohide-toggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <!-- Security Details Button -->
+                <button id="security-details-btn" class="btn btn-secondary" style="width: 100%; margin-top: 24px;">
+                    <i class="fas fa-shield-alt"></i>
+                    View Security Details
+                </button>
+                
+                <!-- Security Details (Hidden) -->
+                <div id="security-details" class="hidden" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+                    <h3 style="font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">
+                        Technical Specifications
+                    </h3>
+                    <div style="background: var(--bg-tertiary); padding: 20px; border-radius: 12px; font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+                        <p style="margin-bottom: 8px;"><strong>Encryption Algorithm:</strong> AES-256-GCM</p>
+                        <p style="margin-bottom: 8px;"><strong>Key Derivation:</strong> PBKDF2 with 300,000+ iterations</p>
+                        <p style="margin-bottom: 8px;"><strong>Processing:</strong> 100% local - no data leaves your device</p>
+                        <p style="margin-bottom: 8px;"><strong>Authentication:</strong> GCM authenticated encryption</p>
+                        <p style="margin-bottom: 8px;"><strong>Random Generation:</strong> Crypto.getRandomValues()</p>
+                        <p style="margin-bottom: 8px;"><strong>Token Expiry:</strong> 30 minutes</p>
+                    </div>
+                </div>
+                
+                <!-- App Info -->
+                <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+                    <p style="color: var(--text-tertiary); font-size: 14px;">
+                        SWARG v1.0<br>
+                        <span style="color: var(--text-secondary);">by Amar Kumar</span><br>
+                        All encryption happens on your device
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Elem
