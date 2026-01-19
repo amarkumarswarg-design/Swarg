@@ -1071,4 +1071,362 @@
             </div>
         </div>
         
-        <!-- Foot
+        <!-- Footer -->
+        <footer class="text-center py-8 text-gray-500 text-sm">
+            <div class="mb-2 flex flex-col md:flex-row items-center justify-center gap-4">
+                <div class="flex items-center">
+                    <i class="fas fa-server text-cyan-400 mr-2"></i>
+                    <span data-i18n="no_network">NO NETWORK REQUIRED • ALL DATA STAYS LOCAL</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-shield-alt text-green-400 mr-2"></i>
+                    <span data-i18n="zero_knowledge">ZERO-KNOWLEDGE ARCHITECTURE</span>
+                </div>
+            </div>
+            <div>© <span id="current-year">2026</span> SWARG INDUSTRIAL SUITE | AMAR KUMAR</div>
+        </footer>
+    </div>
+    
+    <!-- About Modal -->
+    <div id="about-modal" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 hidden items-center justify-center p-4">
+        <div class="glass-panel max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-bold text-cyan-400">
+                    <i class="fas fa-microchip mr-2"></i>
+                    <span data-i18n="about_swarg">About SWARG Encryption Suite</span>
+                </h2>
+                <button id="close-about" class="text-2xl text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Technical Specifications -->
+                <div class="bg-black/30 p-5 rounded-2xl border border-cyan-500/20">
+                    <h3 class="text-white font-bold mb-3 text-lg" data-i18n="tech_specs">Technical Specifications</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-cyan-400 text-sm mb-1" data-i18n="algorithm">Algorithm</p>
+                            <p class="text-white">AES-256-GCM (Galois/Counter Mode)</p>
+                        </div>
+                        <div>
+                            <p class="text-cyan-400 text-sm mb-1" data-i18n="key_derivation">Key Derivation</p>
+                            <p class="text-white">PBKDF2 with SHA-256 (300,000+ iterations)</p>
+                        </div>
+                        <div>
+                            <p class="text-cyan-400 text-sm mb-1" data-i18n="authentication">Authentication</p>
+                            <p class="text-white">GCM provides authenticated encryption</p>
+                        </div>
+                        <div>
+                            <p class="text-cyan-400 text-sm mb-1" data-i18n="random_source">Random Source</p>
+                            <p class="text-white">Crypto.getRandomValues() + WebCrypto API</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security Features -->
+                <div class="bg-black/30 p-5 rounded-2xl border border-green-500/20">
+                    <h3 class="text-white font-bold mb-3 text-lg" data-i18n="security_features">Security Features</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span data-i18n="feature_local">All encryption/decryption happens locally in your browser</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span data-i18n="feature_no_storage">No data is stored or transmitted to any server</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span data-i18n="feature_expiry">Tokens automatically expire after 30 minutes</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span data-i18n="feature_memory">Memory protection with non-extractable WebCrypto keys</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span data-i18n="feature_rate_limit">Rate limiting (5 attempts → 60s lock)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span data-i18n="feature_auto_lock">Auto-lock (decrypted text clears in 30 seconds)</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Vault Information -->
+                <div class="bg-black/30 p-5 rounded-2xl border border-purple-500/20">
+                    <h3 class="text-white font-bold mb-3 text-lg" data-i18n="vault_info">Vault Information</h3>
+                    <div class="space-y-3">
+                        <p class="text-white" data-i18n="vault_desc">
+                            The vault uses IndexedDB to store encrypted entries locally. 
+                            Each entry is individually encrypted with your master key.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="text-purple-400" data-i18n="max_entries">Maximum Entries</p>
+                                <p class="text-white">~10,000 (performance warning after 10k)</p>
+                            </div>
+                            <div>
+                                <p class="text-purple-400" data-i18n="backup">Auto-backup</p>
+                                <p class="text-white">Every 10 entries (encrypted export)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- File Support -->
+                <div class="bg-black/30 p-5 rounded-2xl border border-yellow-500/20">
+                    <h3 class="text-white font-bold mb-3 text-lg" data-i18n="file_support">File Support</h3>
+                    <div class="space-y-3">
+                        <p class="text-white" data-i18n="file_desc">
+                            SWARG v1.0 supports encryption of text files (.txt) and PDF files (.pdf).
+                            Files are processed entirely in your browser.
+                        </p>
+                        <div class="flex items-center gap-4 text-sm">
+                            <div>
+                                <p class="text-yellow-400" data-i18n="max_size">Maximum Size</p>
+                                <p class="text-white">10 MB per file</p>
+                            </div>
+                            <div>
+                                <p class="text-yellow-400" data-i18n="future_support">Future Support</p>
+                                <p class="text-white">Images, Documents, Archives</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Local Processing Proof -->
+                <div class="bg-black/30 p-5 rounded-2xl border border-cyan-500/20">
+                    <h3 class="text-white font-bold mb-3 text-lg" data-i18n="local_proof">Local Processing Proof</h3>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="fas fa-network-wired text-cyan-400 text-2xl mr-4"></i>
+                            <div>
+                                <p class="text-white font-bold" data-i18n="no_network_calls">No Network Calls Detected</p>
+                                <p class="text-gray-400 text-sm" data-i18n="all_operations">All operations performed offline</p>
+                            </div>
+                        </div>
+                        <div class="text-green-400 font-bold">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span data-i18n="verified">VERIFIED</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="close-about-btn" class="w-full mt-8 bg-cyan-500 text-black py-3 rounded-xl font-bold hover:bg-cyan-400 transition">
+                <span data-i18n="close">CLOSE</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Audio Elements for Sound Effects -->
+    <audio id="type-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-mechanical-keyboard-typing-1384.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="click-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="encrypt-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-sci-fi-positive-notification-905.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="decrypt-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="success-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="error-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-warning-alarm-buzzer-958.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Main JavaScript -->
+    <script>
+        // ==================== CONFIGURATION ====================
+        const CONFIG = {
+            // Security
+            PBKDF2_ITERATIONS: 300000, // Increased from 100k
+            PBKDF2_MIN_ITERATIONS: 100000,
+            PBKDF2_MAX_ITERATIONS: 600000,
+            SALT_LENGTH: 32,
+            IV_LENGTH: 16,
+            TOKEN_EXPIRY_MINUTES: 30,
+            AUTO_LOCK_SECONDS: 30,
+            RATE_LIMIT_ATTEMPTS: 5,
+            RATE_LIMIT_LOCK_SECONDS: 60,
+            CLIPBOARD_CLEAR_SECONDS: 15,
+            
+            // Vault
+            MAX_VAULT_ENTRIES: 10000,
+            PERFORMANCE_WARNING_THRESHOLD: 5000,
+            AUTO_BACKUP_INTERVAL: 10,
+            
+            // Files
+            MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
+            SUPPORTED_FILE_TYPES: ['.txt', '.pdf'],
+            
+            // UI
+            ANIMATION_DURATION: 300,
+            TYPE_SOUND_VOLUME: 0.2,
+            CLICK_SOUND_VOLUME: 0.3
+        };
+
+        // ==================== STATE MANAGEMENT ====================
+        const state = {
+            masterKey: '',
+            currentTab: 'encrypt',
+            vaultEntries: [],
+            failedAttempts: 0,
+            lockedUntil: 0,
+            autoLockTimer: null,
+            clipboardTimer: null,
+            lastActivity: Date.now(),
+            isProcessing: false,
+            currentLanguage: 'en',
+            soundsEnabled: true,
+            sessionStart: Date.now()
+        };
+
+        // ==================== INTERNATIONALIZATION ====================
+        const translations = {
+            en: {
+                // UI Labels
+                about_system: "About System",
+                local_processing: "Local Processing",
+                no_data_storage: "No Data Storage",
+                vault_mode: "Vault Mode",
+                security_warning: "Security Warning",
+                threat_model: "This app protects data at rest and in transit using AES-256-GCM encryption. It does NOT protect against malware, keyloggers, or a compromised device. Always ensure your operating system and browser are up to date.",
+                master_key: "MASTER ENCRYPTION KEY",
+                strength: "Strength",
+                generate_password: "Generate Password",
+                clear_all: "Clear All",
+                secure_data: "Secure Data",
+                reveal_truth: "Reveal Truth",
+                vault: "Vault",
+                files: "Files",
+                encrypt: "Encrypt",
+                copy: "Copy",
+                save_to_vault: "Save to Vault",
+                decrypt: "Decrypt",
+                auto_lock: "Auto-lock",
+                clear: "Clear",
+                add_entry: "Add Entry",
+                entries: "Entries",
+                size: "Size",
+                last_backup: "Last Backup",
+                performance: "Performance",
+                vault_empty: "Vault is empty. Add your first encrypted entry.",
+                export_vault: "Export Vault",
+                import_vault: "Import Vault",
+                wipe_vault: "Wipe Vault",
+                drag_drop: "Drag & drop or click to upload",
+                supported_files: "Supported: .txt, .pdf (Max 10MB)",
+                encrypt_file: "Encrypt File",
+                decrypt_file: "Decrypt File",
+                file_warning: "Note: Files are encrypted locally and never uploaded to any server. Large files may take longer to process.",
+                qr_instruction: "Scan this QR code to share the encrypted token",
+                qr_warning: "Warning: QR codes are less secure than manual transfer. Tokens auto-expire in 30 minutes.",
+                generate_qr: "Generate QR",
+                scan_qr: "Scan QR",
+                system_log: "SYSTEM LOG",
+                clear_log: "Clear",
+                no_network: "NO NETWORK REQUIRED • ALL DATA STAYS LOCAL",
+                zero_knowledge: "ZERO-KNOWLEDGE ARCHITECTURE",
+                about_swarg: "About SWARG Encryption Suite",
+                close: "CLOSE",
+                tech_specs: "Technical Specifications",
+                algorithm: "Algorithm",
+                key_derivation: "Key Derivation",
+                authentication: "Authentication",
+                random_source: "Random Source",
+                security_features: "Security Features",
+                feature_local: "All encryption/decryption happens locally in your browser",
+                feature_no_storage: "No data is stored or transmitted to any server",
+                feature_expiry: "Tokens automatically expire after 30 minutes",
+                feature_memory: "Memory protection with non-extractable WebCrypto keys",
+                feature_rate_limit: "Rate limiting (5 attempts → 60s lock)",
+                feature_auto_lock: "Auto-lock (decrypted text clears in 30 seconds)",
+                vault_info: "Vault Information",
+                vault_desc: "The vault uses IndexedDB to store encrypted entries locally. Each entry is individually encrypted with your master key.",
+                max_entries: "Maximum Entries",
+                backup: "Auto-backup",
+                file_support: "File Support",
+                file_desc: "SWARG v1.0 supports encryption of text files (.txt) and PDF files (.pdf). Files are processed entirely in your browser.",
+                max_size: "Maximum Size",
+                future_support: "Future Support",
+                local_proof: "Local Processing Proof",
+                no_network_calls: "No Network Calls Detected",
+                all_operations: "All operations performed offline",
+                verified: "VERIFIED"
+            },
+            hi: {
+                // Hindi Translations
+                about_system: "सिस्टम के बारे में",
+                local_processing: "स्थानीय प्रसंस्करण",
+                no_data_storage: "कोई डेटा संग्रहण नहीं",
+                vault_mode: "वॉल्ट मोड",
+                security_warning: "सुरक्षा चेतावनी",
+                threat_model: "यह ऐप AES-256-GCM एन्क्रिप्शन का उपयोग करके आराम और पारगमन में डेटा की सुरक्षा करता है। यह मैलवेयर, कीलॉगर्स, या कम्प्रोमाइज्ड डिवाइस से सुरक्षा नहीं करता है। हमेशा सुनिश्चित करें कि आपका ऑपरेटिंग सिस्टम और ब्राउज़र अप टू डेट हैं।",
+                master_key: "मास्टर एन्क्रिप्शन कुंजी",
+                strength: "मजबूती",
+                generate_password: "पासवर्ड जनरेट करें",
+                clear_all: "सब साफ करें",
+                secure_data: "डेटा सुरक्षित करें",
+                reveal_truth: "सत्य प्रकट करें",
+                vault: "वॉल्ट",
+                files: "फ़ाइलें",
+                encrypt: "एन्क्रिप्ट करें",
+                copy: "कॉपी करें",
+                save_to_vault: "वॉल्ट में सहेजें",
+                decrypt: "डिक्रिप्ट करें",
+                auto_lock: "स्वचालित लॉक",
+                clear: "साफ करें",
+                add_entry: "प्रविष्टि जोड़ें",
+                entries: "प्रविष्टियाँ",
+                size: "आकार",
+                last_backup: "अंतिम बैकअप",
+                performance: "प्रदर्शन",
+                vault_empty: "वॉल्ट खाली है। अपनी पहली एन्क्रिप्टेड प्रविष्टि जोड़ें।",
+                export_vault: "वॉल्ट निर्यात करें",
+                import_vault: "वॉल्ट आयात करें",
+                wipe_vault: "वॉल्ट मिटाएँ",
+                drag_drop: "खींचें और छोड़ें या अपलोड करने के लिए क्लिक करें",
+                supported_files: "समर्थित: .txt, .pdf (अधिकतम 10MB)",
+                encrypt_file: "फ़ाइल एन्क्रिप्ट करें",
+                decrypt_file: "फ़ाइल डिक्रिप्ट करें",
+                file_warning: "नोट: फ़ाइलें स्थानीय रूप से एन्क्रिप्ट की जाती हैं और किसी सर्वर पर अपलोड नहीं की जातीं। बड़ी फ़ाइलों को संसाधित करने में अधिक समय लग सकता है।",
+                qr_instruction: "एन्क्रिप्टेड टोकन साझा करने के लिए इस QR कोड को स्कैन करें",
+                qr_warning: "चेतावनी: QR कोड मैनुअल ट्रांसफर की तुलना में कम सुरक्षित हैं। टोकन 30 मिनट में स्वचालित रूप से समाप्त हो जाते हैं।",
+                generate_qr: "QR कोड जनरेट करें",
+                scan_qr: "QR स्कैन करें",
+                system_log: "सिस्टम लॉग",
+                clear_log: "साफ करें",
+                no_network: "कोई नेटवर्क आवश्यक नहीं • सारा डेटा स्थानीय रहता है",
+                zero_knowledge: "जीरो-नॉलेज आर्किटेक्चर",
+                about_swarg: "SWARG एन्क्रिप्शन सुइट के बारे में",
+                close: "बंद करें",
+                tech_specs: "तकनीकी विशेषताएँ",
+                algorithm: "एल्गोरिथम",
+                key_derivation: "कुंजी व्युत्पत्ति",
+                authentication: "प्रमाणीकरण",
+                random_source: "यादृच्छिक स्रोत",
+                security_features: "सुरक्षा सुविधाएँ",
+                feature_local: "सारा एन्क्रिप्शन/डिक्रिप्शन आपके ब्राउज़र में स्थानीय रूप से होता है",
+                feature_no_storage: "कोई डेटा किसी सर्वर पर संग्रहीत या प्रसारित नहीं किया जाता",
+                feature_expiry: "टोकन 30 मिनट के बाद स्वचालित रूप से समाप्त हो जाते हैं",
+                feature_memory: "गैर-निकाले जाने योग्य WebCrypto कुंजियों के साथ मेमोरी संरक्षण",
+                feature_rate_limit: "दर सीमित (5 प्रयास → 60s लॉक)",
+                feature_auto_lock: "स्वचालित लॉक (डिक्रिप्टेड टेक्स्ट 30 सेकंड में साफ हो जाता है)",
+                vault_info: "वॉल्ट जानकारी",
+                vault_desc: "वॉल्ट एन्क्रिप्टेड प्रविष्टियों को स्थानीय रूप से संग्रहीत करने के लिए IndexedDB का उपयोग करता है। प्रत्येक प्रविष्टि आपकी मास्टर कुंजी के साथ व्यक्तिगत रूप से एन्क्रिप्ट की जाती है।",
+                max_entries: "अधिकतम प्रविष्टियाँ",
+                backup: "स्वचालित बैकअप",
+                file_support: "फ़ाइल समर्थन",
+                file_desc: "SWARG v1.0 टेक्स्ट फ़ाइलों (.txt) और PDF फ़ाइलों (.pdf) के एन्क्रिप्शन का समर्थन करता है। फ़ाइलें पूरी तरह से आपके ब्राउज़र में संसाधित की जाती हैं।",
+                max_size: "अधिकतम आकार",
+                future_support: "भविष्य का समर्थन",
+                local_proof: "स्थानीय प्रसंस्करण प्रमाण",
+                no_network_calls: "क
