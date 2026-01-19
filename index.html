@@ -2064,5 +2064,250 @@
             }
         }
 
-        // ===== SETTINGS MANAGEMEN
+        // ===== SETTINGS MANAGEMENT =====
+        function loadSettings() {
+            const savedSounds = localStorage.getItem('swarg_sounds');
+            const savedAutoHide = localStorage.getItem('swarg_autohide');
+            const savedAutoCopy = localStorage.getItem('swarg_autocopy');
+            
+            if (savedSounds !== null) {
+                state.soundsEnabled = savedSounds === 'true';
+                document.getElementById('sound-toggle').checked = state.soundsEnabled;
+            }
+            
+            if (savedAutoHide !== null) {
+                state.autoHideEnabled = savedAutoHide === 'true';
+                document.getElementById('auto-hide-toggle').checked = state.autoHideEnabled;
+            }
+            
+            if (savedAutoCopy !== null) {
+                state.autoCopyEnabled = savedAutoCopy === 'true';
+                document.getElementById('auto-copy-toggle').checked = state.autoCopyEnabled;
+            }
+        }
+
+        function saveSettings() {
+            localStorage.setItem('swarg_sounds', state.soundsEnabled);
+            localStorage.setItem('swarg_autohide', state.autoHideEnabled);
+            localStorage.setItem('swarg_autocopy', state.autoCopyEnabled);
+        }
+
+        // ===== EVENT LISTENERS =====
+        function setupEventListeners() {
+            // Password toggle
+            document.getElementById('toggle-password').addEventListener('click', function() {
+                const passwordInput = document.getElementById('master-password');
+                const icon = this.querySelector('i');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.className = 'fas fa-eye-slash';
+                } else {
+                    passwordInput.type = 'password';
+                    icon.className = 'fas fa-eye';
+                }
+                
+                passwordInput.focus();
+                playSound('click');
+            });
+
+            // Password input with typing sound
+            document.getElementById('master-password').addEventListener('input', function(e) {
+                state.password = e.target.value;
+                
+                // Update strength meter
+                updateStrengthMeter(e.target.value);
+                
+                // Play typing sound occasionally
+                if (Math.random() < 0.3) {
+                    playSound('typing');
+                }
+            });
+
+            // Generate password
+            document.getElementById('generate-password').addEventListener('click', generatePassword);
+
+            // Clear password
+            document.getElementById('clear-password').addEventListener('click', () => {
+                document.getElementById('master-password').value = '';
+                state.password = '';
+                updateStrengthMeter('');
+                playSound('click');
+                showToast('Password cleared', 'info');
+            });
+
+            // Tab switching
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tab = this.dataset.tab;
+                    switchTab(tab);
+                });
+            });
+
+            // Text inputs with typing sound
+            ['input-text', 'encrypted-token'].forEach(id => {
+                const element = document.getElementById(id);
+                element.addEventListener('input', () => {
+                    if (Math.random() < 0.2) {
+                        playSound('typing');
+                    }
+                });
+            });
+
+            // Encrypt button
+            document.getElementById('encrypt-btn').addEventListener('click', encryptData);
+
+            // Decrypt button
+            document.getElementById('decrypt-btn').addEventListener('click', decryptData);
+
+            // Copy encrypted
+            document.getElementById('copy-encrypted').addEventListener('click', async () => {
+                const output = document.getElementById('encrypted-output').textContent;
+                if (output) {
+                    await copyToClipboard(output);
+                    showToast('Copied to clipboard', 'success');
+                } else {
+                    showToast('No encrypted data to copy', 'error');
+                }
+            });
+
+            // Clear decrypted
+            document.getElementById('clear-decrypted').addEventListener('click', () => {
+                hideDecryptedOutput();
+                document.getElementById('encrypted-token').value = '';
+                playSound('click');
+                showToast('Cleared', 'info');
+            });
+
+            // Settings
+            document.getElementById('settings-btn').addEventListener('click', () => {
+                document.getElementById('settings-modal').style.display = 'flex';
+                playSound('click');
+            });
+
+            document.getElementById('close-settings').addEventListener('click', () => {
+                document.getElementById('settings-modal').style.display = 'none';
+                playSound('click');
+            });
+
+            document.getElementById('settings-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('settings-modal')) {
+                    document.getElementById('settings-modal').style.display = 'none';
+                }
+            });
+
+            // Vault button
+            document.getElementById('vault-btn').addEventListener('click', () => {
+                showToast('Local vault coming soon', 'info');
+                playSound('click');
+            });
+
+            // Settings toggles
+            document.getElementById('auto-copy-toggle').addEventListener('change', function() {
+                state.autoCopyEnabled = this.checked;
+                saveSettings();
+                playSound('click');
+            });
+
+            document.getElementById('sound-toggle').addEventListener('change', function() {
+                state.soundsEnabled = this.checked;
+                saveSettings();
+                playSound('click');
+            });
+
+            document.getElementById('auto-hide-toggle').addEventListener('change', function() {
+                state.autoHideEnabled = this.checked;
+                saveSettings();
+                playSound('click');
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Ctrl+E to encrypt
+                if (e.ctrlKey && e.key === 'e') {
+                    e.preventDefault();
+                    document.getElementById('encrypt-btn').click();
+                }
+                
+                // Ctrl+D to decrypt
+                if (e.ctrlKey && e.key === 'd') {
+                    e.preventDefault();
+                    document.getElementById('decrypt-btn').click();
+                }
+                
+                // Ctrl+G to generate password
+                if (e.ctrlKey && e.key === 'g') {
+                    e.preventDefault();
+                    generatePassword();
+                }
+                
+                // Ctrl+S for settings
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    document.getElementById('settings-btn').click();
+                }
+                
+                // Ctrl+1 for encrypt tab
+                if (e.ctrlKey && e.key === '1') {
+                    e.preventDefault();
+                    switchTab('encrypt');
+                }
+                
+                // Ctrl+2 for decrypt tab
+                if (e.ctrlKey && e.key === '2') {
+                    e.preventDefault();
+                    switchTab('decrypt');
+                }
+                
+                // Escape to close modal
+                if (e.key === 'Escape') {
+                    document.getElementById('settings-modal').style.display = 'none';
+                }
+            });
+
+            // PWA installation
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                showToast('Install SWARG as an app for better experience', 'info');
+            });
+
+            // Service worker registration
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js').then(() => {
+                    logActivity('Service Worker registered', 'system');
+                }).catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+            }
+        }
+
+        // ===== HELPER FUNCTIONS =====
+        function logActivity(message, type) {
+            const timestamp = new Date().toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            console.log(`[${timestamp}] [${type.toUpperCase()}] ${message}`);
+        }
+
+        function checkPWA() {
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                console.log('Running as PWA');
+                logActivity('Running in standalone mode', 'system');
+            }
+        }
+
+        // ===== INITIALIZE ON LOAD =====
+        window.addEventListener('load', () => {
+            // Set current year in footer if needed
+            const yearElement = document.querySelector('footer p:last-child');
+            if (yearElement) {
+                yearElement.textContent = yearElement.textContent.replace('2024', new Date().getFullYear());
+            }
+        });
+    </script>
+</body>
+</html>
     
