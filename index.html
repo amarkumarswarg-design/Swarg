@@ -1026,5 +1026,281 @@
                             <i class="fas fa-music"></i>
                             <span>Master Volume</span>
                         </div>
-                        <input type="range" class="range-sli
+                        <input type="range" class="range-slider" id="volumeSlider" min="0" max="100" value="70">
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-clock"></i>
+                            <span>Auto-clear (minutes)</span>
+                        </div>
+                        <select class="form-input" id="autoClear" style="width: 120px; padding: 8px;">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="30">30</option>
+                            <option value="0">Never</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-eye"></i>
+                            <span>Show Passwords</span>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="showPasswords">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="btn-group mt-20">
+                    <button class="btn btn-secondary" id="aboutBtn">
+                        <i class="fas fa-info-circle"></i> About SWARG
+                    </button>
+                    <button class="btn btn-secondary" id="securityAudit">
+                        <i class="fas fa-shield-alt"></i> Security Audit
+                    </button>
+                    <button class="btn btn-danger" id="clearAllBtn">
+                        <i class="fas fa-broom"></i> Clear All
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-items">
+                <div class="status-item">
+                    <i class="fas fa-lock"></i>
+                    <span>AES-256-GCM Active</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-database"></i>
+                    <span>Local Storage Only</span>
+                </div>
+                <div class="sound-toggle" id="soundStatus">
+                    <i class="fas fa-volume-up"></i>
+                    <span>Sound: ON</span>
+                </div>
+            </div>
+            <div class="status-item">
+                <i class="fas fa-mobile-alt"></i>
+                <span>PWA Ready</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scanning Animation Overlay -->
+    <div class="scanning-overlay" id="scanningOverlay">
+        <div class="scanning-content">
+            <i class="fas fa-shield-alt scanning-icon"></i>
+            <h2 class="scanning-title">Military Grade Encryption</h2>
+            <div class="scanning-line"></div>
+            <p class="scanning-text">Encrypting with AES-256-GCM • PBKDF2 Key Derivation • Secure Random Generation</p>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div class="about-modal" id="aboutModal">
+        <div class="about-content">
+            <button class="close-modal" id="closeAbout">&times;</button>
+            <div class="about-header">
+                <h2 class="about-title">SWARG Shield v5.0</h2>
+                <p>Real AES-256-GCM Encryption Vault</p>
+            </div>
+            <div class="about-body">
+                <h3>Technical Specifications</h3>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fas fa-microchip feature-icon"></i>
+                        <span>AES-256-GCM Encryption</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-key feature-icon"></i>
+                        <span>PBKDF2 Key Derivation (100k iterations)</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-random feature-icon"></i>
+                        <span>Crypto.getRandomValues() for randomness</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-shield-alt feature-icon"></i>
+                        <span>Authentication Tags (GCM mode)</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-clock feature-icon"></i>
+                        <span>Real Token Expiry (Invalidates decryption)</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-database feature-icon"></i>
+                        <span>Zero Persistent Storage</span>
+                    </div>
+                </div>
+
+                <h3 class="mt-20">Security Architecture</h3>
+                <p>• All encryption happens locally using Web Crypto API</p>
+                <p>• No data leaves your browser</p>
+                <p>• Memory zeroization after operations</p>
+                <p>• Real cryptographic binding between password and token</p>
+                <p>• Tamper-proof authentication tags</p>
+                <p>• Secure random number generation</p>
+
+                <div class="text-center mt-20">
+                    <p><strong>Version:</strong> 5.0 (Real Encryption)</p>
+                    <p><strong>Developer:</strong> Amar Kumar</p>
+                    <p><strong>Crypto Library:</strong> Web Crypto API</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-info-circle notification-icon"></i>
+        <div class="notification-message" id="notificationMessage">SWARG Shield v5.0 Initialized</div>
+    </div>
+
+    <!-- Real Cryptography Implementation -->
+    <script>
+        // ===== CRYPTOGRAPHIC CONFIGURATION =====
+        const CRYPTO_CONFIG = {
+            ALGORITHM: 'AES-GCM',
+            KEY_LENGTH: 256,
+            KEY_DERIVATION: {
+                NAME: 'PBKDF2',
+                HASH: 'SHA-256',
+                ITERATIONS: 100000,
+                SALT_LENGTH: 32
+            },
+            IV_LENGTH: 12,
+            TAG_LENGTH: 128,
+            TOKEN_VERSION: 'SWARGv5',
+            MAX_PASSWORD_ATTEMPTS: 5
+        };
+
+        // ===== SOUND SYSTEM (FIXED) =====
+        class SoundManager {
+            constructor() {
+                this.sounds = {};
+                this.context = null;
+                this.masterVolume = 0.7;
+                this.enabled = true;
+                this.currentSounds = new Set();
+                this.init();
+            }
+
+            async init() {
+                try {
+                    this.context = new (window.AudioContext || window.webkitAudioContext)();
+                    this.createSounds();
+                } catch (error) {
+                    console.warn('Audio context not available:', error);
+                    this.enabled = false;
+                }
+            }
+
+            createSounds() {
+                // Type sound (short high-frequency beep)
+                this.sounds.type = this.createBeep(800, 0.05);
+                
+                // Click sound (short mid-frequency beep)
+                this.sounds.click = this.createBeep(600, 0.1);
+                
+                // Encrypt sound (rising tone)
+                this.sounds.encrypt = this.createSweep(300, 800, 0.3);
+                
+                // Decrypt sound (falling tone)
+                this.sounds.decrypt = this.createSweep(800, 300, 0.3);
+                
+                // Success sound (two-tone)
+                this.sounds.success = this.createChord([523.25, 659.25], 0.5);
+                
+                // Error sound (low buzz)
+                this.sounds.error = this.createBeep(200, 0.3);
+                
+                // Scan sound (sweeping)
+                this.sounds.scan = this.createSweep(200, 1200, 2.0);
+                
+                // Copy sound (short ping)
+                this.sounds.copy = this.createBeep(1000, 0.1);
+            }
+
+            createBeep(frequency, duration) {
+                return () => {
+                    if (!this.enabled || !this.context) return null;
+                    
+                    try {
+                        const oscillator = this.context.createOscillator();
+                        const gainNode = this.context.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(this.context.destination);
+                        
+                        oscillator.frequency.value = frequency;
+                        oscillator.type = 'sine';
+                        
+                        const now = this.context.currentTime;
+                        gainNode.gain.setValueAtTime(0, now);
+                        gainNode.gain.linearRampToValueAtTime(this.masterVolume, now + 0.01);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+                        
+                        oscillator.start(now);
+                        oscillator.stop(now + duration);
+                        
+                        const soundId = Date.now();
+                        this.currentSounds.add(soundId);
+                        
+                        oscillator.onended = () => {
+                            this.currentSounds.delete(soundId);
+                        };
+                        
+                        return soundId;
+                    } catch (error) {
+                        console.warn('Sound playback failed:', error);
+                        return null;
+                    }
+                };
+            }
+
+            createSweep(startFreq, endFreq, duration) {
+                return () => {
+                    if (!this.enabled || !this.context) return null;
+                    
+                    try {
+                        const oscillator = this.context.createOscillator();
+                        const gainNode = this.context.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(this.context.destination);
+                        
+                        oscillator.type = 'sine';
+                        
+                        const now = this.context.currentTime;
+                        oscillator.frequency.setValueAtTime(startFreq, now);
+                        oscillator.frequency.exponentialRampToValueAtTime(endFreq, now + duration);
+                        
+                        gainNode.gain.setValueAtTime(0, now);
+                        gainNode.gain.linearRampToValueAtTime(this.masterVolume * 0.5, now + 0.1);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+                        
+                        oscillator.start(now);
+                        oscillator.stop(now + duration);
+                        
+                        const soundId = Date.now();
+                        this.currentSounds.add(soundId);
+                        
+                        oscillator.onended = () => {
+                            this.currentSounds.delete(soundId);
+                        };
+                        
+                        return soundId;
+                    } catch (error) {
+                        console.warn('Sound playback failed:', error);
+                        return null;
+                    }
+                };
+            }
+
+            crea
             
