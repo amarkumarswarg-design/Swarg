@@ -783,4 +783,248 @@
             right: 20px;
             background: white;
             padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-heavy);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+            max-width: 400px;
+            border-left: 5px solid var(--accent);
+        }
+
+        .notification.active {
+            transform: translateX(0);
+        }
+
+        .notification-icon {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .notification.success .notification-icon { color: var(--success); }
+        .notification.error .notification-icon { color: var(--danger); }
+        .notification.warning .notification-icon { color: var(--warning); }
+
+        .notification-message {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .app-title {
+                font-size: 2.5rem;
+            }
+            
+            .content-area {
+                padding: 20px;
+            }
+            
+            .btn {
+                min-width: 100%;
+            }
+            
+            .tabs-container {
+                flex-direction: column;
+            }
+            
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden { display: none !important; }
+        .mt-20 { margin-top: 20px; }
+        .mb-20 { margin-bottom: 20px; }
+        .text-center { text-align: center; }
+    </style>
+</head>
+<body>
+    <!-- Main App Container -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-shine"></div>
+            <h1 class="app-title">SWARG</h1>
+            <div class="app-subtitle">
+                <span>by Amar Kumar</span>
+                <i class="fas fa-check-circle verified-badge"></i>
+            </div>
+            <p class="tagline">Real AES-256-GCM Encryption Vault • Military Grade Security</p>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <button class="tab active" data-tab="encrypt">
+                <i class="fas fa-lock"></i> Encrypt
+            </button>
+            <button class="tab" data-tab="decrypt">
+                <i class="fas fa-unlock"></i> Decrypt
+            </button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Encrypt Tab -->
+            <div class="tab-content active" id="encrypt">
+                <!-- Master Password Card -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-key"></i>
+                        <h3>Master Password</h3>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Enter Master Password (min 12 characters)</label>
+                        <div class="input-wrapper">
+                            <input type="password" class="form-input" id="masterPassword" placeholder="Create a strong password...">
+                            <i class="fas fa-eye input-icon" id="togglePassword"></i>
+                        </div>
+                        
+                        <div class="strength-container">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <div class="strength-text" id="strengthText">Strength: Weak</div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="generatePassword">
+                            <i class="fas fa-bolt"></i> Generate Strong Password
+                        </button>
+                        <button class="btn btn-secondary" id="clearPassword">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Encrypt Data Card -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Encrypt Your Data</h3>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Text to Encrypt</label>
+                        <textarea class="form-input form-textarea" id="textToEncrypt" placeholder="Type your sensitive information here..."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Expiry Time (Self-Destruct)</label>
+                        <select class="form-input" id="expiryTime">
+                            <option value="1800000">30 minutes</option>
+                            <option value="3600000">1 hour</option>
+                            <option value="86400000">24 hours</option>
+                            <option value="0">No expiry</option>
+                        </select>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-success" id="encryptBtn">
+                            <i class="fas fa-lock"></i> Encrypt Now
+                        </button>
+                        <button class="btn btn-secondary" id="previewText">
+                            <i class="fas fa-eye"></i> Preview
+                        </button>
+                    </div>
+
+                    <!-- Encrypted Output -->
+                    <div class="output-display" id="encryptedOutput">
+                        <div class="output-header">
+                            <div class="output-title">Encrypted Token (AES-256-GCM)</div>
+                            <div class="output-actions">
+                                <button class="output-btn" id="copyEncrypted"><i class="fas fa-copy"></i> Copy</button>
+                                <button class="output-btn" id="destroyEncrypted"><i class="fas fa-fire"></i> Destroy</button>
+                            </div>
+                        </div>
+                        <div id="encryptedText">Encrypted token will appear here...</div>
+                    </div>
+
+                    <!-- Timer -->
+                    <div class="timer-container hidden" id="encryptTimer">
+                        <i class="fas fa-clock timer-icon"></i>
+                        <span class="timer-text">Token expires in:</span>
+                        <span class="timer-value" id="timerValue">30:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decrypt Tab -->
+            <div class="tab-content" id="decrypt">
+                <!-- Decrypt Data Card -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-unlock-alt"></i>
+                        <h3>Decrypt Your Data</h3>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Enter Master Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" class="form-input" id="decryptPassword" placeholder="Enter your master password...">
+                            <i class="fas fa-eye input-icon" id="toggleDecryptPassword"></i>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Encrypted Token</label>
+                        <textarea class="form-input form-textarea" id="encryptedToken" placeholder="Paste your encrypted token here..."></textarea>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="decryptBtn">
+                            <i class="fas fa-unlock"></i> Decrypt Now
+                        </button>
+                        <button class="btn btn-secondary" id="checkToken">
+                            <i class="fas fa-search"></i> Validate Token
+                        </button>
+                    </div>
+
+                    <!-- Decrypted Output -->
+                    <div class="output-display" id="decryptedOutput">
+                        <div class="output-header">
+                            <div class="output-title">Decrypted Message</div>
+                            <div class="output-actions">
+                                <button class="output-btn" id="copyDecrypted"><i class="fas fa-copy"></i> Copy</button>
+                                <button class="output-btn" id="clearDecrypted"><i class="fas fa-trash"></i> Clear</button>
+                            </div>
+                        </div>
+                        <div id="decryptedText">Decrypted message will appear here...</div>
+                    </div>
+
+                    <!-- Expiry Warning -->
+                    <div class="timer-container hidden" id="decryptTimer">
+                        <i class="fas fa-exclamation-triangle timer-icon"></i>
+                        <span class="timer-text">This token expired:</span>
+                        <span class="timer-value" id="expiredTime">--:--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="settings-panel">
+                <h3 class="settings-title"><i class="fas fa-sliders-h"></i> Settings</h3>
+                
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-volume-up"></i>
+                            <span>Sound Effects</span>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-music"></i>
+                            <span>Master Volume</span>
+                        </div>
+                        <input type="range" class="range-sli
             
