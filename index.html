@@ -1636,4 +1636,350 @@
                     </p>
                     <p class="about-security-note">
                         <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
-                        All encryption happens locally in your b
+                        All encryption happens locally in your browser. No data is ever sent to any server. Use strong passwords and share tokens securely.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-info-circle notification-icon"></i>
+        <div class="notification-message" id="notificationMessage">SWARG Shield v6.0 Ready</div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create floating dots
+            createFloatingDots();
+            
+            // Initialize app
+            initApp();
+            
+            // Show welcome notification
+            setTimeout(() => {
+                showNotification('SWARG Shield v6.0 Initialized 🔐', 'success');
+                playSound('success');
+            }, 800);
+        });
+
+        // ===== FLOATING DOTS BACKGROUND =====
+        function createFloatingDots() {
+            const container = document.getElementById('floatingDots');
+            const dotCount = 30;
+            
+            for (let i = 0; i < dotCount; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                
+                // Random properties
+                const size = Math.random() * 6 + 2;
+                const left = Math.random() * 100;
+                const delay = Math.random() * 15;
+                const duration = Math.random() * 10 + 20;
+                
+                // Set random properties as CSS variables
+                dot.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${left}%;
+                    animation-delay: ${delay}s;
+                    animation-duration: ${duration}s;
+                    --random-x: ${Math.random() * 2 - 1};
+                `;
+                
+                container.appendChild(dot);
+            }
+        }
+
+        // ===== APP STATE =====
+        let appState = {
+            currentTab: 'encrypt',
+            masterPassword: '',
+            soundEnabled: true,
+            volume: 0.7,
+            currentToken: null,
+            tokens: new Map(),
+            isEncrypting: false,
+            isDecrypting: false
+        };
+
+        // ===== DOM ELEMENTS =====
+        const elements = {
+            // Tabs
+            encryptTab: document.querySelector('[data-tab="encrypt"]'),
+            decryptTab: document.querySelector('[data-tab="decrypt"]'),
+            encryptContent: document.getElementById('encrypt'),
+            decryptContent: document.getElementById('decrypt'),
+
+            // Password
+            masterPassword: document.getElementById('masterPassword'),
+            togglePassword: document.getElementById('togglePassword'),
+            decryptPassword: document.getElementById('decryptPassword'),
+            toggleDecryptPassword: document.getElementById('toggleDecryptPassword'),
+            generatePassword: document.getElementById('generatePassword'),
+            clearPassword: document.getElementById('clearPassword'),
+
+            // Strength meter
+            strengthFill: document.getElementById('strengthFill'),
+            strengthText: document.getElementById('strengthText'),
+
+            // Encryption
+            textToEncrypt: document.getElementById('textToEncrypt'),
+            expiryTime: document.getElementById('expiryTime'),
+            encryptBtn: document.getElementById('encryptBtn'),
+            previewText: document.getElementById('previewText'),
+            encryptedOutput: document.getElementById('encryptedOutput'),
+            encryptedText: document.querySelector('#encryptedOutput #encryptedText'),
+            copyEncrypted: document.getElementById('copyEncrypted'),
+            destroyEncrypted: document.getElementById('destroyEncrypted'),
+            encryptTimer: document.getElementById('encryptTimer'),
+            timerValue: document.getElementById('timerValue'),
+
+            // Decryption
+            encryptedToken: document.getElementById('encryptedToken'),
+            decryptBtn: document.getElementById('decryptBtn'),
+            checkToken: document.getElementById('checkToken'),
+            decryptedOutput: document.getElementById('decryptedOutput'),
+            decryptedText: document.querySelector('#decryptedOutput #decryptedText'),
+            copyDecrypted: document.getElementById('copyDecrypted'),
+            clearDecrypted: document.getElementById('clearDecrypted'),
+            decryptTimer: document.getElementById('decryptTimer'),
+            expiredTime: document.getElementById('expiredTime'),
+
+            // Settings
+            soundToggle: document.getElementById('soundToggle'),
+            volumeSlider: document.getElementById('volumeSlider'),
+            autoClear: document.getElementById('autoClear'),
+            showPasswords: document.getElementById('showPasswords'),
+            aboutBtn: document.getElementById('aboutBtn'),
+            securityInfo: document.getElementById('securityInfo'),
+            clearAllBtn: document.getElementById('clearAllBtn'),
+            soundStatus: document.getElementById('soundStatus'),
+
+            // Modals
+            scanningOverlay: document.getElementById('scanningOverlay'),
+            aboutModal: document.getElementById('aboutModal'),
+            closeAbout: document.getElementById('closeAbout'),
+
+            // Notification
+            notification: document.getElementById('notification'),
+            notificationMessage: document.getElementById('notificationMessage')
+        };
+
+        // ===== INITIALIZE APP =====
+        function initApp() {
+            bindEvents();
+            loadSettings();
+            updateSoundStatus();
+            
+            // Auto-clear timer
+            const autoClearMinutes = parseInt(elements.autoClear.value);
+            if (autoClearMinutes > 0) {
+                setInterval(() => {
+                    if (confirm(`Auto-clear: Clear all data after ${autoClearMinutes} minutes of inactivity?`)) {
+                        clearAllData(true);
+                    }
+                }, autoClearMinutes * 60 * 1000);
+            }
+        }
+
+        // ===== EVENT BINDING =====
+        function bindEvents() {
+            // Tab switching
+            elements.encryptTab.addEventListener('click', () => switchTab('encrypt'));
+            elements.decryptTab.addEventListener('click', () => switchTab('decrypt'));
+
+            // Password visibility
+            elements.togglePassword.addEventListener('click', () => togglePasswordVisibility('masterPassword', 'togglePassword'));
+            elements.toggleDecryptPassword.addEventListener('click', () => togglePasswordVisibility('decryptPassword', 'toggleDecryptPassword'));
+
+            // Password strength
+            elements.masterPassword.addEventListener('input', (e) => {
+                playSound('type');
+                updatePasswordStrength(e.target.value);
+            });
+
+            // Generate password
+            elements.generatePassword.addEventListener('click', generateSecurePassword);
+
+            // Clear password
+            elements.clearPassword.addEventListener('click', clearPassword);
+
+            // Typing sounds
+            elements.textToEncrypt.addEventListener('input', () => playSound('type'));
+            elements.encryptedToken.addEventListener('input', () => playSound('type'));
+
+            // Encryption
+            elements.encryptBtn.addEventListener('click', handleEncryption);
+            elements.previewText.addEventListener('click', previewText);
+
+            // Decryption
+            elements.decryptBtn.addEventListener('click', handleDecryption);
+            elements.checkToken.addEventListener('click', validateToken);
+
+            // Copy buttons
+            elements.copyEncrypted.addEventListener('click', () => copyToClipboard('encrypted'));
+            elements.copyDecrypted.addEventListener('click', () => copyToClipboard('decrypted'));
+
+            // Destroy/Clear
+            elements.destroyEncrypted.addEventListener('click', destroyToken);
+            elements.clearDecrypted.addEventListener('click', clearDecrypted);
+
+            // Settings
+            elements.soundToggle.addEventListener('change', toggleSound);
+            elements.volumeSlider.addEventListener('input', (e) => updateVolume(e.target.value));
+            elements.autoClear.addEventListener('change', updateAutoClear);
+            elements.showPasswords.addEventListener('change', toggleShowPasswords);
+            elements.aboutBtn.addEventListener('click', showAboutModal);
+            elements.securityInfo.addEventListener('click', showSecurityInfo);
+            elements.clearAllBtn.addEventListener('click', () => clearAllData(false));
+            elements.closeAbout.addEventListener('click', hideAboutModal);
+            elements.soundStatus.addEventListener('click', toggleSoundStatus);
+
+            // Close modal on background click
+            elements.aboutModal.addEventListener('click', (e) => {
+                if (e.target === elements.aboutModal) {
+                    hideAboutModal();
+                }
+            });
+        }
+
+        // ===== TAB MANAGEMENT =====
+        function switchTab(tab) {
+            // Update tabs
+            elements.encryptTab.classList.toggle('active', tab === 'encrypt');
+            elements.decryptTab.classList.toggle('active', tab === 'decrypt');
+            
+            // Update content
+            elements.encryptContent.classList.toggle('active', tab === 'encrypt');
+            elements.decryptContent.classList.toggle('active', tab === 'decrypt');
+            
+            // Update state
+            appState.currentTab = tab;
+            
+            // Play sound
+            playSound('click');
+        }
+
+        // ===== PASSWORD MANAGEMENT =====
+        function togglePasswordVisibility(passwordField, toggleIcon) {
+            const field = elements[passwordField];
+            const icon = elements[toggleIcon].querySelector('i');
+            
+            const type = field.type === 'password' ? 'text' : 'password';
+            field.type = type;
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+            playSound('click');
+        }
+
+        function generateSecurePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+            const length = 16;
+            
+            // Use crypto.getRandomValues for secure randomness
+            const randomValues = new Uint8Array(length);
+            crypto.getRandomValues(randomValues);
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += chars[randomValues[i] % chars.length];
+            }
+            
+            // Ensure complexity
+            if (!/[A-Z]/.test(password)) password = 'A' + password.slice(1);
+            if (!/[a-z]/.test(password)) password = password.slice(0, -1) + 'a';
+            if (!/[0-9]/.test(password)) password = password.slice(0, 2) + '1' + password.slice(2);
+            if (!/[^A-Za-z0-9]/.test(password)) password = password.slice(0, 3) + '!' + password.slice(3);
+            
+            // Set password
+            elements.masterPassword.value = password;
+            elements.masterPassword.type = 'text';
+            elements.togglePassword.querySelector('i').className = 'fas fa-eye-slash';
+            
+            // Update strength
+            updatePasswordStrength(password);
+            
+            // Show notification
+            showNotification('Secure password generated!', 'success');
+            playSound('success');
+        }
+
+        function clearPassword() {
+            elements.masterPassword.value = '';
+            updatePasswordStrength('');
+            playSound('click');
+        }
+
+        // ===== PASSWORD STRENGTH METER (FIXED) =====
+        function updatePasswordStrength(password) {
+            let score = 0;
+            let strength = 'Very Weak';
+            let strengthClass = 'strength-very-weak';
+            
+            // Length scoring (FIXED: 8 chars shouldn't be strong)
+            if (password.length >= 8) score += 15;
+            if (password.length >= 12) score += 25;
+            if (password.length >= 16) score += 30;
+            
+            // Character types
+            if (/[a-z]/.test(password)) score += 10;
+            if (/[A-Z]/.test(password)) score += 10;
+            if (/[0-9]/.test(password)) score += 10;
+            if (/[^A-Za-z0-9]/.test(password)) score += 15;
+            
+            // Penalties for common patterns
+            const commonPatterns = ['123', 'abc', 'password', 'qwerty', 'admin', 'letmein', 'welcome'];
+            if (commonPatterns.some(p => password.toLowerCase().includes(p))) score -= 20;
+            
+            // Repeat character penalty
+            if (/(.)\1{2,}/.test(password)) score -= 10;
+            
+            // Sequential character penalty
+            if (/123|234|345|456|567|678|789|890|abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz/.test(password.toLowerCase())) {
+                score -= 15;
+            }
+            
+            // Ensure score is between 0-100
+            score = Math.max(0, Math.min(100, score));
+            
+            // Determine strength level
+            if (score < 20) {
+                strength = 'Very Weak';
+                strengthClass = 'strength-very-weak';
+            } else if (score < 40) {
+                strength = 'Weak';
+                strengthClass = 'strength-weak';
+            } else if (score < 60) {
+                strength = 'Fair';
+                strengthClass = 'strength-fair';
+            } else if (score < 80) {
+                strength = 'Good';
+                strengthClass = 'strength-good';
+            } else {
+                strength = 'Strong';
+                strengthClass = 'strength-strong';
+            }
+            
+            // Update UI
+            elements.strengthFill.className = `strength-fill ${strengthClass}`;
+            elements.strengthFill.style.width = `${score}%`;
+            elements.strengthText.textContent = `${strength} (${password.length} chars)`;
+            
+            // Color coding
+            if (score < 40) {
+                elements.strengthText.style.color = '#ef4444';
+            } else if (score < 60) {
+                elements.strengthText.style.color = '#f59e0b';
+            } else if (score < 80) {
+                elements.strengthText.style.color = '#22c55e';
+            } else {
+                elements.strengthText.style.color = '#10b981';
+            }
+        }
+
+        // ===== ENC
