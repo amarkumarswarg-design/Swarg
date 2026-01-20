@@ -694,4 +694,183 @@
                         id="encryptText" 
                         placeholder="Enter sensitive text to encrypt..."
                         rows="5"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">Encryption Password</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            class="input password-input" 
+                            id="encryptPassword" 
+                            placeholder="Enter strong password (required)">
+                        <button class="toggle-password" type="button" data-target="encryptPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="key-info">
+                        <i class="fas fa-info-circle"></i>
+                        Password is required for AES-256 encryption. Store it securely.
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="button button-primary" id="encryptBtn">
+                        <i class="fas fa-shield-alt"></i> ENCRYPT NOW
+                    </button>
+                    <button class="button button-secondary" id="clearEncryptBtn">
+                        <i class="fas fa-eraser"></i> CLEAR ALL
+                    </button>
+                </div>
+                
+                <!-- Result will appear here -->
+                <div class="result-container" id="encryptResult">
+                    <div class="result-header">
+                        <h3 class="result-title">ENCRYPTED OUTPUT</h3>
+                        <button class="copy-button" id="copyEncryptBtn">
+                            <i class="fas fa-copy"></i> COPY
+                        </button>
+                    </div>
+                    <div class="result-content" id="encryptedOutput"></div>
+                    <div class="expiry-info">
+                        <i class="fas fa-clock"></i>
+                        <span>This encrypted data will expire in <span id="expiryTimer">30:00</span> minutes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Decrypt Tab -->
+        <div class="tab-content" id="decrypt-tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-unlock"></i>
+                    </div>
+                    <h2 class="card-title">AES-256 Decryption</h2>
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">Encrypted Text</label>
+                    <textarea 
+                        class="textarea" 
+                        id="decryptText" 
+                        placeholder="Paste encrypted text here..."
+                        rows="5"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">Decryption Password</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            class="input password-input" 
+                            id="decryptPassword" 
+                            placeholder="Enter the same password used for encryption">
+                        <button class="toggle-password" type="button" data-target="decryptPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="key-info">
+                        <i class="fas fa-key"></i>
+                        Must match the password used during encryption
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="button button-primary" id="decryptBtn">
+                        <i class="fas fa-unlock-alt"></i> DECRYPT NOW
+                    </button>
+                    <button class="button button-secondary" id="clearDecryptBtn">
+                        <i class="fas fa-eraser"></i> CLEAR ALL
+                    </button>
+                </div>
+                
+                <!-- Result will appear here -->
+                <div class="result-container" id="decryptResult">
+                    <div class="result-header">
+                        <h3 class="result-title">DECRYPTED TEXT</h3>
+                        <button class="copy-button" id="copyDecryptBtn">
+                            <i class="fas fa-copy"></i> COPY
+                        </button>
+                    </div>
+                    <div class="result-content" id="decryptedOutput"></div>
+                    <div class="expiry-info">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>Decryption successful. Data integrity verified.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- About Section -->
+        <div class="about-section">
+            <h2 class="about-title">About SWARG Encryption</h2>
+            <div class="about-content">
+                <p>SWARG implements genuine AES-256-GCM (Advanced Encryption Standard with 256-bit key in Galois/Counter Mode), the same encryption standard used by government agencies, financial institutions, and security professionals worldwide.</p>
+                <p>All cryptographic operations are performed locally in your browser using the Web Crypto API. No data is transmitted to any server, ensuring complete privacy and security.</p>
+            </div>
+            
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h3 class="tech-title">
+                        <i class="fas fa-shield-alt"></i> Military Grade Security
+                    </h3>
+                    <p class="tech-desc">AES-256 is approved by the NSA for protecting classified information up to TOP SECRET level.</p>
+                </div>
+                
+                <div class="tech-card">
+                    <h3 class="tech-title">
+                        <i class="fas fa-user-secret"></i> Zero Knowledge
+                    </h3>
+                    <p class="tech-desc">Your data never leaves your device. All encryption/decryption happens locally in your browser.</p>
+                </div>
+                
+                <div class="tech-card">
+                    <h3 class="tech-title">
+                        <i class="fas fa-clock"></i> Auto Expiry
+                    </h3>
+                    <p class="tech-desc">Encrypted data automatically expires after 30 minutes, adding an extra layer of security.</p>
+                </div>
+                
+                <div class="tech-card">
+                    <h3 class="tech-title">
+                        <i class="fas fa-mobile-alt"></i> PWA Ready
+                    </h3>
+                    <p class="tech-desc">Install as a Progressive Web App on any device for offline access to encryption tools.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 SWARG Encryption Tool | Military Grade AES-256 Implementation</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--gray);">
+            Powered by Web Crypto API | All cryptographic operations performed locally
+        </p>
+    </footer>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle" id="toastIcon"></i>
+        <span id="toastMessage">Operation completed successfully!</span>
+    </div>
+    
+    <!-- Audio Elements -->
+    <audio id="typeSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-keyboard-typing-1386.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="encryptSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-sci-fi-positive-notification-905.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="decryptSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script src="script.js"></script>
+</body>
+                        </html>
     
