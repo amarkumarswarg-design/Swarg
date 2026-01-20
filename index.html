@@ -2225,33 +2225,19 @@
         }
 
         function validateToken() {
-            const token = elements.encryptedToken.value.trim();
-            if (!token) {
-                showNotification('Please enter a token', 'error');
-                playSound('error');
-                return;
-            }
+    const token = elements.encryptedToken.value.trim();
+    if (!token) {
+        showNotification('Please enter a token', 'error');
+        playSound('error');
+        return;
+    }
 
-            const match = token.match(/SWARG_([a-f0-9]+)_/);
-            if (match) {
-                const tokenId = match[1];
-                const tokenData = appState.tokens.get(tokenId);
-                
-                if (tokenData) {
-                    if (tokenData.expiry) {
-                        const remaining = tokenData.expiry - Date.now();
-                        const minutes = Math.max(0, Math.floor(remaining / 60000));
-                        showNotification(`✅ Token valid. Expires in ${minutes} minutes.`, 'success');
-                    } else {
-                        showNotification('✅ Token valid (no expiry)', 'success');
-                    }
-                } else {
-                    showNotification('❌ Token not found or expired', 'error');
-                }
-            } else {
-                showNotification('❌ Invalid token format', 'error');
-            }
-            playSound('click');
+    if (window.realEncryption.isValidToken(token)) {
+        showNotification('✅ Valid AES-256 Token', 'success');
+    } else {
+        showNotification('❌ Invalid Token Format', 'error');
+    }
+    playSound('click');
         }
 
         // ===== TOKEN MANAGEMENT =====
