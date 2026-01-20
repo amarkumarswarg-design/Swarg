@@ -1985,11 +1985,48 @@
 
         // ===== ENCRYPTION =====
         async function handleEncryption() {
-            if (appState.isEncrypting) return;
-            
-            const password = elements.masterPassword.value;
-            const text = elements.textToEncrypt.value.trim();
-            const expiryMs = parseInt(elements.expiryTime.value);
+    // ... same validation code ...
+    
+    try {
+        // ... same setup code ...
+        
+        // REAL AES-256 ENCRYPTION
+        const encryptedToken = window.realEncryption.encrypt(text, password);
+        
+        if (!encryptedToken) {
+            throw new Error('Encryption failed');
+        }
+        
+        // Store token
+        const tokenId = 'AES256_' + Date.now().toString(36);
+        appState.tokens.set(tokenId, {
+            data: encryptedToken,
+            expiry: expiryMs > 0 ? Date.now() + expiryMs : null
+        });
+        
+        appState.currentToken = tokenId;
+        
+        // Update UI - Show first 100 chars only
+        elements.encryptedText.textContent = `🔐 AES-256: ${encryptedToken.substring(0, 100)}...`;
+        elements.encryptedOutput.classList.add('encrypted');
+        
+        // Auto-copy FULL token
+        try {
+            await navigator.clipboard.writeText(encryptedToken);
+            showNotification('✅ REAL AES-256 Encrypted & Copied!', 'success');
+        } catch (err) {
+            showNotification('✅ REAL AES-256 Encrypted!', 'success');
+        }
+        
+        // ... rest same code ...
+        
+    } catch (error) {
+        showNotification('Encryption failed: ' + error.message, 'error');
+        playSound('error');
+    } finally {
+        // ... same cleanup code ...
+    }
+        }
 
             // Validation
             if (!password) {
@@ -2095,10 +2132,34 @@
 
         // ===== DECRYPTION =====
         async function handleDecryption() {
-            if (appState.isDecrypting) return;
-            
-            const password = elements.masterPassword.value;
-            const token = elements.encryptedToken.value.trim();
+    // ... same validation code ...
+    
+    try {
+        // ... same setup code ...
+        
+        const token = elements.encryptedToken.value.trim();
+        
+        // REAL AES-256 DECRYPTION
+        const decryptedText = window.realEncryption.decrypt(token, password);
+        
+        if (!decryptedText) {
+            throw new Error('Wrong password or invalid token');
+        }
+        
+        // Update UI
+        elements.decryptedText.textContent = decryptedText;
+        elements.decryptedOutput.classList.add('decrypted');
+        
+        showNotification('✅ REAL AES-256 Decrypted!', 'success');
+        playSound('success');
+        
+    } catch (error) {
+        showNotification('Decryption failed: ' + error.message, 'error');
+        playSound('error');
+    } finally {
+        // ... same cleanup code ...
+    }
+    }
 
             // Validation
             if (!password) {
