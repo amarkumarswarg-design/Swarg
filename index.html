@@ -3,199 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swarg - AES-256 Encryption</title>
+    <title>SWARG - Military Grade AES-256 Encryption</title>
+    <meta name="description" content="Professional AES-256 Encryption Tool with Real Security">
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #FFD700;
-            --primary-dark: #D4AF37;
-            --accent: #00B4D8;
-            --dark: #0A0A0A;
-            --dark-light: #1A1A1A;
-            --text: #F0F0F0;
-            --text-dim: #A0A0A0;
-            --success: #4CAF50;
-            --danger: #F44336;
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark-900: #0a0a0f;
+            --dark-800: #121218;
+            --dark-700: #1a1a24;
+            --dark-600: #242432;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --success: #22c55e;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
         
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--dark);
-            color: var(--text);
+            background-color: var(--dark-900);
+            color: var(--light);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
         }
         
-        /* Animated background dots */
-        .bg-dots {
+        /* Subtle animated background */
+        .bg-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.3;
+            opacity: 0.1;
             pointer-events: none;
         }
         
-        .dot {
+        .bg-grid {
             position: absolute;
-            background-color: var(--primary);
-            border-radius: 50%;
-            animation: float 15s infinite linear;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
         }
         
-        @keyframes float {
-            0% {
-                transform: translateY(0) translateX(0);
-                opacity: 0.5;
-            }
-            25% {
-                transform: translateY(-20px) translateX(10px);
-                opacity: 0.8;
-            }
-            50% {
-                transform: translateY(10px) translateX(-10px);
-                opacity: 0.6;
-            }
-            75% {
-                transform: translateY(-10px) translateX(-5px);
-                opacity: 0.9;
-            }
-            100% {
-                transform: translateY(0) translateX(0);
-                opacity: 0.5;
-            }
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
         
-        /* Header styling */
-        header {
+        /* Header */
+        .header {
+            padding: 2rem 1.5rem;
             text-align: center;
-            padding: 2rem 1rem 1.5rem;
-            border-bottom: 2px solid var(--primary);
-            background: linear-gradient(to bottom, rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.7));
-            backdrop-filter: blur(10px);
+            background: linear-gradient(to bottom, var(--dark-900), transparent);
             position: relative;
-            overflow: hidden;
         }
         
-        .title-container {
-            position: relative;
-            margin-bottom: 1rem;
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--primary), transparent);
         }
         
-        .swarg-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4.5rem;
-            font-weight: 700;
-            background: linear-gradient(to right, var(--primary), var(--primary-dark), #FFD700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .developer-info {
+        .logo-container {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .developer-name {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-        
-        .blue-tick {
-            color: var(--accent);
-            font-size: 1.5rem;
-            filter: drop-shadow(0 0 3px var(--accent));
-        }
-        
-        .developer-tag {
-            font-size: 1rem;
-            color: var(--text-dim);
-            letter-spacing: 2px;
+            gap: 0.75rem;
             margin-bottom: 1.5rem;
         }
         
-        .master-key {
-            font-size: 1.2rem;
-            color: var(--primary);
-            letter-spacing: 1px;
+        .logo {
+            font-size: 4.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, #3b82f6 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+            text-shadow: 0 0 40px rgba(14, 165, 233, 0.3);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--primary), transparent);
+            border-radius: 50%;
+        }
+        
+        .developer {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            margin-top: 0.5rem;
+            font-size: 1.25rem;
+            color: var(--gray);
         }
         
-        .master-key i {
-            color: var(--accent);
+        .developer-name {
+            font-weight: 600;
+            color: var(--light);
+            background: linear-gradient(to right, var(--light), var(--gray));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
-        /* Tab navigation */
+        .verified {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        
+        /* Tabs */
         .tabs-container {
-            display: flex;
-            justify-content: center;
-            margin: 2rem 1rem 1rem;
+            max-width: 900px;
+            margin: 0 auto 2rem;
+            padding: 0 1.5rem;
         }
         
         .tabs {
             display: flex;
-            background-color: var(--dark-light);
-            border-radius: 50px;
-            padding: 5px;
-            max-width: 500px;
-            width: 100%;
+            background: var(--dark-700);
+            border-radius: 12px;
+            padding: 6px;
+            border: 1px solid var(--dark-600);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
         
         .tab {
             flex: 1;
-            padding: 15px 20px;
+            padding: 18px 24px;
             text-align: center;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 500;
             font-size: 1.1rem;
-            letter-spacing: 1px;
-            color: var(--text-dim);
+            font-weight: 600;
+            color: var(--gray);
             background: transparent;
             border: none;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .tab:hover {
+            color: var(--light);
+            background: rgba(14, 165, 233, 0.1);
         }
         
         .tab.active {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--dark);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            background: var(--primary);
+            color: var(--light);
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
         }
         
-        /* Content areas */
-        .content {
+        /* Main Content */
+        .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 0 1rem 3rem;
+            padding: 0 1.5rem 3rem;
         }
         
         .tab-content {
             display: none;
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.4s ease-out;
         }
         
         .tab-content.active {
@@ -203,85 +203,137 @@
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
         .card {
-            background-color: var(--dark-light);
-            border-radius: 15px;
+            background: var(--dark-800);
+            border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 215, 0, 0.1);
-            margin-top: 1rem;
+            border: 1px solid var(--dark-600);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
         }
         
         .card-title {
             font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-weight: 700;
+            color: var(--light);
         }
         
-        .card-title i {
-            color: var(--accent);
-        }
-        
-        /* Input areas */
+        /* Form Elements */
         .input-group {
             margin-bottom: 1.5rem;
         }
         
-        .input-label {
+        .label {
             display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-dim);
-            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            color: var(--gray);
+            font-size: 0.95rem;
+            font-weight: 500;
         }
         
-        textarea, input {
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .textarea, .input {
             width: 100%;
-            padding: 15px;
-            background-color: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            border-radius: 10px;
-            color: var(--text);
-            font-family: 'Poppins', sans-serif;
+            padding: 18px;
+            background: var(--dark-700);
+            border: 2px solid var(--dark-600);
+            border-radius: 12px;
+            color: var(--light);
             font-size: 1rem;
+            font-family: 'JetBrains Mono', monospace;
             resize: vertical;
-            transition: border 0.3s;
+            transition: all 0.3s ease;
         }
         
-        textarea:focus, input:focus {
+        .textarea:focus, .input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+            background: var(--dark-800);
         }
         
-        textarea {
-            min-height: 150px;
+        .textarea {
+            min-height: 180px;
+            line-height: 1.6;
+        }
+        
+        .password-input {
+            padding-right: 50px;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+        
+        .toggle-password:hover {
+            color: var(--light);
+        }
+        
+        .key-info {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .key-info i {
+            color: var(--warning);
         }
         
         /* Buttons */
-        .btn-container {
+        .button-group {
             display: flex;
-            gap: 15px;
+            gap: 1rem;
             margin-top: 2rem;
             flex-wrap: wrap;
         }
         
-        .btn {
-            padding: 15px 30px;
+        .button {
+            padding: 16px 32px;
             border: none;
-            border-radius: 10px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 500;
+            border-radius: 12px;
             font-size: 1rem;
-            letter-spacing: 1px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -290,184 +342,197 @@
             min-width: 200px;
         }
         
-        .btn-primary {
+        .button-primary {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--dark);
+            color: white;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
         }
         
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
         }
         
-        .btn-secondary {
-            background: rgba(0, 180, 216, 0.2);
-            color: var(--accent);
-            border: 1px solid rgba(0, 180, 216, 0.3);
+        .button-primary:active {
+            transform: translateY(0);
         }
         
-        .btn-secondary:hover {
-            background: rgba(0, 180, 216, 0.3);
-            transform: translateY(-3px);
+        .button-secondary {
+            background: var(--dark-700);
+            color: var(--light);
+            border: 2px solid var(--dark-600);
         }
         
-        /* Result area */
+        .button-secondary:hover {
+            background: var(--dark-600);
+            border-color: var(--gray);
+        }
+        
+        /* Result Container */
         .result-container {
             margin-top: 2rem;
             padding: 1.5rem;
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 215, 0, 0.1);
+            background: var(--dark-700);
+            border-radius: 12px;
+            border: 1px solid var(--dark-600);
             display: none;
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .result-container.show {
             display: block;
-            animation: slideUp 0.5s ease;
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         .result-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
         }
         
         .result-title {
-            color: var(--primary);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--light);
         }
         
-        .copy-btn {
-            background: transparent;
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 8px 15px;
-            border-radius: 5px;
+        .copy-button {
+            padding: 8px 16px;
+            background: var(--dark-600);
+            color: var(--light);
+            border: 1px solid var(--dark-600);
+            border-radius: 8px;
             cursor: pointer;
             font-size: 0.9rem;
-            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
         }
         
-        .copy-btn:hover {
-            background: rgba(0, 180, 216, 0.1);
+        .copy-button:hover {
+            background: var(--dark-500);
+            border-color: var(--primary);
         }
         
         .result-content {
-            padding: 15px;
-            background-color: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            background: var(--dark-900);
             border-radius: 8px;
-            font-family: monospace;
-            word-break: break-all;
-            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 1rem;
+            line-height: 1.6;
+            color: var(--light);
+            margin-bottom: 1.25rem;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
         }
         
         .expiry-info {
-            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--warning);
             font-size: 0.9rem;
-            text-align: center;
-            padding: 10px;
-            background-color: rgba(255, 215, 0, 0.05);
-            border-radius: 5px;
+            padding: 12px;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid var(--warning);
         }
         
-        .expiry-info i {
-            color: var(--primary);
-            margin-right: 5px;
-        }
-        
-        /* About section */
+        /* About Section */
         .about-section {
             margin-top: 3rem;
-            padding: 2rem;
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            border-top: 2px solid var(--primary);
+            padding: 2.5rem;
+            background: var(--dark-800);
+            border-radius: 16px;
+            border: 1px solid var(--dark-600);
         }
         
         .about-title {
             font-size: 1.8rem;
-            color: var(--primary);
+            font-weight: 700;
             margin-bottom: 1.5rem;
+            color: var(--light);
             text-align: center;
         }
         
         .about-content {
             line-height: 1.7;
-            color: var(--text-dim);
+            color: var(--gray);
+            margin-bottom: 2rem;
         }
         
-        .about-content p {
-            margin-bottom: 1rem;
-        }
-        
-        .features {
+        .tech-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
             margin-top: 2rem;
         }
         
-        .feature {
-            background-color: rgba(255, 215, 0, 0.05);
+        .tech-card {
+            background: var(--dark-700);
             padding: 1.5rem;
-            border-radius: 10px;
-            border-left: 3px solid var(--primary);
+            border-radius: 12px;
+            border: 1px solid var(--dark-600);
         }
         
-        .feature-title {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
+        .tech-title {
             font-size: 1.1rem;
-        }
-        
-        .feature-desc {
-            color: var(--text-dim);
-            font-size: 0.9rem;
-        }
-        
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2rem 1rem;
-            color: var(--text-dim);
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(255, 215, 0, 0.1);
-            margin-top: 2rem;
-        }
-        
-        /* Toast notification */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background-color: var(--dark-light);
-            color: var(--text);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            border-left: 4px solid var(--primary);
+            font-weight: 600;
+            color: var(--light);
+            margin-bottom: 0.75rem;
             display: flex;
             align-items: center;
             gap: 10px;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.5s ease;
+        }
+        
+        .tech-desc {
+            font-size: 0.95rem;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--dark-700);
+            margin-top: 3rem;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 1rem 1.5rem;
+            background: var(--dark-800);
+            color: var(--light);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-left: 4px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000;
-            max-width: 350px;
+            max-width: 380px;
+            border: 1px solid var(--dark-600);
         }
         
         .toast.show {
-            transform: translateY(0);
-            opacity: 1;
+            transform: translateX(0);
         }
         
         .toast.success {
@@ -478,641 +543,155 @@
             border-left-color: var(--danger);
         }
         
-        /* Responsive adjustments */
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 15, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .loading-content {
+            text-align: center;
+            max-width: 400px;
+            padding: 2rem;
+        }
+        
+        .scanning-animation {
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--primary) 20%, 
+                var(--accent) 50%, 
+                var(--primary) 80%, 
+                transparent 100%);
+            margin: 2rem auto;
+            border-radius: 4px;
+            animation: scanning 2s ease-in-out infinite;
+        }
+        
+        @keyframes scanning {
+            0% { transform: translateX(-100px) scaleX(0.1); opacity: 0; }
+            50% { transform: translateX(0) scaleX(1); opacity: 1; }
+            100% { transform: translateX(100px) scaleX(0.1); opacity: 0; }
+        }
+        
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .swarg-title {
-                font-size: 3rem;
+            .logo {
+                font-size: 3.5rem;
             }
             
-            .developer-name {
-                font-size: 1.4rem;
-            }
-            
-            .btn-container {
-                flex-direction: column;
-            }
-            
-            .btn {
+            .button {
                 min-width: 100%;
             }
             
             .tabs {
                 flex-direction: column;
-                border-radius: 15px;
-            }
-            
-            .tab {
-                border-radius: 10px;
-                margin-bottom: 5px;
             }
             
             .card {
                 padding: 1.5rem;
             }
+            
+            .about-section {
+                padding: 1.5rem;
+            }
+            
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
         }
         
         @media (max-width: 480px) {
-            .swarg-title {
-                font-size: 2.5rem;
+            .logo {
+                font-size: 2.8rem;
             }
             
-            .developer-name {
-                font-size: 1.2rem;
+            .developer {
+                font-size: 1rem;
             }
             
-            .card {
-                padding: 1rem;
-            }
-            
-            .about-section {
-                padding: 1.5rem 1rem;
+            .container, .tabs-container {
+                padding: 0 1rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Animated background dots -->
-    <div class="bg-dots" id="bgDots"></div>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="bg-grid"></div>
+    </div>
     
-    <header>
-        <div class="title-container">
-            <h1 class="swarg-title">SWARG</h1>
-            <div class="developer-info">
-                <span class="developer-name">AMAR KUMAR</span>
-                <i class="fas fa-check-circle blue-tick"></i>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="card-icon" style="margin: 0 auto 1.5rem;">
+                <i class="fas fa-shield-alt"></i>
             </div>
-            <div class="developer-tag">SUPPORT DEVELOPER</div>
-            <div class="master-key">
-                <i class="fas fa-key"></i>
-                <span>MASTER ENCRYPTION KEY</span>
-                <i class="fas fa-ellipsis-h"></i>
+            <h2 style="color: var(--light); margin-bottom: 0.5rem;">Military Grade Encryption</h2>
+            <p style="color: var(--gray); margin-bottom: 1.5rem;">Processing with AES-256-GCM</p>
+            <div class="scanning-animation"></div>
+            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 1.5rem;">
+                <i class="fas fa-lock"></i> All operations are performed locally
+            </p>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <h1 class="logo">SWARG</h1>
+            <div class="developer">
+                <span class="developer-name">AMAR KUMAR</span>
+                <i class="fas fa-check-circle verified"></i>
             </div>
         </div>
     </header>
     
+    <!-- Tabs -->
     <div class="tabs-container">
         <div class="tabs">
-            <button class="tab active" data-tab="encrypt">ENCODE</button>
-            <button class="tab" data-tab="decrypt">DECODE</button>
+            <button class="tab active" data-tab="encrypt">
+                <i class="fas fa-lock"></i> ENCRYPT
+            </button>
+            <button class="tab" data-tab="decrypt">
+                <i class="fas fa-unlock"></i> DECRYPT
+            </button>
         </div>
     </div>
     
-    <div class="content">
+    <!-- Main Content -->
+    <div class="container">
         <!-- Encrypt Tab -->
         <div class="tab-content active" id="encrypt-tab">
             <div class="card">
-                <h2 class="card-title"><i class="fas fa-lock"></i> ENCRYPT DATA</h2>
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2 class="card-title">AES-256 Encryption</h2>
+                </div>
+                
                 <div class="input-group">
-                    <label class="input-label">Data to Secure...</label>
-                    <textarea id="encrypt-input" placeholder="Enter the text you want to encrypt..."></textarea>
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Encryption Key (Optional - Leave empty for auto-generation)</label>
-                    <input type="text" id="encrypt-key" placeholder="Enter a custom encryption key or leave empty">
-                </div>
-                <div class="btn-container">
-                    <button class="btn btn-primary" id="encrypt-btn">
-                        <i class="fas fa-lock"></i> ENCRYPT
-                    </button>
-                    <button class="btn btn-secondary" id="clear-encrypt-btn">
-                        <i class="fas fa-trash"></i> CLEAR
-                    </button>
-                </div>
-                
-                <div class="result-container" id="encrypt-result">
-                    <div class="result-header">
-                        <h3 class="result-title">ENCRYPTED RESULT</h3>
-                        <button class="copy-btn" id="copy-encrypt-btn">
-                            <i class="fas fa-copy"></i> COPY
-                        </button>
-                    </div>
-                    <div class="result-content" id="encrypted-text"></div>
-                    <div class="expiry-info">
-                        <i class="fas fa-clock"></i> This encrypted data will expire in <span id="expiry-time">30:00</span> minutes
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Decrypt Tab -->
-        <div class="tab-content" id="decrypt-tab">
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-unlock"></i> DECRYPT DATA</h2>
-                <div class="input-group">
-                    <label class="input-label">Encrypted Data</label>
-                    <textarea id="decrypt-input" placeholder="Enter the encrypted text..."></textarea>
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Encryption Key</label>
-                    <input type="text" id="decrypt-key" placeholder="Enter the encryption key used for encryption">
-                </div>
-                <div class="btn-container">
-                    <button class="btn btn-primary" id="decrypt-btn">
-                        <i class="fas fa-unlock"></i> DECRYPT
-                    </button>
-                    <button class="btn btn-secondary" id="clear-decrypt-btn">
-                        <i class="fas fa-trash"></i> CLEAR
-                    </button>
-                </div>
-                
-                <div class="result-container" id="decrypt-result">
-                    <div class="result-header">
-                        <h3 class="result-title">DECRYPTED RESULT</h3>
-                        <button class="copy-btn" id="copy-decrypt-btn">
-                            <i class="fas fa-copy"></i> COPY
-                        </button>
-                    </div>
-                    <div class="result-content" id="decrypted-text"></div>
-                    <div class="expiry-info">
-                        <i class="fas fa-info-circle"></i> Only data encrypted with this tool can be decrypted here
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- About Section -->
-        <div class="about-section">
-            <h2 class="about-title">About Swarg Encryption</h2>
-            <div class="about-content">
-                <p>Swarg is a professional-grade encryption tool that uses AES-256 (Advanced Encryption Standard with 256-bit key) - the same encryption standard used by governments and security experts worldwide.</p>
-                <p>All encryption and decryption happens locally in your browser. No data is sent to any server, ensuring complete privacy and security.</p>
-                
-                <div class="features">
-                    <div class="feature">
-                        <h3 class="feature-title">Real AES-256 Encryption</h3>
-                        <p class="feature-desc">Uses the Web Crypto API for genuine military-grade AES-256-GCM encryption with authentication.</p>
-                    </div>
-                    <div class="feature">
-                        <h3 class="feature-title">Auto Expiry</h3>
-                        <p class="feature-desc">Encrypted data automatically expires after 30 minutes for enhanced security.</p>
-                    </div>
-                    <div class="feature">
-                        <h3 class="feature-title">PWA Support</h3>
-                        <p class="feature-desc">Install as a Progressive Web App on your device for offline access.</p>
-                    </div>
-                    <div class="feature">
-                        <h3 class="feature-title">Cross-Platform</h3>
-                        <p class="feature-desc">Works on desktop, tablet, and mobile devices with a responsive design.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <label class="label">Text to Encrypt</label>
+                    <textarea 
+                        class="textarea" 
+                        id="encryptText" 
+                        placeholder="Enter sensitive text to encrypt..."
+                        rows="5"></textarea>
     
-    <footer>
-        <p>© 2023 Swarg Encryption Tool | Developed by Amar Kumar | All encryption performed client-side</p>
-        <p style="margin-top: 0.5rem; font-size: 0.8rem;">This tool uses Web Crypto API for genuine AES-256-GCM encryption</p>
-    </footer>
-    
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <i class="fas fa-check-circle" id="toast-icon"></i>
-        <span id="toast-message">Operation completed successfully!</span>
-    </div>
-    
-    <!-- Audio for button click -->
-    <audio id="click-sound" preload="auto">
-        <source src="https://assets.mixkit.co/active_storage/sfx/286/286-preview.mp3" type="audio/mpeg">
-    </audio>
-    
-    <script>
-        // Generate animated background dots
-        function generateBackgroundDots() {
-            const bgDots = document.getElementById('bgDots');
-            const dotCount = 80;
-            
-            for (let i = 0; i < dotCount; i++) {
-                const dot = document.createElement('div');
-                dot.classList.add('dot');
-                
-                // Random size between 1px and 5px
-                const size = Math.random() * 4 + 1;
-                dot.style.width = `${size}px`;
-                dot.style.height = `${size}px`;
-                
-                // Random position
-                dot.style.left = `${Math.random() * 100}%`;
-                dot.style.top = `${Math.random() * 100}%`;
-                
-                // Random animation duration and delay
-                const duration = Math.random() * 20 + 10;
-                const delay = Math.random() * 5;
-                dot.style.animationDuration = `${duration}s`;
-                dot.style.animationDelay = `${delay}s`;
-                
-                bgDots.appendChild(dot);
-            }
-        }
-        
-        // Tab switching functionality
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                // Update active tab
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Show active content
-                const tabId = this.getAttribute('data-tab');
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                document.getElementById(`${tabId}-tab`).classList.add('active');
-                
-                // Play click sound
-                playClickSound();
-            });
-        });
-        
-        // Real AES-256 Encryption using Web Crypto API
-        async function encryptAES256(text, key = null) {
-            try {
-                // Generate a random key if not provided
-                let cryptoKey;
-                let keyString;
-                
-                if (key && key.trim() !== '') {
-                    // Use the provided key
-                    keyString = key;
-                    const keyBuffer = new TextEncoder().encode(keyString);
-                    
-                    // Import key for AES-GCM
-                    cryptoKey = await crypto.subtle.importKey(
-                        'raw',
-                        keyBuffer,
-                        { name: 'AES-GCM' },
-                        false,
-                        ['encrypt']
-                    );
-                } else {
-                    // Generate a random key
-                    cryptoKey = await crypto.subtle.generateKey(
-                        { name: 'AES-GCM', length: 256 },
-                        true,
-                        ['encrypt', 'decrypt']
-                    );
-                    
-                    // Export the key as a string
-                    const exportedKey = await crypto.subtle.exportKey('raw', cryptoKey);
-                    keyString = btoa(String.fromCharCode(...new Uint8Array(exportedKey)));
-                }
-                
-                // Generate a random initialization vector (IV)
-                const iv = crypto.getRandomValues(new Uint8Array(12));
-                
-                // Encode the text
-                const encodedText = new TextEncoder().encode(text);
-                
-                // Encrypt the text
-                const encryptedBuffer = await crypto.subtle.encrypt(
-                    { name: 'AES-GCM', iv: iv },
-                    cryptoKey,
-                    encodedText
-                );
-                
-                // Convert encrypted data to base64
-                const encryptedBytes = new Uint8Array(encryptedBuffer);
-                let encryptedString = '';
-                for (let i = 0; i < encryptedBytes.length; i++) {
-                    encryptedString += String.fromCharCode(encryptedBytes[i]);
-                }
-                const encryptedBase64 = btoa(encryptedString);
-                
-                // Convert IV to base64
-                let ivString = '';
-                for (let i = 0; i < iv.length; i++) {
-                    ivString += String.fromCharCode(iv[i]);
-                }
-                const ivBase64 = btoa(ivString);
-                
-                // Return combined result: iv:encryptedData:key (if generated)
-                const result = key && key.trim() !== '' ? 
-                    `${ivBase64}:${encryptedBase64}` : 
-                    `${ivBase64}:${encryptedBase64}:${keyString}`;
-                
-                return {
-                    success: true,
-                    encrypted: result,
-                    key: keyString
-                };
-            } catch (error) {
-                console.error('Encryption error:', error);
-                return {
-                    success: false,
-                    error: 'Encryption failed. Please try again.'
-                };
-            }
-        }
-        
-        // Real AES-256 Decryption using Web Crypto API
-        async function decryptAES256(encryptedData, key) {
-            try {
-                // Split the encrypted data into IV and ciphertext
-                const parts = encryptedData.split(':');
-                if (parts.length < 2) {
-                    return {
-                        success: false,
-                        error: 'Invalid encrypted data format.'
-                    };
-                }
-                
-                const ivBase64 = parts[0];
-                const encryptedBase64 = parts[1];
-                
-                // Convert base64 strings back to Uint8Arrays
-                const ivString = atob(ivBase64);
-                const iv = new Uint8Array(ivString.length);
-                for (let i = 0; i < ivString.length; i++) {
-                    iv[i] = ivString.charCodeAt(i);
-                }
-                
-                const encryptedString = atob(encryptedBase64);
-                const encryptedBuffer = new Uint8Array(encryptedString.length);
-                for (let i = 0; i < encryptedString.length; i++) {
-                    encryptedBuffer[i] = encryptedString.charCodeAt(i);
-                }
-                
-                // Import the key
-                let keyBuffer;
-                if (key.includes('=') || key.length >= 40) {
-                    // Key is in base64 format (auto-generated)
-                    const keyString = atob(key);
-                    keyBuffer = new Uint8Array(keyString.length);
-                    for (let i = 0; i < keyString.length; i++) {
-                        keyBuffer[i] = keyString.charCodeAt(i);
-                    }
-                } else {
-                    // Key is a plain text string
-                    keyBuffer = new TextEncoder().encode(key);
-                }
-                
-                const cryptoKey = await crypto.subtle.importKey(
-                    'raw',
-                    keyBuffer,
-                    { name: 'AES-GCM' },
-                    false,
-                    ['decrypt']
-                );
-                
-                // Decrypt the data
-                const decryptedBuffer = await crypto.subtle.decrypt(
-                    { name: 'AES-GCM', iv: iv },
-                    cryptoKey,
-                    encryptedBuffer
-                );
-                
-                // Convert decrypted data to text
-                const decryptedText = new TextDecoder().decode(decryptedBuffer);
-                
-                return {
-                    success: true,
-                    decrypted: decryptedText
-                };
-            } catch (error) {
-                console.error('Decryption error:', error);
-                return {
-                    success: false,
-                    error: 'Decryption failed. Invalid key or encrypted data.'
-                };
-            }
-        }
-        
-        // Play click sound
-        function playClickSound() {
-            const audio = document.getElementById('click-sound');
-            audio.currentTime = 0;
-            
-            // Use Promise to handle autoplay restrictions
-            const playPromise = audio.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    // Autoplay was prevented, we'll just continue silently
-                    console.log("Audio play blocked by browser");
-                });
-            }
-        }
-        
-        // Show toast notification
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            const toastIcon = document.getElementById('toast-icon');
-            const toastMessage = document.getElementById('toast-message');
-            
-            // Set message and type
-            toastMessage.textContent = message;
-            toast.className = 'toast';
-            toast.classList.add(type);
-            
-            // Show toast
-            setTimeout(() => {
-                toast.classList.add('show');
-            }, 10);
-            
-            // Hide toast after 3 seconds
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Copy text to clipboard
-        async function copyToClipboard(text) {
-            try {
-                await navigator.clipboard.writeText(text);
-                showToast('Copied to clipboard!', 'success');
-                return true;
-            } catch (error) {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                
-                try {
-                    document.execCommand('copy');
-                    showToast('Copied to clipboard!', 'success');
-                } catch (err) {
-                    showToast('Failed to copy to clipboard', 'error');
-                    return false;
-                }
-                
-                document.body.removeChild(textArea);
-                return true;
-            }
-        }
-        
-        // Start countdown timer for encrypted data expiry
-        function startExpiryTimer() {
-            const expiryElement = document.getElementById('expiry-time');
-            let timeLeft = 30 * 60; // 30 minutes in seconds
-            
-            const timer = setInterval(() => {
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    expiryElement.textContent = '00:00';
-                    showToast('Encrypted data has expired', 'error');
-                    
-                    // Clear the encrypted result after expiry
-                    setTimeout(() => {
-                        const resultContainer = document.getElementById('encrypt-result');
-                        resultContainer.classList.remove('show');
-                    }, 2000);
-                    
-                    return;
-                }
-                
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                expiryElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                timeLeft--;
-            }, 1000);
-        }
-        
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', function() {
-            // Generate background
-            generateBackgroundDots();
-            
-            // Encrypt button click
-            document.getElementById('encrypt-btn').addEventListener('click', async function() {
-                playClickSound();
-                
-                const inputText = document.getElementById('encrypt-input').value.trim();
-                const key = document.getElementById('encrypt-key').value.trim();
-                
-                if (!inputText) {
-                    showToast('Please enter text to encrypt', 'error');
-                    return;
-                }
-                
-                // Show loading state
-                const encryptBtn = this;
-                const originalText = encryptBtn.innerHTML;
-                encryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENCRYPTING...';
-                encryptBtn.disabled = true;
-                
-                // Perform encryption
-                const result = await encryptAES256(inputText, key);
-                
-                // Restore button state
-                encryptBtn.innerHTML = originalText;
-                encryptBtn.disabled = false;
-                
-                if (result.success) {
-                    // Show result
-                    document.getElementById('encrypted-text').textContent = result.encrypted;
-                    const resultContainer = document.getElementById('encrypt-result');
-                    resultContainer.classList.add('show');
-                    
-                    // Auto copy to clipboard
-                    await copyToClipboard(result.encrypted);
-                    
-                    // Show key if it was auto-generated
-                    if (!key) {
-                        showToast(`Encrypted! Key: ${result.key.substring(0, 20)}... (copied to clipboard)`, 'success');
-                    } else {
-                        showToast('Encrypted successfully! (copied to clipboard)', 'success');
-                    }
-                    
-                    // Start expiry timer
-                    startExpiryTimer();
-                } else {
-                    showToast(result.error, 'error');
-                }
-            });
-            
-            // Decrypt button click
-            document.getElementById('decrypt-btn').addEventListener('click', async function() {
-                playClickSound();
-                
-                const encryptedText = document.getElementById('decrypt-input').value.trim();
-                const key = document.getElementById('decrypt-key').value.trim();
-                
-                if (!encryptedText) {
-                    showToast('Please enter encrypted text', 'error');
-                    return;
-                }
-                
-                if (!key) {
-                    showToast('Please enter the encryption key', 'error');
-                    return;
-                }
-                
-                // Show loading state
-                const decryptBtn = this;
-                const originalText = decryptBtn.innerHTML;
-                decryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> DECRYPTING...';
-                decryptBtn.disabled = true;
-                
-                // Perform decryption
-                const result = await decryptAES256(encryptedText, key);
-                
-                // Restore button state
-                decryptBtn.innerHTML = originalText;
-                decryptBtn.disabled = false;
-                
-                if (result.success) {
-                    // Show result
-                    document.getElementById('decrypted-text').textContent = result.decrypted;
-                    const resultContainer = document.getElementById('decrypt-result');
-                    resultContainer.classList.add('show');
-                    
-                    // Auto copy to clipboard
-                    await copyToClipboard(result.decrypted);
-                    
-                    showToast('Decrypted successfully! (copied to clipboard)', 'success');
-                } else {
-                    showToast(result.error, 'error');
-                }
-            });
-            
-            // Clear buttons
-            document.getElementById('clear-encrypt-btn').addEventListener('click', function() {
-                playClickSound();
-                document.getElementById('encrypt-input').value = '';
-                document.getElementById('encrypt-key').value = '';
-                document.getElementById('encrypt-result').classList.remove('show');
-                showToast('Encryption fields cleared', 'success');
-            });
-            
-            document.getElementById('clear-decrypt-btn').addEventListener('click', function() {
-                playClickSound();
-                document.getElementById('decrypt-input').value = '';
-                document.getElementById('decrypt-key').value = '';
-                document.getElementById('decrypt-result').classList.remove('show');
-                showToast('Decryption fields cleared', 'success');
-            });
-            
-            // Copy buttons
-            document.getElementById('copy-encrypt-btn').addEventListener('click', function() {
-                playClickSound();
-                const text = document.getElementById('encrypted-text').textContent;
-                copyToClipboard(text);
-            });
-            
-            document.getElementById('copy-decrypt-btn').addEventListener('click', function() {
-                playClickSound();
-                const text = document.getElementById('decrypted-text').textContent;
-                copyToClipboard(text);
-            });
-            
-            // Initialize PWA
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('sw.js')
-                        .then(registration => {
-                            console.log('ServiceWorker registration successful');
-                        })
-                        .catch(err => {
-                            console.log('ServiceWorker registration failed: ', err);
-                        });
-                });
-            }
-            
-            // Request notification permission for PWA
-            if (Notification.permission === 'default') {
-                Notification.requestPermission();
-            }
-        });
-    </script>
-</body>
-    </html>
