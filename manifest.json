@@ -1,27 +1,21 @@
 {
-  "name": "SWARG Shield",
-  "short_name": "SWARG",
-  "description": "Ultimate Encryption Vault with AES-256-GCM Security",
-  "start_url": "./index.html",
+  "name": "Swarg Encryption",
+  "short_name": "Swarg",
+  "description": "AES-256 Encryption Tool by Amar Kumar",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "orientation": "portrait",
+  "background_color": "#0A0A0A",
+  "theme_color": "#FFD700",
   "icons": [
     {
       "src": "icon.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "categories": ["security", "productivity", "utilities"],
-  "screenshots": [
+      "sizes": "192x192",
+      "type": "image/png"
+    },
     {
-      "src": "screenshot1.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "label": "SWARG Shield Encryption Interface"
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
