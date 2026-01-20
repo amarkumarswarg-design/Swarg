@@ -1,21 +1,41 @@
 {
-  "name": "Swarg Encryption",
-  "short_name": "Swarg",
-  "description": "AES-256 Encryption Tool by Amar Kumar",
+  "name": "SWARG Encryption",
+  "short_name": "SWARG",
+  "description": "Military Grade AES-256 Encryption Tool",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0A0A0A",
-  "theme_color": "#FFD700",
+  "background_color": "#0a0a0f",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icon.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["security", "productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Encrypt Text",
+      "short_name": "Encrypt",
+      "description": "Encrypt text with AES-256",
+      "url": "/#encrypt",
+      "icons": [{ "src": "icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Decrypt Text",
+      "short_name": "Decrypt",
+      "description": "Decrypt AES-256 encrypted text",
+      "url": "/#decrypt",
+      "icons": [{ "src": "icon.png", "sizes": "192x192" }]
     }
   ]
 }
