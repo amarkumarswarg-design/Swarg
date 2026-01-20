@@ -642,4 +642,477 @@
                         <h3 class="feature-title">Real AES-256 Encryption</h3>
                         <p class="feature-desc">Uses the Web Crypto API for genuine military-grade AES-256-GCM encryption with authentication.</p>
                     </div>
-                    <div 
+                    <div class="feature">
+                        <h3 class="feature-title">Auto Expiry</h3>
+                        <p class="feature-desc">Encrypted data automatically expires after 30 minutes for enhanced security.</p>
+                    </div>
+                    <div class="feature">
+                        <h3 class="feature-title">PWA Support</h3>
+                        <p class="feature-desc">Install as a Progressive Web App on your device for offline access.</p>
+                    </div>
+                    <div class="feature">
+                        <h3 class="feature-title">Cross-Platform</h3>
+                        <p class="feature-desc">Works on desktop, tablet, and mobile devices with a responsive design.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 Swarg Encryption Tool | Developed by Amar Kumar | All encryption performed client-side</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">This tool uses Web Crypto API for genuine AES-256-GCM encryption</p>
+    </footer>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle" id="toast-icon"></i>
+        <span id="toast-message">Operation completed successfully!</span>
+    </div>
+    
+    <!-- Audio for button click -->
+    <audio id="click-sound" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/286/286-preview.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        // Generate animated background dots
+        function generateBackgroundDots() {
+            const bgDots = document.getElementById('bgDots');
+            const dotCount = 80;
+            
+            for (let i = 0; i < dotCount; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                
+                // Random size between 1px and 5px
+                const size = Math.random() * 4 + 1;
+                dot.style.width = `${size}px`;
+                dot.style.height = `${size}px`;
+                
+                // Random position
+                dot.style.left = `${Math.random() * 100}%`;
+                dot.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration and delay
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                dot.style.animationDuration = `${duration}s`;
+                dot.style.animationDelay = `${delay}s`;
+                
+                bgDots.appendChild(dot);
+            }
+        }
+        
+        // Tab switching functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Update active tab
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show active content
+                const tabId = this.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+                
+                // Play click sound
+                playClickSound();
+            });
+        });
+        
+        // Real AES-256 Encryption using Web Crypto API
+        async function encryptAES256(text, key = null) {
+            try {
+                // Generate a random key if not provided
+                let cryptoKey;
+                let keyString;
+                
+                if (key && key.trim() !== '') {
+                    // Use the provided key
+                    keyString = key;
+                    const keyBuffer = new TextEncoder().encode(keyString);
+                    
+                    // Import key for AES-GCM
+                    cryptoKey = await crypto.subtle.importKey(
+                        'raw',
+                        keyBuffer,
+                        { name: 'AES-GCM' },
+                        false,
+                        ['encrypt']
+                    );
+                } else {
+                    // Generate a random key
+                    cryptoKey = await crypto.subtle.generateKey(
+                        { name: 'AES-GCM', length: 256 },
+                        true,
+                        ['encrypt', 'decrypt']
+                    );
+                    
+                    // Export the key as a string
+                    const exportedKey = await crypto.subtle.exportKey('raw', cryptoKey);
+                    keyString = btoa(String.fromCharCode(...new Uint8Array(exportedKey)));
+                }
+                
+                // Generate a random initialization vector (IV)
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                
+                // Encode the text
+                const encodedText = new TextEncoder().encode(text);
+                
+                // Encrypt the text
+                const encryptedBuffer = await crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    cryptoKey,
+                    encodedText
+                );
+                
+                // Convert encrypted data to base64
+                const encryptedBytes = new Uint8Array(encryptedBuffer);
+                let encryptedString = '';
+                for (let i = 0; i < encryptedBytes.length; i++) {
+                    encryptedString += String.fromCharCode(encryptedBytes[i]);
+                }
+                const encryptedBase64 = btoa(encryptedString);
+                
+                // Convert IV to base64
+                let ivString = '';
+                for (let i = 0; i < iv.length; i++) {
+                    ivString += String.fromCharCode(iv[i]);
+                }
+                const ivBase64 = btoa(ivString);
+                
+                // Return combined result: iv:encryptedData:key (if generated)
+                const result = key && key.trim() !== '' ? 
+                    `${ivBase64}:${encryptedBase64}` : 
+                    `${ivBase64}:${encryptedBase64}:${keyString}`;
+                
+                return {
+                    success: true,
+                    encrypted: result,
+                    key: keyString
+                };
+            } catch (error) {
+                console.error('Encryption error:', error);
+                return {
+                    success: false,
+                    error: 'Encryption failed. Please try again.'
+                };
+            }
+        }
+        
+        // Real AES-256 Decryption using Web Crypto API
+        async function decryptAES256(encryptedData, key) {
+            try {
+                // Split the encrypted data into IV and ciphertext
+                const parts = encryptedData.split(':');
+                if (parts.length < 2) {
+                    return {
+                        success: false,
+                        error: 'Invalid encrypted data format.'
+                    };
+                }
+                
+                const ivBase64 = parts[0];
+                const encryptedBase64 = parts[1];
+                
+                // Convert base64 strings back to Uint8Arrays
+                const ivString = atob(ivBase64);
+                const iv = new Uint8Array(ivString.length);
+                for (let i = 0; i < ivString.length; i++) {
+                    iv[i] = ivString.charCodeAt(i);
+                }
+                
+                const encryptedString = atob(encryptedBase64);
+                const encryptedBuffer = new Uint8Array(encryptedString.length);
+                for (let i = 0; i < encryptedString.length; i++) {
+                    encryptedBuffer[i] = encryptedString.charCodeAt(i);
+                }
+                
+                // Import the key
+                let keyBuffer;
+                if (key.includes('=') || key.length >= 40) {
+                    // Key is in base64 format (auto-generated)
+                    const keyString = atob(key);
+                    keyBuffer = new Uint8Array(keyString.length);
+                    for (let i = 0; i < keyString.length; i++) {
+                        keyBuffer[i] = keyString.charCodeAt(i);
+                    }
+                } else {
+                    // Key is a plain text string
+                    keyBuffer = new TextEncoder().encode(key);
+                }
+                
+                const cryptoKey = await crypto.subtle.importKey(
+                    'raw',
+                    keyBuffer,
+                    { name: 'AES-GCM' },
+                    false,
+                    ['decrypt']
+                );
+                
+                // Decrypt the data
+                const decryptedBuffer = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    cryptoKey,
+                    encryptedBuffer
+                );
+                
+                // Convert decrypted data to text
+                const decryptedText = new TextDecoder().decode(decryptedBuffer);
+                
+                return {
+                    success: true,
+                    decrypted: decryptedText
+                };
+            } catch (error) {
+                console.error('Decryption error:', error);
+                return {
+                    success: false,
+                    error: 'Decryption failed. Invalid key or encrypted data.'
+                };
+            }
+        }
+        
+        // Play click sound
+        function playClickSound() {
+            const audio = document.getElementById('click-sound');
+            audio.currentTime = 0;
+            
+            // Use Promise to handle autoplay restrictions
+            const playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    // Autoplay was prevented, we'll just continue silently
+                    console.log("Audio play blocked by browser");
+                });
+            }
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toast-icon');
+            const toastMessage = document.getElementById('toast-message');
+            
+            // Set message and type
+            toastMessage.textContent = message;
+            toast.className = 'toast';
+            toast.classList.add(type);
+            
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Copy text to clipboard
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('Copied to clipboard!', 'success');
+                return true;
+            } catch (error) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    showToast('Copied to clipboard!', 'success');
+                } catch (err) {
+                    showToast('Failed to copy to clipboard', 'error');
+                    return false;
+                }
+                
+                document.body.removeChild(textArea);
+                return true;
+            }
+        }
+        
+        // Start countdown timer for encrypted data expiry
+        function startExpiryTimer() {
+            const expiryElement = document.getElementById('expiry-time');
+            let timeLeft = 30 * 60; // 30 minutes in seconds
+            
+            const timer = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    expiryElement.textContent = '00:00';
+                    showToast('Encrypted data has expired', 'error');
+                    
+                    // Clear the encrypted result after expiry
+                    setTimeout(() => {
+                        const resultContainer = document.getElementById('encrypt-result');
+                        resultContainer.classList.remove('show');
+                    }, 2000);
+                    
+                    return;
+                }
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                expiryElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                timeLeft--;
+            }, 1000);
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generate background
+            generateBackgroundDots();
+            
+            // Encrypt button click
+            document.getElementById('encrypt-btn').addEventListener('click', async function() {
+                playClickSound();
+                
+                const inputText = document.getElementById('encrypt-input').value.trim();
+                const key = document.getElementById('encrypt-key').value.trim();
+                
+                if (!inputText) {
+                    showToast('Please enter text to encrypt', 'error');
+                    return;
+                }
+                
+                // Show loading state
+                const encryptBtn = this;
+                const originalText = encryptBtn.innerHTML;
+                encryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENCRYPTING...';
+                encryptBtn.disabled = true;
+                
+                // Perform encryption
+                const result = await encryptAES256(inputText, key);
+                
+                // Restore button state
+                encryptBtn.innerHTML = originalText;
+                encryptBtn.disabled = false;
+                
+                if (result.success) {
+                    // Show result
+                    document.getElementById('encrypted-text').textContent = result.encrypted;
+                    const resultContainer = document.getElementById('encrypt-result');
+                    resultContainer.classList.add('show');
+                    
+                    // Auto copy to clipboard
+                    await copyToClipboard(result.encrypted);
+                    
+                    // Show key if it was auto-generated
+                    if (!key) {
+                        showToast(`Encrypted! Key: ${result.key.substring(0, 20)}... (copied to clipboard)`, 'success');
+                    } else {
+                        showToast('Encrypted successfully! (copied to clipboard)', 'success');
+                    }
+                    
+                    // Start expiry timer
+                    startExpiryTimer();
+                } else {
+                    showToast(result.error, 'error');
+                }
+            });
+            
+            // Decrypt button click
+            document.getElementById('decrypt-btn').addEventListener('click', async function() {
+                playClickSound();
+                
+                const encryptedText = document.getElementById('decrypt-input').value.trim();
+                const key = document.getElementById('decrypt-key').value.trim();
+                
+                if (!encryptedText) {
+                    showToast('Please enter encrypted text', 'error');
+                    return;
+                }
+                
+                if (!key) {
+                    showToast('Please enter the encryption key', 'error');
+                    return;
+                }
+                
+                // Show loading state
+                const decryptBtn = this;
+                const originalText = decryptBtn.innerHTML;
+                decryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> DECRYPTING...';
+                decryptBtn.disabled = true;
+                
+                // Perform decryption
+                const result = await decryptAES256(encryptedText, key);
+                
+                // Restore button state
+                decryptBtn.innerHTML = originalText;
+                decryptBtn.disabled = false;
+                
+                if (result.success) {
+                    // Show result
+                    document.getElementById('decrypted-text').textContent = result.decrypted;
+                    const resultContainer = document.getElementById('decrypt-result');
+                    resultContainer.classList.add('show');
+                    
+                    // Auto copy to clipboard
+                    await copyToClipboard(result.decrypted);
+                    
+                    showToast('Decrypted successfully! (copied to clipboard)', 'success');
+                } else {
+                    showToast(result.error, 'error');
+                }
+            });
+            
+            // Clear buttons
+            document.getElementById('clear-encrypt-btn').addEventListener('click', function() {
+                playClickSound();
+                document.getElementById('encrypt-input').value = '';
+                document.getElementById('encrypt-key').value = '';
+                document.getElementById('encrypt-result').classList.remove('show');
+                showToast('Encryption fields cleared', 'success');
+            });
+            
+            document.getElementById('clear-decrypt-btn').addEventListener('click', function() {
+                playClickSound();
+                document.getElementById('decrypt-input').value = '';
+                document.getElementById('decrypt-key').value = '';
+                document.getElementById('decrypt-result').classList.remove('show');
+                showToast('Decryption fields cleared', 'success');
+            });
+            
+            // Copy buttons
+            document.getElementById('copy-encrypt-btn').addEventListener('click', function() {
+                playClickSound();
+                const text = document.getElementById('encrypted-text').textContent;
+                copyToClipboard(text);
+            });
+            
+            document.getElementById('copy-decrypt-btn').addEventListener('click', function() {
+                playClickSound();
+                const text = document.getElementById('decrypted-text').textContent;
+                copyToClipboard(text);
+            });
+            
+            // Initialize PWA
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('sw.js')
+                        .then(registration => {
+                            console.log('ServiceWorker registration successful');
+                        })
+                        .catch(err => {
+                            console.log('ServiceWorker registration failed: ', err);
+                        });
+                });
+            }
+            
+            // Request notification permission for PWA
+            if (Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        });
+    </script>
+</body>
+    </html>
