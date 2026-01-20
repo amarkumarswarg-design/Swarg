@@ -1878,9 +1878,17 @@
             playSound('click');
         }
 
-        function generateSecurePassword() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
-            const length = 16;
+    function generateSecurePassword() {
+    const password = window.realEncryption.generatePassword();
+    
+    elements.masterPassword.value = password;
+    elements.masterPassword.type = 'text';
+    elements.togglePassword.querySelector('i').className = 'fas fa-eye-slash';
+    
+    updatePasswordStrength(password);
+    showNotification('Secure AES-256 password generated!', 'success');
+    playSound('success');
+    }
             
             // Use crypto.getRandomValues for secure randomness
             const randomValues = new Uint8Array(length);
