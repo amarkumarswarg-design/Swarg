@@ -1650,21 +1650,22 @@
     </div>
 
     <!-- JavaScript -->
-    <script>
-        // ===== INITIALIZATION =====
-        document.addEventListener('DOMContentLoaded', () => {
-            // Create floating dots
-            createFloatingDots();
-            
-            // Initialize app
-            initApp();
-            
-            // Show welcome notification
-            setTimeout(() => {
-                showNotification('SWARG Shield v6.0 Initialized 🔐', 'success');
-                playSound('success');
-            }, 800);
-        });
+    <script src="encryption.js"></script>
+<script>
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', () => {
+        // Create floating dots
+        createFloatingDots();
+        
+        // Initialize app
+        initApp();
+        
+        // Show welcome notification
+        setTimeout(() => {
+            showNotification('SWARG Shield v7.0 - REAL AES-256 🔐', 'success');
+            playSound('success');
+        }, 800);
+    });
 
         // ===== FLOATING DOTS BACKGROUND =====
         function createFloatingDots() {
