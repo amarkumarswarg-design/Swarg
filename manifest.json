@@ -1,17 +1,21 @@
 {
   "name": "SWARG SHIELD",
-  "short_name": "Swarg",
-  "start_url": "index.html",
+  "short_name": "SWARG",
+  "description": "Real AES-256-GCM Encryption Vault - Zero Knowledge",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#020406",
-  "theme_color": "#020406",
+  "background_color": "#0a1929",
+  "theme_color": "#0a1929",
   "orientation": "portrait",
   "icons": [
     {
       "src": "icon.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
+  ],
+  "categories": ["security", "utilities"],
+  "permissions": [
+    "clipboard-write"
   ]
 }
