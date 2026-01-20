@@ -2401,4 +2401,258 @@
             playSound('click');
         }
 
-        // ===== MO
+        // ===== MODAL FUNCTIONS =====
+        function showScanningAnimation() {
+            elements.scanningOverlay.classList.add('active');
+            playSound('scan');
+            
+            // Auto-hide after 2 seconds
+            setTimeout(() => {
+                hideScanningAnimation();
+            }, 2000);
+        }
+
+        function hideScanningAnimation() {
+            elements.scanningOverlay.classList.remove('active');
+        }
+
+        function showAboutModal() {
+            elements.aboutModal.classList.add('active');
+            playSound('click');
+        }
+
+        function hideAboutModal() {
+            elements.aboutModal.classList.remove('active');
+            playSound('click');
+        }
+
+        function showSecurityInfo() {
+            showNotification('Security: AES-256-GCM • Zero Knowledge • Local Only', 'info');
+            playSound('click');
+        }
+
+        // ===== NOTIFICATION =====
+        function showNotification(message, type = 'info') {
+            const icon = elements.notification.querySelector('.notification-icon');
+            
+            // Set icon based on type
+            switch(type) {
+                case 'success':
+                    icon.className = 'fas fa-check-circle notification-icon';
+                    break;
+                case 'error':
+                    icon.className = 'fas fa-exclamation-circle notification-icon';
+                    break;
+                case 'warning':
+                    icon.className = 'fas fa-exclamation-triangle notification-icon';
+                    break;
+                default:
+                    icon.className = 'fas fa-info-circle notification-icon';
+            }
+            
+            // Set message
+            elements.notificationMessage.textContent = message;
+            
+            // Show notification
+            elements.notification.classList.add('active');
+            elements.notification.className = `notification ${type} active`;
+            
+            // Auto-hide
+            setTimeout(() => {
+                elements.notification.classList.remove('active');
+            }, 3000);
+        }
+
+        // ===== SOUND SYSTEM =====
+        function playSound(type) {
+            if (!appState.soundEnabled) return;
+            
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const volume = appState.volume / 100;
+            
+            try {
+                let oscillator, gainNode;
+                
+                switch(type) {
+                    case 'type':
+                        oscillator = audioContext.createOscillator();
+                        gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.value = 800;
+                        oscillator.type = 'sine';
+                        
+                        const now = audioContext.currentTime;
+                        gainNode.gain.setValueAtTime(0, now);
+                        gainNode.gain.linearRampToValueAtTime(volume * 0.3, now + 0.01);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                        
+                        oscillator.start(now);
+                        oscillator.stop(now + 0.05);
+                        break;
+                        
+                    case 'click':
+                        oscillator = audioContext.createOscillator();
+                        gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.value = 600;
+                        oscillator.type = 'square';
+                        
+                        const now2 = audioContext.currentTime;
+                        gainNode.gain.setValueAtTime(0, now2);
+                        gainNode.gain.linearRampToValueAtTime(volume * 0.4, now2 + 0.01);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, now2 + 0.1);
+                        
+                        oscillator.start(now2);
+                        oscillator.stop(now2 + 0.1);
+                        break;
+                        
+                    case 'encrypt':
+                        oscillator = audioContext.createOscillator();
+                        gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.3);
+                        oscillator.type = 'sine';
+                        
+                        const now3 = audioContext.currentTime;
+                        gainNode.gain.setValueAtTime(0, now3);
+                        gainNode.gain.linearRampToValueAtTime(volume * 0.5, now3 + 0.1);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, now3 + 0.3);
+                        
+                        oscillator.start(now3);
+                        oscillator.stop(now3 + 0.3);
+                        break;
+                        
+                    case 'decrypt':
+                        oscillator = audioContext.createOscillator();
+                        gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.3);
+                        oscillator.type = 'sine';
+                        
+                        const now4 = audioContext.currentTime;
+                        gainNode.gain.setValueAtTime(0, now4);
+                        gainNode.gain.linearRampToValueAtTime(volume * 0.5, now4 + 0.1);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, now4 + 0.3);
+                        
+                        oscillator.start(now4);
+                        oscillator.stop(now4 + 0.3);
+                        break;
+                        
+                    case 'success':
+                        // Two-tone success sound
+                        const now5 = audioContext.currentTime;
+                        
+                        // First tone
+                        const osc1 = audioContext.createOscillator();
+                        const gain1 = audioContext.createGain();
+                        osc1.connect(gain1);
+                        gain1.connect(audioContext.destination);
+                        osc1.frequency.value = 523.25; // C5
+                        osc1.type = 'sine';
+                        
+                        gain1.gain.setValueAtTime(0, now5);
+                        gain1.gain.linearRampToValueAtTime(volume * 0.3, now5 + 0.1);
+                        gain1.gain.exponentialRampToValueAtTime(0.001, now5 + 0.5);
+                        
+                        osc1.start(now5);
+                        osc1.stop(now5 + 0.5);
+                        
+                        // Second tone
+                        setTimeout(() => {
+                            const osc2 = audioContext.createOscillator();
+                            const gain2 = audioContext.createGain();
+                            osc2.connect(gain2);
+                            gain2.connect(audioContext.destination);
+                            osc2.frequency.value = 659.25; // E5
+                            osc2.type = 'sine';
+                            
+                            const now6 = audioContext.currentTime;
+                            gain2.gain.setValueAtTime(0, now6);
+                            gain2.gain.linearRampToValueAtTime(volume * 0.3, now6 + 0.1);
+                            gain2.gain.exponentialRampToValueAtTime(0.001, now6 + 0.5);
+                            
+                            osc2.start(now6);
+                            osc2.stop(now6 + 0.5);
+                        }, 100);
+                        break;
+                        
+                    case 'error':
+                        oscillator = audioContext.createOscillator();
+                        gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.value = 200;
+                        oscillator.type = 'square';
+                        
+                        const now7 = audioContext.currentTime;
+                        gainNode.gain.setValueAtTime(0, now7);
+                        gainNode.gain.linearRampToValueAtTime(volume * 0.4, now7 + 0.05);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, now7 + 0.3);
+                        
+                        oscillator.start(now7);
+                        oscillator.stop(now7 + 0.3);
+                        break;
+                        
+                    case 'scan':
+                        oscillator = audioContext.createOscillator();
+                        gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 2);
+                        oscillator.type = 'sine';
+                        
+                        const now8 = audioContext.currentTime;
+                        gainNode.gain.setValueAtTime(0, now8);
+                        gainNode.gain.linearRampToValueAtTime(volume * 0.3, now8 + 0.2);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, now8 + 2);
+                        
+                        oscillator.start(now8);
+                        oscillator.stop(now8 + 2);
+                        break;
+                        
+                    case 'copy':
+                        oscillator = audioContext.createOscillator();
+                        gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.value = 1000;
+                        oscillator.type = 'sine';
+                        
+                        const now9 = audioContext.currentTime;
+                        gainNode.gain.setValueAtTime(0, now9);
+                        gainNode.gain.linearRampToValueAtTime(volume * 0.3, now9 + 0.01);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, now9 + 0.1);
+                        
+                        oscillator.start(now9);
+                        oscillator.stop(now9 + 0.1);
+                        break;
+                }
+                
+            } catch (error) {
+                console.log('Sound playback failed:', error);
+            }
+        }
+    </script>
+</body>
+</html>
