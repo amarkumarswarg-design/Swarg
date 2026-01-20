@@ -2280,5 +2280,115 @@
                 this.timers.forEach(timer => clearInterval(timer));
                 this.timers.clear();
                 
-                // Cle
+                // Clear UI
+                this.elements.masterPassword.value = '';
+                this.elements.decryptPassword.value = '';
+                this.elements.textToEncrypt.value = '';
+                this.elements.encryptedToken.value = '';
+                this.elements.encryptedText.textContent = 'Encrypted token will appear here...';
+                this.elements.decryptedText.textContent = 'Decrypted message will appear here...';
+                this.elements.encryptedOutput.classList.remove('encrypted');
+                this.elements.decryptedOutput.classList.remove('decrypted');
+                this.elements.encryptTimer.classList.add('hidden');
+                this.elements.decryptTimer.classList.add('hidden');
+                
+                this.updatePasswordStrength('');
+                this.switchTab('encrypt');
+                this.currentTokenId = null;
+                
+                if (!silent) {
+                    this.showNotification('All data cleared and memory zeroized', 'success');
+                    this.playSound('success');
+                }
+            }
+
+            // Animations
+            showScanningAnimation() {
+                this.elements.scanningOverlay.classList.add('active');
+                this.playSound('scan');
+            }
+
+            hideScanningAnimation() {
+                this.elements.scanningOverlay.classList.remove('active');
+            }
+
+            // Modals
+            showAboutModal() {
+                this.elements.aboutModal.classList.add('active');
+                this.playSound('click');
+            }
+
+            hideAboutModal() {
+                this.elements.aboutModal.classList.remove('active');
+                this.playSound('click');
+            }
+
+            showSecurityAudit() {
+                this.showNotification('Security Audit: AES-256-GCM • PBKDF2 • Web Crypto API • Zero Storage', 'info');
+                this.playSound('click');
+            }
+
+            // Notification
+            showNotification(message, type = 'info') {
+                const icon = this.elements.notification.querySelector('.notification-icon');
+                
+                switch(type) {
+                    case 'success':
+                        icon.className = 'fas fa-check-circle notification-icon';
+                        break;
+                    case 'error':
+                        icon.className = 'fas fa-exclamation-circle notification-icon';
+                        break;
+                    case 'warning':
+                        icon.className = 'fas fa-exclamation-triangle notification-icon';
+                        break;
+                    default:
+                        icon.className = 'fas fa-info-circle notification-icon';
+                }
+                
+                this.elements.notificationMessage.textContent = message;
+                this.elements.notification.classList.add('active');
+                this.elements.notification.className = `notification ${type} active`;
+                
+                setTimeout(() => {
+                    this.elements.notification.classList.remove('active');
+                }, 3000);
+            }
+
+            // Sound
+            playSound(type) {
+                if (this.engine.soundManager.enabled && this.engine.soundManager.sounds[type]) {
+                    this.engine.soundManager.sounds[type]();
+                }
+            }
+
+            // UI updates
+            updateUI() {
+                this.updateSoundStatus();
+            }
+        }
+
+        // ===== INITIALIZE APPLICATION =====
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Initialize encryption engine
+                const encryptionEngine = new EncryptionEngine();
+                
+                // Initialize UI manager
+                const uiManager = new UIManager(encryptionEngine);
+                
+                // Make available for debugging
+                window.swargApp = {
+                    engine: encryptionEngine,
+                    ui: uiManager
+                };
+                
+            } catch (error) {
+                console.error('App initialization failed:', error);
+                alert('SWARG Shield initialization failed: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
             
