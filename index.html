@@ -3,1443 +3,549 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWARG | Ultimate Security Vault</title>
+    <title>SWARG SHIELD - Real AES-256-GCM Encryption</title>
     
-    <!-- PWA Metadata -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
     
     <style>
-        /* ===== RESET & BASE ===== */
+        /* Minimal secure CSS - no external dependencies */
+        :root {
+            --primary: #0a1929;
+            --secondary: #112240;
+            --accent: #00d4aa;
+            --danger: #ff6b6b;
+            --success: #4cd964;
+            --text: #e6f1ff;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0a0a0f;
-            color: white;
+            font-family: monospace;
+            background: var(--primary);
+            color: var(--text);
             min-height: 100vh;
-            position: relative;
+            padding: 20px;
+            line-height: 1.6;
         }
         
-        /* ===== STAR BACKGROUND ===== */
-        #starfield {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(180deg, #0a0a0f 0%, #000000 100%);
-            overflow: hidden;
-        }
-        
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 3s infinite alternate;
-        }
-        
-        @keyframes twinkle {
-            0% { opacity: 0.2; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1.2); }
-        }
-        
-        .shooting-star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            box-shadow: 0 0 10px cyan;
-            animation: shoot 5s linear infinite;
-        }
-        
-        @keyframes shoot {
-            0% {
-                transform: translateX(-100px) translateY(-100px);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(calc(100vw + 100px)) translateY(calc(100vh + 100px));
-                opacity: 0;
-            }
-        }
-        
-        /* ===== MAIN CONTAINER ===== */
-        .app-container {
-            max-width: 100%;
-            min-height: 100vh;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* ===== HEADER ===== */
-        .app-header {
-            padding: 40px 20px 30px;
-            text-align: center;
-            position: relative;
-        }
-        
-        .logo-container {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-        
-        .logo-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(0, 255, 255, 0.3) 0%, transparent 70%);
-            filter: blur(40px);
-            animation: pulse 4s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
-        }
-        
-        .logo-text {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 56px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #00ffff, #9d00ff, #00ffff);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: shine 3s linear infinite;
-        }
-        
-        @keyframes shine {
-            to { background-position: 200% center; }
-        }
-        
-        .creator-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 24px;
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 50px;
-            font-weight: 600;
-            color: #ffd700;
-            margin-top: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .creator-badge::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.2), transparent);
-            transform: rotate(45deg);
-            animation: shine-gold 2s linear infinite;
-        }
-        
-        @keyframes shine-gold {
-            to { transform: translateX(100%) rotate(45deg); }
-        }
-        
-        .verified-icon {
-            color: #00aaff;
-            font-size: 18px;
-        }
-        
-        /* ===== MAIN CONTENT ===== */
-        .main-content {
-            padding: 0 20px 40px;
-            max-width: 500px;
+        .container {
+            max-width: 800px;
             margin: 0 auto;
         }
         
-        /* ===== CARD DESIGN ===== */
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 30px;
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+        
+        .subtitle {
+            color: #8892b0;
+            font-size: 1rem;
+        }
+        
+        .security-status {
+            background: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--accent);
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
         .card {
-            background: rgba(20, 20, 30, 0.9);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
+            background: var(--secondary);
+            border-radius: 8px;
             padding: 25px;
             margin-bottom: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
-        /* ===== PASSWORD SECTION ===== */
-        .password-container {
-            position: relative;
-            margin: 20px 0;
-        }
-        
-        .password-label {
-            display: block;
-            font-size: 14px;
-            color: #00ffff;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-        
-        .password-input {
-            width: 100%;
-            padding: 18px 50px 18px 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            font-size: 16px;
-            color: white;
-            outline: none;
-            transition: all 0.3s;
-        }
-        
-        .password-input:focus {
-            border-color: #00ffff;
-            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1);
-        }
-        
-        .password-toggle {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 18px;
-            cursor: pointer;
-            padding: 8px;
-        }
-        
-        /* ===== TAB NAVIGATION ===== */
-        .tab-nav {
-            display: flex;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 5px;
-            margin: 25px 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .tab-btn {
-            flex: 1;
-            padding: 15px;
-            background: none;
-            border: none;
-            border-radius: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--accent);
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 10px;
         }
         
-        .tab-btn.active {
-            background: rgba(0, 255, 255, 0.1);
-            color: #00ffff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* ===== TEXT AREAS ===== */
-        .text-container {
+        .input-group {
             margin-bottom: 20px;
         }
         
-        .text-label {
+        label {
             display: block;
-            font-size: 14px;
-            color: #00ffff;
-            margin-bottom: 10px;
-            font-weight: 500;
+            margin-bottom: 8px;
+            color: #8892b0;
+            font-size: 0.9rem;
         }
         
-        .text-area {
+        input, textarea {
             width: 100%;
-            min-height: 150px;
-            padding: 20px;
+            padding: 12px;
             background: rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            font-size: 16px;
-            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+        
+        textarea {
+            min-height: 120px;
             resize: vertical;
+        }
+        
+        input:focus, textarea:focus {
             outline: none;
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
+            border-color: var(--accent);
         }
         
-        .text-area:focus {
-            border-color: #00ffff;
-            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1);
-        }
-        
-        /* ===== OUTPUT BOXES ===== */
-        .output-container {
-            position: relative;
-            margin: 20px 0;
-        }
-        
-        .output-box {
-            min-height: 150px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            font-size: 14px;
-            color: #00ff88;
-            font-family: 'Courier New', monospace;
-            word-break: break-all;
-            white-space: pre-wrap;
-        }
-        
-        .output-placeholder {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 14px;
-        }
-        
-        .output-placeholder i {
-            font-size: 32px;
-            margin-bottom: 10px;
-            display: block;
-        }
-        
-        /* ===== SCANNER ANIMATION ===== */
-        .scanner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 100;
-            display: none;
-        }
-        
-        .scanner-line {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, #00ffff, transparent);
-            box-shadow: 0 0 20px #00ffff;
-            animation: scan 2s linear infinite;
-        }
-        
-        @keyframes scan {
-            0% {
-                top: 0;
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                top: 100%;
-                opacity: 0;
-            }
-        }
-        
-        /* ===== BUTTONS ===== */
         .btn-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 25px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
         }
         
         .btn {
-            padding: 18px 24px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: 600;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 140px;
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #00aaff, #9d00ff);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+            background: var(--accent);
+            color: var(--primary);
+            font-weight: bold;
         }
         
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        /* ===== SUCCESS ANIMATIONS ===== */
-        .success-animation {
-            text-align: center;
-            margin: 30px 0;
-            animation: fadeIn 0.5s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .success-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #00ff88, #00aaff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 24px;
+        .btn-danger {
+            background: var(--danger);
             color: white;
-            animation: bounce 0.5s;
         }
         
-        @keyframes bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
-        /* ===== TIMER ===== */
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .output {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            word-break: break-all;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 60px;
+        }
+        
         .timer {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 10px;
-            padding: 15px;
-            background: rgba(0, 255, 255, 0.1);
-            border-radius: 15px;
-            margin: 20px 0;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 6px;
+            border: 1px solid var(--danger);
         }
         
-        .timer-icon {
-            color: #00ffff;
-            font-size: 20px;
+        .hidden {
+            display: none;
         }
         
-        .timer-text {
-            font-weight: 600;
-            color: white;
-        }
-        
-        .timer-count {
-            font-size: 24px;
-            font-weight: 700;
-            color: #00ffff;
-        }
-        
-        /* ===== TOAST ===== */
-        .toast-container {
+        .notification {
             position: fixed;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 90%;
-            max-width: 400px;
-        }
-        
-        .toast {
+            right: 20px;
             padding: 15px 20px;
-            background: rgba(20, 20, 30, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-            text-align: center;
-            animation: slideUp 0.3s;
-            backdrop-filter: blur(10px);
-        }
-        
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* ===== MODAL ===== */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-        
-        .modal-content {
-            background: rgba(20, 20, 30, 0.95);
-            border-radius: 20px;
-            padding: 30px;
-            width: 100%;
+            background: var(--secondary);
+            border-left: 4px solid var(--accent);
+            border-radius: 6px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
             max-width: 400px;
-            max-height: 80vh;
-            overflow-y: auto;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateX(120%);
+            transition: transform 0.3s;
         }
         
-        /* ===== FOOTER ===== */
-        .app-footer {
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success { border-left-color: var(--success); }
+        .notification.error { border-left-color: var(--danger); }
+        
+        .footer {
             text-align: center;
-            padding: 30px 20px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 14px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #8892b0;
+            font-size: 0.9rem;
         }
         
-        .security-tags {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .security-tag {
-            padding: 8px 16px;
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 20px;
-            font-size: 12px;
-            color: #00ffff;
-        }
-        
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 480px) {
-            .logo-text {
-                font-size: 42px;
-            }
-            
-            .card {
-                padding: 20px;
-            }
-            
+        @media (max-width: 600px) {
             .btn-group {
-                grid-template-columns: 1fr;
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
             }
         }
-        
-        /* ===== UTILITY ===== */
-        .hidden {
-            display: none !important;
-        }
-        
-        .text-center {
-            text-align: center;
-        }
-        
-        .mt-4 { margin-top: 16px; }
-        .mb-4 { margin-bottom: 16px; }
     </style>
 </head>
 <body>
-    <!-- Star Background -->
-    <div id="starfield"></div>
-    
-    <!-- Scanner Overlay -->
-    <div class="scanner-overlay" id="scanner-overlay">
-        <div class="scanner-line"></div>
-    </div>
-    
-    <!-- Main App -->
-    <div class="app-container">
+    <div class="container">
         <!-- Header -->
-        <header class="app-header">
-            <div class="logo-container">
-                <div class="logo-glow"></div>
-                <h1 class="logo-text">SWARG</h1>
-            </div>
-            <div class="creator-badge">
-                <span>by Amar Kumar</span>
-                <i class="fas fa-check-circle verified-icon"></i>
-            </div>
-        </header>
+        <div class="header">
+            <h1 class="title">SWARG SHIELD</h1>
+            <p class="subtitle">Real AES-256-GCM Encryption Vault</p>
+        </div>
         
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Password Card -->
-            <div class="card">
-                <div class="password-container">
-                    <label class="password-label">Master Password</label>
-                    <div style="position: relative;">
-                        <input type="password" 
-                               id="master-password"
-                               class="password-input"
-                               placeholder="Enter your master password"
-                               autocomplete="off">
-                        <button type="button" class="password-toggle" id="toggle-password">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Password Tools -->
-                <div class="btn-group">
-                    <button id="generate-password" class="btn btn-secondary">
-                        <i class="fas fa-dice"></i>
-                        Generate
-                    </button>
-                    <button id="clear-password" class="btn btn-secondary">
-                        <i class="fas fa-eraser"></i>
-                        Clear
-                    </button>
-                </div>
+        <!-- Security Status -->
+        <div class="security-status">
+            <div class="status-item">
+                <span>Encryption:</span>
+                <span style="color: var(--success)">AES-256-GCM Active</span>
+            </div>
+            <div class="status-item">
+                <span>Key Derivation:</span>
+                <span style="color: var(--success)">PBKDF2-SHA256 (100k iterations)</span>
+            </div>
+            <div class="status-item">
+                <span>Data Storage:</span>
+                <span style="color: var(--success)">Zero Persistent Storage</span>
+            </div>
+            <div class="status-item">
+                <span>Memory Security:</span>
+                <span style="color: var(--success)">Zeroization Enabled</span>
+            </div>
+        </div>
+        
+        <!-- Master Password Card -->
+        <div class="card">
+            <div class="card-title">🔐 Master Password</div>
+            <div class="input-group">
+                <label for="masterPassword">Enter Master Password (min 12 characters)</label>
+                <input type="password" id="masterPassword" placeholder="Your master password..." autocomplete="off">
             </div>
             
-            <!-- Tab Navigation -->
-            <div class="tab-nav">
-                <button class="tab-btn active" data-tab="encrypt">
-                    <i class="fas fa-lock"></i>
-                    Encrypt
-                </button>
-                <button class="tab-btn" data-tab="decrypt">
-                    <i class="fas fa-unlock"></i>
-                    Decrypt
-                </button>
+            <div class="input-group">
+                <label for="passwordConfirm">Confirm Master Password</label>
+                <input type="password" id="passwordConfirm" placeholder="Confirm password..." autocomplete="off">
             </div>
             
-            <!-- Encrypt Tab -->
-            <div id="encrypt-tab" class="tab-content">
-                <div class="card">
-                    <div class="text-container">
-                        <label class="text-label">Data to Encrypt</label>
-                        <textarea id="input-text" 
-                                  class="text-area"
-                                  placeholder="Enter sensitive information here..."
-                                  rows="5"></textarea>
-                    </div>
-                    
-                    <div class="output-container">
-                        <div id="encrypted-output" class="output-box hidden"></div>
-                        <div id="encrypted-placeholder" class="output-placeholder">
-                            <i class="fas fa-lock"></i>
-                            <div>Encrypted data will appear here</div>
-                        </div>
-                    </div>
-                    
-                    <div class="btn-group">
-                        <button id="encrypt-btn" class="btn btn-primary">
-                            <i class="fas fa-shield-alt"></i>
-                            Encrypt
-                        </button>
-                        <button id="copy-encrypted" class="btn btn-secondary">
-                            <i class="fas fa-copy"></i>
-                            Copy
-                        </button>
-                    </div>
-                    
-                    <div id="encrypt-success" class="success-animation hidden">
-                        <div class="success-icon">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <h3 style="color: #00ff88; margin-bottom: 10px;">Data Secured!</h3>
-                        <p style="color: rgba(255, 255, 255, 0.7);">Your data is now encrypted</p>
-                    </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="generatePassword">Generate Strong Password</button>
+                <button class="btn btn-secondary" id="clearPassword">Clear</button>
+            </div>
+            
+            <div style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 6px;">
+                <div style="font-size: 0.85rem; color: #8892b0; margin-bottom: 5px;">Password Strength:</div>
+                <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                    <div id="strengthMeter" style="height: 100%; width: 0%; background: var(--danger); transition: width 0.3s;"></div>
+                </div>
+                <div id="strengthText" style="font-size: 0.8rem; margin-top: 5px; text-align: right; color: var(--danger);">Weak</div>
+            </div>
+        </div>
+        
+        <!-- Encryption Card -->
+        <div class="card">
+            <div class="card-title">🔒 Encrypt Data</div>
+            <div class="input-group">
+                <label for="plaintext">Data to Encrypt</label>
+                <textarea id="plaintext" placeholder="Enter sensitive information..."></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="expiry">Expiry Time (Self-Destruct)</label>
+                <select id="expiry" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: var(--text);">
+                    <option value="1800000">30 minutes</option>
+                    <option value="3600000">1 hour</option>
+                    <option value="86400000">24 hours</option>
+                    <option value="0">No expiry (not recommended)</option>
+                </select>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" id="encryptBtn">🔒 Encrypt Data</button>
+                <button class="btn btn-secondary" id="previewEncrypt">Preview</button>
+            </div>
+            
+            <div class="output" id="encryptedOutput">
+                Encrypted token will appear here...
+            </div>
+            
+            <div class="timer hidden" id="encryptTimer">
+                ⏰ Token expires in: <span id="encryptTimerValue">30:00</span>
+            </div>
+            
+            <div class="btn-group" style="margin-top: 15px;">
+                <button class="btn btn-secondary" id="copyEncrypted">📋 Copy Token</button>
+                <button class="btn btn-danger" id="destroyEncrypted">🔥 Destroy Token</button>
+            </div>
+        </div>
+        
+        <!-- Decryption Card -->
+        <div class="card">
+            <div class="card-title">🔓 Decrypt Data</div>
+            <div class="input-group">
+                <label for="encryptedInput">Encrypted Token</label>
+                <textarea id="encryptedInput" placeholder="Paste encrypted token..."></textarea>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" id="decryptBtn">🔓 Decrypt Token</button>
+                <button class="btn btn-secondary" id="checkExpiry">Check Expiry</button>
+            </div>
+            
+            <div class="output" id="decryptedOutput">
+                Decrypted data will appear here...
+            </div>
+            
+            <div class="timer hidden" id="decryptTimer">
+                ⚠️ Token expired: <span id="decryptTimerValue">--:--</span>
+            </div>
+            
+            <div class="btn-group" style="margin-top: 15px;">
+                <button class="btn btn-secondary" id="copyDecrypted">📋 Copy Decrypted</button>
+                <button class="btn btn-danger" id="clearDecrypted">🗑️ Clear</button>
+            </div>
+        </div>
+        
+        <!-- Security Controls -->
+        <div class="card">
+            <div class="card-title">🛡️ Security Controls</div>
+            <div class="btn-group">
+                <button class="btn btn-danger" id="wipeMemory">🧹 Wipe Memory</button>
+                <button class="btn btn-danger" id="clearAll">🗑️ Clear All Data</button>
+                <button class="btn btn-secondary" id="lockVault">🔐 Lock Vault</button>
+            </div>
+            
+            <div style="margin-top: 20px; font-size: 0.9rem; color: #8892b0;">
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Memory Wiped:</span>
+                    <span id="memoryStatus">No</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Clipboard Status:</span>
+                    <span id="clipboardStatus">Empty</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Session Timeout:</span>
+                    <span>5 minutes</span>
                 </div>
             </div>
-            
-            <!-- Decrypt Tab -->
-            <div id="decrypt-tab" class="tab-content hidden">
-                <div class="card">
-                    <div class="text-container">
-                        <label class="text-label">Encrypted Token</label>
-                        <textarea id="encrypted-token" 
-                                  class="text-area"
-                                  placeholder="Paste encrypted token here..."
-                                  rows="5"></textarea>
-                    </div>
-                    
-                    <div class="output-container">
-                        <div id="decrypted-output" class="output-box hidden"></div>
-                        <div id="decrypted-placeholder" class="output-placeholder">
-                            <i class="fas fa-unlock"></i>
-                            <div>Decrypted data will appear here</div>
-                        </div>
-                    </div>
-                    
-                    <div class="btn-group">
-                        <button id="decrypt-btn" class="btn btn-primary">
-                            <i class="fas fa-key"></i>
-                            Decrypt
-                        </button>
-                        <button id="clear-decrypted" class="btn btn-secondary">
-                            <i class="fas fa-trash"></i>
-                            Clear
-                        </button>
-                    </div>
-                    
-                    <div id="decrypt-success" class="success-animation hidden">
-                        <div class="success-icon">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <h3 style="color: #00ff88; margin-bottom: 10px;">Data Unlocked!</h3>
-                        <p style="color: rgba(255, 255, 255, 0.7);">Your data is now visible</p>
-                    </div>
-                    
-                    <div id="auto-lock-timer" class="timer hidden">
-                        <i class="fas fa-clock timer-icon"></i>
-                        <div>
-                            <div class="timer-text">Auto-hide in</div>
-                            <div class="timer-count" id="timer-count">30</div>
-                        </div>
-                        <span class="timer-text">seconds</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Security Tags -->
-            <div class="security-tags">
-                <span class="security-tag">AES-256 Encryption</span>
-                <span class="security-tag">100% Private</span>
-                <span class="security-tag">No Cloud Storage</span>
-            </div>
-            
-            <!-- Action Buttons -->
-            <div class="card">
-                <div class="btn-group">
-                    <button id="settings-btn" class="btn btn-secondary">
-                        <i class="fas fa-cog"></i>
-                        Settings
-                    </button>
-                    <button id="vault-btn" class="btn btn-secondary">
-                        <i class="fas fa-database"></i>
-                        Vault
-                    </button>
-                </div>
-            </div>
-        </main>
+        </div>
         
         <!-- Footer -->
-        <footer class="app-footer">
-            <p>Your data never leaves your device</p>
-            <p class="mt-4">SWARG Security Vault © 2024</p>
-        </footer>
-    </div>
-    
-    <!-- Toast Container -->
-    <div class="toast-container" id="toast-container"></div>
-    
-    <!-- Settings Modal -->
-    <div class="modal-overlay" id="settings-modal">
-        <div class="modal-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <h2 style="font-size: 24px; color: white;">Settings</h2>
-                <button id="close-settings" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <div>
-                        <h4 style="color: white; margin-bottom: 5px;">Auto-copy</h4>
-                        <p style="color: rgba(255, 255, 255, 0.6); font-size: 14px;">Copy encrypted text automatically</p>
-                    </div>
-                    <label style="position: relative; display: inline-block; width: 50px; height: 26px;">
-                        <input type="checkbox" id="auto-copy-toggle" checked style="opacity: 0; width: 0; height: 0;">
-                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 34px;"></span>
-                        <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
-                    </label>
-                </div>
-                
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <div>
-                        <h4 style="color: white; margin-bottom: 5px;">Sound Effects</h4>
-                        <p style="color: rgba(255, 255, 255, 0.6); font-size: 14px;">Play sounds for actions</p>
-                    </div>
-                    <label style="position: relative; display: inline-block; width: 50px; height: 26px;">
-                        <input type="checkbox" id="sound-toggle" checked style="opacity: 0; width: 0; height: 0;">
-                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 34px;"></span>
-                        <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
-                    </label>
-                </div>
-            </div>
-            
-            <button id="about-btn" class="btn btn-secondary" style="width: 100%; margin-top: 20px;">
-                <i class="fas fa-info-circle"></i>
-                About SWARG
-            </button>
+        <div class="footer">
+            <p>⚠️ <strong>Security Notice:</strong> All encryption happens locally in your browser. No data leaves your device.</p>
+            <p style="margin-top: 10px;">Using: AES-256-GCM • PBKDF2 • Zero-Knowledge Architecture</p>
+            <p style="margin-top: 5px; font-size: 0.8rem;">Developed by Amar Kumar • v3.0 (Real Encryption)</p>
         </div>
     </div>
     
-    <!-- Vault Modal -->
-    <div class="modal-overlay" id="vault-modal">
-        <div class="modal-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <h2 style="font-size: 24px; color: white;">Vault</h2>
-                <button id="close-vault" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div style="text-align: center; padding: 40px 20px;">
-                <i class="fas fa-database" style="font-size: 48px; color: #00ffff; margin-bottom: 20px;"></i>
-                <h3 style="color: white; margin-bottom: 10px;">Local Vault</h3>
-                <p style="color: rgba(255, 255, 255, 0.6);">Encrypted data storage coming soon</p>
-            </div>
-        </div>
+    <!-- Notification System -->
+    <div class="notification" id="notification">
+        <div id="notificationMessage">Notification</div>
     </div>
-
-    <!-- Audio Elements -->
-    <audio id="typing-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-mechanical-keyboard-typing-1384.mp3" preload="auto"></audio>
-    <audio id="encrypt-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-lock-2851.mp3" preload="auto"></audio>
-    <audio id="decrypt-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-2858.mp3" preload="auto"></audio>
-    <audio id="success-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" preload="auto"></audio>
-    <audio id="error-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
-    <audio id="click-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" preload="auto"></audio>
-
+    
+    <!-- Real Encryption Script -->
     <script>
-        // ===== APP INITIALIZATION =====
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔐 SWARG Initializing...');
-            
-            try {
-                // Create star background
-                createStarfield();
-                
-                // Setup all event listeners
-                setupEventListeners();
-                
-                // Initialize audio
-                initAudio();
-                
-                // Show welcome message
-                setTimeout(() => {
-                    showToast('SWARG Security Vault Ready', 'success');
-                }, 1000);
-                
-                console.log('✅ SWARG Initialized Successfully');
-                
-            } catch (error) {
-                console.error('❌ Initialization Error:', error);
-                showToast('App initialized successfully', 'success');
+        // ===== SECURITY CONFIGURATION =====
+        const SECURITY_CONFIG = {
+            ENCRYPTION: {
+                ALGORITHM: 'AES-GCM',
+                KEY_LENGTH: 256,
+                KEY_DERIVATION: {
+                    ALGORITHM: 'PBKDF2',
+                    HASH: 'SHA-256',
+                    ITERATIONS: 100000,
+                    SALT_LENGTH: 32
+                },
+                IV_LENGTH: 12,
+                TAG_LENGTH: 16
+            },
+            SESSION: {
+                TIMEOUT: 5 * 60 * 1000, // 5 minutes
+                AUTO_WIPE: true,
+                MAX_LOGIN_ATTEMPTS: 5
+            },
+            MEMORY: {
+                ZEROIZE_INTERVAL: 30000, // 30 seconds
+                OVERWRITE_COUNT: 7 // DoD 5220.22-M standard
             }
-        });
-
-        // ===== STAR BACKGROUND =====
-        function createStarfield() {
-            const starfield = document.getElementById('starfield');
-            
-            // Create stars
-            for (let i = 0; i < 200; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.width = Math.random() * 3 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.opacity = Math.random() * 0.5 + 0.2;
-                star.style.animationDuration = Math.random() * 3 + 2 + 's';
-                star.style.animationDelay = Math.random() * 5 + 's';
-                starfield.appendChild(star);
+        };
+        
+        // ===== SECURE STATE MANAGEMENT =====
+        class SecureState {
+            constructor() {
+                this.masterPassword = null;
+                this.derivedKey = null;
+                this.encryptedTokens = new Map(); // tokenId -> {iv, salt, ciphertext, expiry}
+                this.activeSession = false;
+                this.loginAttempts = 0;
+                this.zeroizeQueue = [];
+                this.sessionTimer = null;
+                
+                // Initialize security
+                this.setupSecurity();
             }
             
-            // Create shooting stars
-            for (let i = 0; i < 5; i++) {
-                const shootingStar = document.createElement('div');
-                shootingStar.className = 'shooting-star';
-                shootingStar.style.left = Math.random() * 100 + '%';
-                shootingStar.style.top = Math.random() * 100 + '%';
-                shootingStar.style.animationDelay = Math.random() * 10 + 's';
-                starfield.appendChild(shootingStar);
-            }
-        }
-
-        // ===== AUDIO SYSTEM =====
-        function initAudio() {
-            // Preload all sounds
-            const sounds = ['typing', 'encrypt', 'decrypt', 'success', 'error', 'click'];
-            sounds.forEach(sound => {
-                const audio = document.getElementById(sound + '-sound');
-                if (audio) {
-                    audio.volume = 0.3;
-                    audio.load();
-                }
-            });
-            
-            // Load settings
-            const soundsEnabled = localStorage.getItem('swarg_sounds') !== 'false';
-            document.getElementById('sound-toggle').checked = soundsEnabled;
-        }
-
-        function playSound(sound) {
-            const soundsEnabled = document.getElementById('sound-toggle').checked;
-            if (!soundsEnabled) return;
-            
-            try {
-                const audio = document.getElementById(sound + '-sound');
-                if (audio) {
-                    audio.currentTime = 0;
-                    audio.play().catch(() => {
-                        // Fallback for audio errors
-                    });
-                }
-            } catch (error) {
-                // Audio not supported
-            }
-        }
-
-        // ===== ENCRYPTION/DECRYPTION =====
-        async function encryptData() {
-            const text = document.getElementById('input-text').value.trim();
-            const password = document.getElementById('master-password').value.trim();
-            
-            if (!password || password.length < 8) {
-                showToast('Password must be at least 8 characters', 'error');
-                return;
+            setupSecurity() {
+                // Prevent DevTools access
+                this.protectDevTools();
+                
+                // Setup memory zeroization
+                this.setupZeroization();
+                
+                // Setup session timeout
+                this.setupSessionTimeout();
+                
+                // Prevent caching
+                this.preventCaching();
             }
             
-            if (!text) {
-                showToast('Please enter text to encrypt', 'error');
-                return;
-            }
-            
-            // Show scanner
-            const scanner = document.getElementById('scanner-overlay');
-            scanner.style.display = 'block';
-            
-            // Play sound
-            playSound('encrypt');
-            
-            // Show loading
-            const encryptBtn = document.getElementById('encrypt-btn');
-            const originalText = encryptBtn.innerHTML;
-            encryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Encrypting...';
-            encryptBtn.disabled = true;
-            
-            try {
-                // Simulate processing delay
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                // Generate random salt and IV
-                const salt = window.crypto.getRandomValues(new Uint8Array(32));
-                const iv = window.crypto.getRandomValues(new Uint8Array(16));
-                
-                // Import password
-                const encoder = new TextEncoder();
-                const passwordBuffer = encoder.encode(password);
-                
-                const baseKey = await window.crypto.subtle.importKey(
-                    'raw',
-                    passwordBuffer,
-                    { name: 'PBKDF2' },
-                    false,
-                    ['deriveBits', 'deriveKey']
-                );
-                
-                // Derive key
-                const derivedKey = await window.crypto.subtle.deriveKey(
-                    {
-                        name: 'PBKDF2',
-                        salt: salt,
-                        iterations: 100000,
-                        hash: 'SHA-256'
-                    },
-                    baseKey,
-                    { name: 'AES-GCM', length: 256 },
-                    false,
-                    ['encrypt', 'decrypt']
-                );
-                
-                // Encrypt
-                const data = encoder.encode(text);
-                const encrypted = await window.crypto.subtle.encrypt(
-                    {
-                        name: 'AES-GCM',
-                        iv: iv
-                    },
-                    derivedKey,
-                    data
-                );
-                
-                // Create token
-                const tokenData = {
-                    v: '1.0',
-                    t: Date.now(),
-                    e: Date.now() + 1800000, // 30 minutes
-                    s: btoa(String.fromCharCode(...salt)),
-                    i: btoa(String.fromCharCode(...iv)),
-                    d: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
+            protectDevTools() {
+                // Basic DevTools protection
+                const block = () => {
+                    console.clear();
+                    document.body.innerHTML = '<h1 style="color: red; text-align: center; margin-top: 100px;">⚠️ Security Violation Detected</h1>';
+                    window.stop();
                 };
                 
-                const token = btoa(JSON.stringify(tokenData));
-                
-                // Display result
-                document.getElementById('encrypted-output').textContent = token;
-                document.getElementById('encrypted-output').classList.remove('hidden');
-                document.getElementById('encrypted-placeholder').classList.add('hidden');
-                document.getElementById('encrypt-success').classList.remove('hidden');
-                
-                // Auto-copy if enabled
-                if (document.getElementById('auto-copy-toggle').checked) {
-                    await copyToClipboard(token);
-                    showToast('Encrypted data copied to clipboard', 'success');
-                } else {
-                    showToast('Data encrypted successfully', 'success');
-                }
-                
-                playSound('success');
-                
-            } catch (error) {
-                console.error('Encryption error:', error);
-                showToast('Encryption failed', 'error');
-                playSound('error');
-            } finally {
-                // Hide scanner
-                setTimeout(() => {
-                    scanner.style.display = 'none';
-                }, 2000);
-                
-                // Restore button
-                encryptBtn.innerHTML = originalText;
-                encryptBtn.disabled = false;
-            }
-        }
-
-        async function decryptData() {
-            const token = document.getElementById('encrypted-token').value.trim();
-            const password = document.getElementById('master-password').value.trim();
-            
-            if (!password) {
-                showToast('Please enter your password', 'error');
-                return;
-            }
-            
-            if (!token) {
-                showToast('Please enter encrypted token', 'error');
-                return;
-            }
-            
-            // Play sound
-            playSound('decrypt');
-            
-            // Show loading
-            const decryptBtn = document.getElementById('decrypt-btn');
-            const originalText = decryptBtn.innerHTML;
-            decryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Decrypting...';
-            decryptBtn.disabled = true;
-            
-            try {
-                // Decode token
-                const tokenData = JSON.parse(atob(token));
-                
-                // Check expiry
-                if (Date.now() > tokenData.e) {
-                    throw new Error('Token has expired');
-                }
-                
-                // Decode components
-                const salt = Uint8Array.from(atob(tokenData.s), c => c.charCodeAt(0));
-                const iv = Uint8Array.from(atob(tokenData.i), c => c.charCodeAt(0));
-                const encryptedData = Uint8Array.from(atob(tokenData.d), c => c.charCodeAt(0));
-                
-                // Import password
-                const encoder = new TextEncoder();
-                const passwordBuffer = encoder.encode(password);
-                
-                const baseKey = await window.crypto.subtle.importKey(
-                    'raw',
-                    passwordBuffer,
-                    { name: 'PBKDF2' },
-                    false,
-                    ['deriveBits', 'deriveKey']
-                );
-                
-                // Derive key
-                const derivedKey = await window.crypto.subtle.deriveKey(
-                    {
-                        name: 'PBKDF2',
-                        salt: salt,
-                        iterations: 100000,
-                        hash: 'SHA-256'
-                    },
-                    baseKey,
-                    { name: 'AES-GCM', length: 256 },
-                    false,
-                    ['encrypt', 'decrypt']
-                );
-                
-                // Decrypt
-                const decrypted = await window.crypto.subtle.decrypt(
-                    {
-                        name: 'AES-GCM',
-                        iv: iv
-                    },
-                    derivedKey,
-                    encryptedData
-                );
-                
-                const decoder = new TextDecoder();
-                const text = decoder.decode(decrypted);
-                
-                // Display result
-                document.getElementById('decrypted-output').textContent = text;
-                document.getElementById('decrypted-output').classList.remove('hidden');
-                document.getElementById('decrypted-placeholder').classList.add('hidden');
-                document.getElementById('decrypt-success').classList.remove('hidden');
-                
-                // Show auto-lock timer
-                const timer = document.getElementById('auto-lock-timer');
-                timer.classList.remove('hidden');
-                startAutoLockTimer();
-                
-                showToast('Data decrypted successfully', 'success');
-                playSound('success');
-                
-            } catch (error) {
-                console.error('Decryption error:', error);
-                showToast('Decryption failed - check password and token', 'error');
-                playSound('error');
-            } finally {
-                // Restore button
-                decryptBtn.innerHTML = originalText;
-                decryptBtn.disabled = false;
-            }
-        }
-
-        function startAutoLockTimer() {
-            let seconds = 30;
-            const timerElement = document.getElementById('timer-count');
-            timerElement.textContent = seconds;
-            
-            const timer = setInterval(() => {
-                seconds--;
-                timerElement.textContent = seconds;
-                
-                if (seconds <= 0) {
-                    clearInterval(timer);
-                    hideDecryptedData();
-                    showToast('Decrypted data hidden (auto-lock)', 'info');
-                }
-            }, 1000);
-        }
-
-        function hideDecryptedData() {
-            document.getElementById('decrypted-output').classList.add('hidden');
-            document.getElementById('decrypted-placeholder').classList.remove('hidden');
-            document.getElementById('decrypt-success').classList.add('hidden');
-            document.getElementById('auto-lock-timer').classList.add('hidden');
-        }
-
-        // ===== UI FUNCTIONS =====
-        async function copyToClipboard(text) {
-            try {
-                await navigator.clipboard.writeText(text);
-                return true;
-            } catch (error) {
-                // Fallback
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                return true;
-            }
-        }
-
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            
-            // Style based on type
-            if (type === 'error') {
-                toast.style.background = 'rgba(255, 50, 50, 0.9)';
-            } else if (type === 'success') {
-                toast.style.background = 'rgba(0, 200, 100, 0.9)';
-            } else if (type === 'warning') {
-                toast.style.background = 'rgba(255, 150, 0, 0.9)';
-            }
-            
-            container.appendChild(toast);
-            
-            // Auto remove
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    if (toast.parentNode) {
-                        container.removeChild(toast);
-                    }
-                }, 300);
-            }, 3000);
-        }
-
-        function generatePassword() {
-            const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-            let password = '';
-            
-            // Ensure complexity
-            password += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.charAt(Math.floor(Math.random() * 26));
-            password += 'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26));
-            password += '0123456789'.charAt(Math.floor(Math.random() * 10));
-            password += '!@#$%^&*'.charAt(Math.floor(Math.random() * 8));
-            
-            // Fill remaining
-            for (let i = 4; i < 16; i++) {
-                password += charset.charAt(Math.floor(Math.random() * charset.length));
-            }
-            
-            // Shuffle
-            password = password.split('').sort(() => Math.random() - 0.5).join('');
-            
-            // Set password
-            document.getElementById('master-password').value = password;
-            playSound('click');
-            showToast('Strong password generated', 'success');
-        }
-
-        // ===== EVENT LISTENERS =====
-        function setupEventListeners() {
-            // Toggle password visibility
-            document.getElementById('toggle-password').addEventListener('click', function() {
-                const input = document.getElementById('master-password');
-                const icon = this.querySelector('i');
-                
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.className = 'fas fa-eye-slash';
-                } else {
-                    input.type = 'password';
-                    icon.className = 'fas fa-eye';
-                }
-                
-                input.focus();
-                playSound('click');
-            });
-            
-            // Password input with typing sound
-            document.getElementById('master-password').addEventListener('input', function() {
-                if (Math.random() < 0.2) {
-                    playSound('typing');
-                }
-            });
-            
-            // Text inputs with typing sound
-            ['input-text', 'encrypted-token'].forEach(id => {
-                document.getElementById(id).addEventListener('input', function() {
-                    if (Math.random() < 0.2) {
-                        playSound('typing');
-                    }
-                });
-            });
-            
-            // Generate password
-            document.getElementById('generate-password').addEventListener('click', generatePassword);
-            
-            // Clear password
-            document.getElementById('clear-password').addEventListener('click', function() {
-                document.getElementById('master-password').value = '';
-                playSound('click');
-                showToast('Password cleared', 'info');
-            });
-            
-            // Tab switching
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const tab = this.dataset.tab;
+                // Check for DevTools periodically
+                setInterval(() => {
+                    const threshold = 160;
+                    const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+                    const heightThreshold = window.outerHeight - window.innerHeight > threshold;
                     
-                    // Update active tab
-                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Show selected tab
-                    document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-                    document.getElementById(tab + '-tab').classList.remove('hidden');
-                    
-                    playSound('click');
-                });
-            });
-            
-            // Encrypt button
-            document.getElementById('encrypt-btn').addEventListener('click', encryptData);
-            
-            // Decrypt button
-            document.getElementById('decrypt-btn').addEventListener('click', decryptData);
-            
-            // Copy encrypted
-            document.getElementById('copy-encrypted').addEventListener('click', async function() {
-                const output = document.getElementById('encrypted-output').textContent;
-                if (output) {
-                    await copyToClipboard(output);
-                    showToast('Copied to clipboard', 'success');
-                } else {
-                    showToast('No encrypted data to copy', 'error');
-                }
-                playSound('click');
-            });
-            
-            // Clear decrypted
-            document.getElementById('clear-decrypted').addEventListener('click', function() {
-                hideDecryptedData();
-                document.getElementById('encrypted-token').value = '';
-                playSound('click');
-                showToast('Cleared', 'info');
-            });
-            
-            // Settings button
-            document.getElementById('settings-btn').addEventListener('click', function() {
-                document.getElementById('settings-modal').style.display = 'flex';
-                playSound('click');
-            });
-            
-            // Close settings
-            document.getElementById('close-settings').addEventListener('click', function() {
-                document.getElementById('settings-modal').style.display = 'none';
-                playSound('click');
-            });
-            
-            // Vault button
-            document.getElementById('vault-btn').addEventListener('click', function() {
-                document.getElementById('vault-modal').style.display = 'flex';
-                playSound('click');
-            });
-            
-            // Close vault
-            document.getElementById('close-vault').addEventListener('click', function() {
-                document.getElementById('vault-modal').style.display = 'none';
-                playSound('click');
-            });
-            
-            // About button
-            document.getElementById('about-btn').addEventListener('click', function() {
-                showToast('SWARG Security Vault by Amar Kumar', 'info');
-                playSound('click');
-            });
-            
-            // Close modals when clicking outside
-            document.querySelectorAll('.modal-overlay').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        this.style.display = 'none';
-                        playSound('click');
+                    if (widthThreshold || heightThreshold) {
+                        block();
                     }
+                }, 1000);
+                
+                // Override console methods
+                ['log', 'error', 'warn', 'info'].forEach(method => {
+                    const original = console[method];
+                    console[method] = function(...args) {
+                        if (args.some(arg => 
+                            typeof arg === 'string' && 
+                            (arg.includes('password') || arg.includes('secret') || arg.includes('key'))
+                        )) {
+                            return; // Block sensitive logging
+                        }
+                        original.apply(console, args);
+                    };
                 });
-            });
-            
-            // Save settings
-            document.getElementById('auto-copy-toggle').addEventListener('change', function() {
-                localStorage.setItem('swarg_autocopy', this.checked);
-                playSound('click');
-            });
-            
-            document.getElementById('sound-toggle').addEventListener('change', function() {
-                localStorage.setItem('swarg_sounds', this.checked);
-                playSound('click');
-            });
-            
-            // Load saved settings
-            const autocopy = localStorage.getItem('swarg_autocopy');
-            if (autocopy !== null) {
-                document.getElementById('auto-copy-toggle').checked = autocopy === 'true';
             }
             
-            const sounds = localStorage.getItem('swarg_sounds');
-            if (sounds !== null) {
-                document.getElementById('sound-toggle').checked = sounds === 'true';
+            setupZeroization() {
+                // Regularly zeroize memory
+                setInterval(() => {
+                    this.zeroizeSensitiveData();
+                }, SECURITY_CONFIG.MEMORY.ZEROIZE_INTERVAL);
             }
             
-            // Keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
-                // Ctrl+E to encrypt
-                if (e.ctrlKey && e.key === 'e') {
-                    e.preventDefault();
-                    document.getElementById('encrypt-btn').click();
-                }
+            setupSessionTimeout() {
+                // Reset timer on user activity
+                const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+                const resetTimer = () => {
+                    if (this.sessionTimer) clearTimeout(this.sessionTimer);
+                    if (this.activeSession) {
+                        this.sessionTimer = setTimeout(() => {
+                            this.lockVault();
+                        }, SECURITY_CONFIG.SESSION.TIMEOUT);
+                    }
+                };
                 
-                // Ctrl+D to decrypt
-                if (e.ctrlKey && e.key === 'd') {
-                    e.preventDefault();
-                    document.getElementById('decrypt-btn').click();
-                }
-                
-                // Ctrl+G to generate password
-                if (e.ctrlKey && e.key === 'g') {
-                    e.preventDefault();
-                    generatePassword();
-                }
-                
-                // Escape to close modals
-                if (e.key === 'Escape') {
-                    document.querySelectorAll('.modal-overlay').forEach(modal => {
-                        modal.style.display = 'none';
+                events.forEach(event => {
+                    document.addEventListener(event, resetTimer);
+                });
+            }
+            
+            preventCaching() {
+                // Disable caching for security
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(registrations => {
+                        registrations.forEach(registration => registration.unregister());
                     });
                 }
-            });
-        }
-    </script>
-</body>
-</html>
-         
-                  
+                
+                // Clear all storage
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Disable browser caching
+                window.addEventListener('beforeunload', () => {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    indexedDB.deleteDatabase('swarg-vault');
+                });
+            }
+            
+            async deriveKey(password, salt) {
+                try {
+                    const encoder = new TextEncoder();
+                    const keyMaterial = await crypto.subtle.importKey(
+                        'raw',
+                        encoder.encode(password),
+                        SECURITY_CONFIG.ENCRYPTION.KEY_DERIVATION.ALGORITHM,
+                        false,
+                        ['deriveKey']
+                    );
+                    
+                    const derivedKey = await crypto.subtle.deriveKey(
+                        {
+                            name: SECURITY_CONFIG.ENCRYPTION.KEY_DERIVATION.ALGORITHM,
+                            salt: salt,
+                            iterations: SECURITY_CONFIG.ENCRYPTION.KEY_DERIVATION.ITERATIONS,
+                            hash: SECURITY_CONFIG.ENCRYPTION.KEY_DERIVATION.HASH
+                        },
+                        keyMaterial,
+                        {
+                            name: SECURITY_CONFIG.ENC
