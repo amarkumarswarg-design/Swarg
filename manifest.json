@@ -1,21 +1,56 @@
 {
-  "name": "SWARG SHIELD",
+  "name": "SWARG Shield",
   "short_name": "SWARG",
-  "description": "Real AES-256-GCM Encryption Vault - Zero Knowledge",
+  "description": "Real AES-256-GCM Encryption Vault with Military Grade Security",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0a1929",
-  "theme_color": "#0a1929",
-  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#667eea",
   "icons": [
     {
       "src": "icon.png",
       "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ],
-  "categories": ["security", "utilities"],
-  "permissions": [
-    "clipboard-write"
+  "screenshots": [
+    {
+      "src": "screenshots/encrypt.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "Encryption Interface"
+    },
+    {
+      "src": "screenshots/decrypt.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "Decryption Interface"
+    }
+  ],
+  "categories": ["security", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Encrypt Data",
+      "short_name": "Encrypt",
+      "description": "Quickly encrypt sensitive information",
+      "url": "./index.html?action=encrypt"
+    },
+    {
+      "name": "Decrypt Token",
+      "short_name": "Decrypt",
+      "description": "Decrypt encrypted tokens",
+      "url": "./index.html?action=decrypt"
+    }
   ]
 }
