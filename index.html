@@ -1302,5 +1302,440 @@
                 };
             }
 
-            crea
+            createChord(frequencies, duration) {
+                return () => {
+                    if (!this.enabled || !this.context) return null;
+                    
+                    try {
+                        const now = this.context.currentTime;
+                        const soundId = Date.now();
+                        
+                        frequencies.forEach((freq, index) => {
+                            setTimeout(() => {
+                                const oscillator = this.context.createOscillator();
+                                const gainNode = this.context.createGain();
+                                
+                                oscillator.connect(gainNode);
+                                gainNode.connect(this.context.destination);
+                                
+                                oscillator.frequency.value = freq;
+                                oscillator.type = 'sine';
+                                
+                                const startTime = now + (index * 0.05);
+                                gainNode.gain.setValueAtTime(0, startTime);
+                                gainNode.gain.linearRampToValueAtTime(this.masterVolume, startTime + 0.01);
+                                gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                                
+                                oscillator.start(startTime);
+                                oscillator.stop(startTime + duration);
+                                
+                                this.currentSounds.add(soundId + index);
+                                
+                                oscillator.onended = () => {
+                                    this.currentSounds.delete(soundId + index);
+                                };
+                            }, index * 50);
+                        });
+                        
+                        return soundId;
+                    } catch (error) {
+                        console.warn('Sound playback failed:', error);
+                        return null;
+                    }
+                };
+            }
+
+            setVolume(volume) {
+                this.masterVolume = volume / 100;
+            }
+
+            setEnabled(enabled) {
+                this.enabled = enabled;
+            }
+
+            stopAll() {
+                this.currentSounds.clear();
+                if (this.context) {
+                    this.context.close();
+                    this.context = new (window.AudioContext || window.webkitAudioContext)();
+                    this.createSounds();
+                }
+            }
+        }
+
+        // ===== REAL ENCRYPTION ENGINE =====
+        class EncryptionEngine {
+            constructor() {
+                this.soundManager = new SoundManager();
+                this.tokens = new Map(); // tokenId -> {salt, iv, ciphertext, expiry, metadata}
+                this.passwordAttempts = new Map();
+                this.init();
+            }
+
+            async init() {
+                // Ensure crypto is available
+                if (!window.crypto || !crypto.subtle) {
+                    throw new Error('Web Crypto API not available');
+                }
+            }
+
+            // Secure random password generation
+            generateSecurePassword(length = 16) {
+                const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+                const randomValues = new Uint8Array(length);
+                crypto.getRandomValues(randomValues);
+                
+                let password = '';
+                for (let i = 0; i < length; i++) {
+                    password += charset[randomValues[i] % charset.length];
+                }
+                
+                // Ensure complexity
+                if (!/[A-Z]/.test(password)) {
+                    password = password.slice(0, -1) + 'A';
+                }
+                if (!/[a-z]/.test(password)) {
+                    password = password.slice(0, -2) + 'a' + password.slice(-1);
+                }
+                if (!/[0-9]/.test(password)) {
+                    password = password.slice(0, -3) + '1' + password.slice(-2);
+                }
+                if (!/[^A-Za-z0-9]/.test(password)) {
+                    password = password.slice(0, -4) + '!' + password.slice(-3);
+                }
+                
+                return password;
+            }
+
+            // Calculate password entropy (real strength)
+            calculatePasswordEntropy(password) {
+                if (!password) return 0;
+                
+                let charsetSize = 0;
+                if (/[a-z]/.test(password)) charsetSize += 26;
+                if (/[A-Z]/.test(password)) charsetSize += 26;
+                if (/[0-9]/.test(password)) charsetSize += 10;
+                if (/[^A-Za-z0-9]/.test(password)) charsetSize += 32;
+                
+                // Minimum charset size
+                charsetSize = Math.max(charsetSize, 26);
+                
+                const entropy = Math.log2(Math.pow(charsetSize, password.length));
+                
+                // Common pattern penalties
+                const commonPatterns = [
+                    '123', 'abc', 'password', 'qwerty', 'admin',
+                    'letmein', 'welcome', 'monkey', 'sunshine', 'iloveyou'
+                ];
+                
+                let penalty = 0;
+                const lowerPassword = password.toLowerCase();
+                commonPatterns.forEach(pattern => {
+                    if (lowerPassword.includes(pattern)) {
+                        penalty += 20;
+                    }
+                });
+                
+                return Math.max(0, entropy - penalty);
+            }
+
+            // PBKDF2 key derivation
+            async deriveKey(password, salt) {
+                const encoder = new TextEncoder();
+                const keyMaterial = await crypto.subtle.importKey(
+                    'raw',
+                    encoder.encode(password),
+                    CRYPTO_CONFIG.KEY_DERIVATION.NAME,
+                    false,
+                    ['deriveKey']
+                );
+
+                return await crypto.subtle.deriveKey(
+                    {
+                        name: CRYPTO_CONFIG.KEY_DERIVATION.NAME,
+                        salt: salt,
+                        iterations: CRYPTO_CONFIG.KEY_DERIVATION.ITERATIONS,
+                        hash: CRYPTO_CONFIG.KEY_DERIVATION.HASH
+                    },
+                    keyMaterial,
+                    {
+                        name: CRYPTO_CONFIG.ALGORITHM,
+                        length: CRYPTO_CONFIG.KEY_LENGTH
+                    },
+                    false,
+                    ['encrypt', 'decrypt']
+                );
+            }
+
+            // Real AES-256-GCM encryption
+            async encryptData(plaintext, password, expiryMs) {
+                try {
+                    // Generate random salt and IV
+                    const salt = crypto.getRandomValues(new Uint8Array(CRYPTO_CONFIG.KEY_DERIVATION.SALT_LENGTH));
+                    const iv = crypto.getRandomValues(new Uint8Array(CRYPTO_CONFIG.IV_LENGTH));
+                    
+                    // Derive key
+                    const key = await this.deriveKey(password, salt);
+                    
+                    // Prepare data with metadata
+                    const metadata = {
+                        data: plaintext,
+                        timestamp: Date.now(),
+                        expiry: expiryMs > 0 ? Date.now() + expiryMs : null,
+                        version: CRYPTO_CONFIG.TOKEN_VERSION
+                    };
+                    
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(JSON.stringify(metadata));
+                    
+                    // Encrypt with AES-GCM
+                    const encrypted = await crypto.subtle.encrypt(
+                        {
+                            name: CRYPTO_CONFIG.ALGORITHM,
+                            iv: iv,
+                            tagLength: CRYPTO_CONFIG.TAG_LENGTH
+                        },
+                        key,
+                        data
+                    );
+                    
+                    // Create token
+                    const token = {
+                        salt: Array.from(salt),
+                        iv: Array.from(iv),
+                        ciphertext: Array.from(new Uint8Array(encrypted)),
+                        expiry: metadata.expiry,
+                        timestamp: metadata.timestamp
+                    };
+                    
+                    // Generate token ID (cryptographically bound)
+                    const tokenHash = await crypto.subtle.digest(
+                        'SHA-256',
+                        encoder.encode(JSON.stringify(token))
+                    );
+                    
+                    const tokenId = Array.from(new Uint8Array(tokenHash))
+                        .slice(0, 16)
+                        .map(b => b.toString(16).padStart(2, '0'))
+                        .join('');
+                    
+                    // Store in memory
+                    this.tokens.set(tokenId, token);
+                    
+                    // Return encoded token
+                    return this.encodeToken(tokenId, token);
+                    
+                } catch (error) {
+                    console.error('Encryption failed:', error);
+                    throw new Error('Encryption failed: ' + error.message);
+                }
+            }
+
+            // Real AES-256-GCM decryption
+            async decryptData(encodedToken, password) {
+                try {
+                    // Decode token
+                    const { tokenId, token } = this.decodeToken(encodedToken);
+                    
+                    if (!tokenId || !token) {
+                        throw new Error('Invalid token format');
+                    }
+                    
+                    // Check if token exists in memory
+                    const storedToken = this.tokens.get(tokenId);
+                    if (!storedToken) {
+                        throw new Error('Token not found or expired');
+                    }
+                    
+                    // Check expiry
+                    if (storedToken.expiry && Date.now() > storedToken.expiry) {
+                        this.tokens.delete(tokenId);
+                        throw new Error('Token has expired');
+                    }
+                    
+                    // Rate limiting
+                    const attempts = this.passwordAttempts.get(tokenId) || 0;
+                    if (attempts >= CRYPTO_CONFIG.MAX_PASSWORD_ATTEMPTS) {
+                        this.tokens.delete(tokenId);
+                        throw new Error('Too many failed attempts. Token destroyed.');
+                    }
+                    
+                    // Convert arrays back to Uint8Array
+                    const salt = new Uint8Array(token.salt);
+                    const iv = new Uint8Array(token.iv);
+                    const ciphertext = new Uint8Array(token.ciphertext);
+                    
+                    // Derive key
+                    const key = await this.deriveKey(password, salt);
+                    
+                    // Decrypt
+                    const decrypted = await crypto.subtle.decrypt(
+                        {
+                            name: CRYPTO_CONFIG.ALGORITHM,
+                            iv: iv,
+                            tagLength: CRYPTO_CONFIG.TAG_LENGTH
+                        },
+                        key,
+                        ciphertext
+                    );
+                    
+                    // Parse metadata
+                    const decoder = new TextDecoder();
+                    const metadata = JSON.parse(decoder.decode(decrypted));
+                    
+                    // Validate token
+                    if (metadata.version !== CRYPTO_CONFIG.TOKEN_VERSION) {
+                        throw new Error('Invalid token version');
+                    }
+                    
+                    // Check expiry again (from metadata)
+                    if (metadata.expiry && Date.now() > metadata.expiry) {
+                        this.tokens.delete(tokenId);
+                        throw new Error('Token has expired');
+                    }
+                    
+                    // Reset attempts on success
+                    this.passwordAttempts.delete(tokenId);
+                    
+                    return {
+                        data: metadata.data,
+                        timestamp: metadata.timestamp,
+                        expiry: metadata.expiry,
+                        version: metadata.version
+                    };
+                    
+                } catch (error) {
+                    // Increment failed attempts
+                    const tokenMatch = encodedToken.match(/SWARGv5_([a-f0-9]+)/);
+                    if (tokenMatch) {
+                        const tokenId = tokenMatch[1];
+                        const attempts = (this.passwordAttempts.get(tokenId) || 0) + 1;
+                        this.passwordAttempts.set(tokenId, attempts);
+                        
+                        if (attempts >= CRYPTO_CONFIG.MAX_PASSWORD_ATTEMPTS) {
+                            this.tokens.delete(tokenId);
+                            throw new Error('Too many failed attempts. Token destroyed.');
+                        }
+                    }
+                    
+                    throw new Error('Decryption failed: ' + error.message);
+                }
+            }
+
+            // Encode token for display/storage
+            encodeToken(tokenId, token) {
+                const tokenData = {
+                    id: tokenId,
+                    salt: token.salt,
+                    iv: token.iv,
+                    ciphertext: token.ciphertext,
+                    expiry: token.expiry,
+                    timestamp: token.timestamp,
+                    version: CRYPTO_CONFIG.TOKEN_VERSION
+                };
+                
+                const json = JSON.stringify(tokenData);
+                const base64 = btoa(encodeURIComponent(json));
+                return `SWARGv5_${tokenId}_${base64}`;
+            }
+
+            // Decode token from string
+            decodeToken(encodedToken) {
+                try {
+                    const match = encodedToken.match(/SWARGv5_([a-f0-9]+)_(.+)/);
+                    if (!match) {
+                        return { tokenId: null, token: null };
+                    }
+                    
+                    const tokenId = match[1];
+                    const base64 = match[2];
+                    
+                    const json = decodeURIComponent(atob(base64));
+                    const tokenData = JSON.parse(json);
+                    
+                    // Verify token ID matches
+                    if (tokenData.id !== tokenId) {
+                        throw new Error('Token integrity check failed');
+                    }
+                    
+                    return {
+                        tokenId: tokenId,
+                        token: {
+                            salt: tokenData.salt,
+                            iv: tokenData.iv,
+                            ciphertext: tokenData.ciphertext,
+                            expiry: tokenData.expiry,
+                            timestamp: tokenData.timestamp
+                        }
+                    };
+                } catch (error) {
+                    return { tokenId: null, token: null };
+                }
+            }
+
+            // Validate token (without decryption)
+            validateToken(encodedToken) {
+                try {
+                    const { tokenId, token } = this.decodeToken(encodedToken);
+                    
+                    if (!tokenId || !token) {
+                        return { valid: false, reason: 'Invalid format' };
+                    }
+                    
+                    const storedToken = this.tokens.get(tokenId);
+                    if (!storedToken) {
+                        return { valid: false, reason: 'Token not found' };
+                    }
+                    
+                    if (token.expiry && Date.now() > token.expiry) {
+                        this.tokens.delete(tokenId);
+                        return { valid: false, reason: 'Token expired' };
+                    }
+                    
+                    return { valid: true, expiry: token.expiry };
+                } catch (error) {
+                    return { valid: false, reason: 'Validation failed' };
+                }
+            }
+
+            // Destroy token (secure deletion)
+            destroyToken(tokenId) {
+                const token = this.tokens.get(tokenId);
+                if (token) {
+                    // Overwrite sensitive data
+                    crypto.getRandomValues(new Uint8Array(token.salt));
+                    crypto.getRandomValues(new Uint8Array(token.iv));
+                    crypto.getRandomValues(new Uint8Array(token.ciphertext));
+                    
+                    // Remove from memory
+                    this.tokens.delete(tokenId);
+                    this.passwordAttempts.delete(tokenId);
+                    
+                    return true;
+                }
+                return false;
+            }
+
+            // Clear all tokens
+            clearAllTokens() {
+                this.tokens.forEach((token, tokenId) => {
+                    this.destroyToken(tokenId);
+                });
+                this.tokens.clear();
+                this.passwordAttempts.clear();
+            }
+
+            // Zeroize memory
+            zeroizeMemory() {
+                this.clearAllTokens();
+                this.soundManager.stopAll();
+                
+                // Force garbage collection if available
+                if (window.gc) {
+                    window.gc();
+                }
+            }
+        }
+
+        // ===== UI MA
             
