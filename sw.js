@@ -1,94 +1,75 @@
-// SWARG Shield - Secure Service Worker v3.0
-// NO DATA CACHING - Security First
+// SWARG Shield Service Worker v5.0
+const CACHE_NAME = 'swarg-shield-v5';
 
-const CACHE_NAME = 'swarg-app-shell-v3';
-const NO_CACHE_PATHS = [
-  '/api/',
-  '/encrypt',
-  '/decrypt',
-  /token/,
-  /secret/,
-  /password/
-];
-
-// Install - Cache only app shell
+// Install - Cache app shell
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll([
-        './',
-        // Only cache essential static assets
-        // NO USER DATA
-      ]);
-    })
-  );
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then((cache) => {
+                return cache.addAll([
+                    './',
+                    './index.html',
+                    // Cache essential assets only
+                    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+                    'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap'
+                ]);
+            })
+    );
 });
 
-// Activate - Clear old caches
+// Activate - Clean old caches
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
         })
-      );
-    }).then(() => self.clients.claim())
-  );
+    );
 });
 
-// Fetch - Security-focused strategy
+// Fetch - Cache-first strategy for assets
 self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-  
-  // NEVER cache sensitive paths
-  if (NO_CACHE_PATHS.some(path => {
-    if (typeof path === 'string') {
-      return url.pathname.includes(path);
+    // Skip non-GET requests and sensitive data
+    if (event.request.method !== 'GET' || 
+        event.request.url.includes('encrypt') ||
+        event.request.url.includes('decrypt')) {
+        return;
     }
-    return path.test(url.pathname);
-  })) {
-    // Network only, no caching
-    event.respondWith(fetch(event.request));
-    return;
-  }
-  
-  // For app shell, cache-first
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
-      }
-      return fetch(event.request).then((response) => {
-        // Only cache if it's a static asset
-        if (response.status === 200 && response.type === 'basic') {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return response;
-      });
-    })
-  );
+
+    event.respondWith(
+        caches.match(event.request)
+            .then((response) => {
+                if (response) {
+                    return response;
+                }
+                
+                return fetch(event.request)
+                    .then((response) => {
+                        if (!response || response.status !== 200 || response.type !== 'basic') {
+                            return response;
+                        }
+                        
+                        const responseToCache = response.clone();
+                        caches.open(CACHE_NAME)
+                            .then((cache) => {
+                                cache.put(event.request, responseToCache);
+                            });
+                        
+                        return response;
+                    });
+            })
+    );
 });
 
-// Security: Clear all caches on logout
+// Message handler for security operations
 self.addEventListener('message', (event) => {
-  if (event.data === 'clear-cache') {
-    caches.keys().then((cacheNames) => {
-      cacheNames.forEach((cacheName) => {
-        caches.delete(cacheName);
-      });
-    });
-  }
-});
-
-// Prevent caching of POST requests
-self.addEventListener('fetch', (event) => {
-  if (event.request.method === 'POST') {
-    event.respondWith(fetch(event.request));
-  }
+    if (event.data.type === 'CLEAR_CACHE') {
+        caches.delete(CACHE_NAME);
+        event.ports[0].postMessage({ success: true });
+    }
 });
