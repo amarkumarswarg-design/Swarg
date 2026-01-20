@@ -941,4 +941,237 @@
                 return input; // Assume it's already tokenId
             }
             
-            setEx
+            setExpiryTimer(tokenId, duration) {
+                const timerId = setTimeout(async () => {
+                    await this.state.destroyToken(tokenId);
+                    if (this.currentToken === tokenId) {
+                        document.getElementById('encryptedOutput').textContent = 'Token expired and destroyed';
+                        document.getElementById('encryptTimer').classList.add('hidden');
+                    }
+                }, duration);
+                
+                this.expiryTimers.set(tokenId, timerId);
+            }
+            
+            startCountdown(elementId, seconds) {
+                const element = document.getElementById(elementId);
+                let remaining = seconds;
+                
+                const update = () => {
+                    const mins = Math.floor(remaining / 60);
+                    const secs = remaining % 60;
+                    element.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+                    
+                    if (remaining <= 0) {
+                        element.textContent = 'EXPIRED';
+                        return;
+                    }
+                    
+                    remaining--;
+                    setTimeout(update, 1000);
+                };
+                
+                update();
+            }
+            
+            async destroyCurrentToken() {
+                if (this.currentToken) {
+                    await this.state.destroyToken(this.currentToken);
+                    document.getElementById('encryptedOutput').textContent = 'Token destroyed';
+                    document.getElementById('encryptTimer').classList.add('hidden');
+                    showNotification('Token destroyed securely', 'success');
+                    this.currentToken = null;
+                }
+            }
+            
+            clearAllData() {
+                if (confirm('⚠️ DESTROY ALL DATA?\nThis will permanently delete all encrypted tokens and clear all inputs.')) {
+                    // Destroy all tokens
+                    this.state.encryptedTokens.forEach((_, tokenId) => {
+                        this.state.destroyToken(tokenId);
+                    });
+                    
+                    // Clear all timers
+                    this.expiryTimers.forEach(timer => clearTimeout(timer));
+                    this.clipboardTimers.forEach(timer => clearTimeout(timer));
+                    
+                    // Clear UI
+                    document.getElementById('masterPassword').value = '';
+                    document.getElementById('passwordConfirm').value = '';
+                    document.getElementById('plaintext').value = '';
+                    document.getElementById('encryptedInput').value = '';
+                    document.getElementById('encryptedOutput').textContent = 'Encrypted token will appear here...';
+                    document.getElementById('decryptedOutput').textContent = 'Decrypted data will appear here...';
+                    document.getElementById('encryptTimer').classList.add('hidden');
+                    document.getElementById('decryptTimer').classList.add('hidden');
+                    
+                    showNotification('All data destroyed securely', 'success');
+                }
+            }
+            
+            checkTokenExpiry() {
+                const tokenId = this.extractTokenId(document.getElementById('encryptedInput').value);
+                if (!tokenId) {
+                    showNotification('No token to check', 'error');
+                    return;
+                }
+                
+                const tokenData = this.state.encryptedTokens.get(tokenId);
+                if (!tokenData) {
+                    showNotification('Token not found or already destroyed', 'error');
+                    return;
+                }
+                
+                if (tokenData.expiry) {
+                    const remaining = tokenData.expiry - Date.now();
+                    if (remaining <= 0) {
+                        showNotification('Token has expired', 'error');
+                    } else {
+                        const mins = Math.floor(remaining / 60000);
+                        showNotification(`Token expires in ${mins} minutes`, 'success');
+                    }
+                } else {
+                    showNotification('Token has no expiry set', 'success');
+                }
+            }
+            
+            updatePasswordStrength(password) {
+                const strength = this.state.calculatePasswordStrength(password);
+                const meter = document.getElementById('strengthMeter');
+                const text = document.getElementById('strengthText');
+                
+                meter.style.width = `${strength}%`;
+                
+                if (strength < 40) {
+                    meter.style.background = 'var(--danger)';
+                    text.textContent = 'Weak';
+                    text.style.color = 'var(--danger)';
+                } else if (strength < 70) {
+                    meter.style.background = '#ffa502';
+                    text.textContent = 'Fair';
+                    text.style.color = '#ffa502';
+                } else if (strength < 90) {
+                    meter.style.background = '#2ed573';
+                    text.textContent = 'Good';
+                    text.style.color = '#2ed573';
+                } else {
+                    meter.style.background = 'var(--accent)';
+                    text.textContent = 'Strong';
+                    text.style.color = 'var(--accent)';
+                }
+            }
+            
+            generateStrongPassword() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+                const length = 16;
+                let password = '';
+                
+                // Ensure at least one of each required character type
+                password += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(Math.random() * 26)];
+                password += 'abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random() * 26)];
+                password += '0123456789'[Math.floor(Math.random() * 10)];
+                password += '!@#$%^&*()_+-=[]{}|;:,.<>?'[Math.floor(Math.random() * 28)];
+                
+                // Fill remaining characters
+                for (let i = 4; i < length; i++) {
+                    password += chars[Math.floor(Math.random() * chars.length)];
+                }
+                
+                // Shuffle password
+                return password.split('').sort(() => Math.random() - 0.5).join('');
+            }
+            
+            copyToClipboard(type) {
+                let text = '';
+                
+                if (type === 'encrypted') {
+                    text = document.getElementById('encryptedOutput').textContent;
+                } else if (type === 'decrypted') {
+                    text = document.getElementById('decryptedOutput').textContent;
+                }
+                
+                if (!text || text.includes('will appear here')) {
+                    showNotification('Nothing to copy', 'error');
+                    return;
+                }
+                
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification('Copied to clipboard - Will auto-clear in 30 seconds', 'success');
+                    
+                    // Auto-clear clipboard after 30 seconds
+                    const timer = setTimeout(() => {
+                        navigator.clipboard.writeText('[SWARG: Clipboard cleared for security]');
+                        document.getElementById('clipboardStatus').textContent = 'Cleared';
+                        showNotification('Clipboard cleared for security', 'success');
+                    }, 30000);
+                    
+                    this.clipboardTimers.set(type, timer);
+                    document.getElementById('clipboardStatus').textContent = 'Occupied';
+                    
+                }).catch(err => {
+                    showNotification('Copy failed: ' + err.message, 'error');
+                });
+            }
+            
+            setupClipboardMonitoring() {
+                // Monitor clipboard changes
+                document.addEventListener('copy', (e) => {
+                    showNotification('⚠️ Clipboard contains sensitive data', 'error');
+                });
+                
+                // Clear clipboard on page leave
+                window.addEventListener('beforeunload', () => {
+                    navigator.clipboard.writeText('[SWARG: Session ended]');
+                });
+            }
+        }
+        
+        // ===== UTILITY FUNCTIONS =====
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            messageEl.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+        
+        // ===== INITIALIZE APPLICATION =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize secure state
+            const secureState = new SecureState();
+            
+            // Initialize UI
+            const secureUI = new SecureUI(secureState);
+            
+            // Make available for debugging (remove in production)
+            window.swargVault = {
+                state: secureState,
+                ui: secureUI,
+                version: '3.0'
+            };
+            
+            // Show welcome message
+            setTimeout(() => {
+                showNotification('SWARG SHIELD v3.0 Initialized - Real AES-256-GCM Active', 'success');
+            }, 1000);
+            
+            // Prevent browser back/forward caching
+            window.addEventListener('pageshow', (event) => {
+                if (event.persisted) {
+                    location.reload();
+                }
+            });
+            
+            // Clear everything on page unload
+            window.addEventListener('unload', () => {
+                secureState.lockVault();
+                localStorage.clear();
+            });
+        });
+    </script>
+</body>
+</html>
