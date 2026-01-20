@@ -1361,4 +1361,279 @@
 
             <!-- Decrypt Tab -->
             <div class="tab-content" id="decrypt">
-                <!-- Dec
+                <!-- Decrypt Data Card -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-icon">
+                            <i class="fas fa-unlock-alt"></i>
+                        </div>
+                        <h3 class="card-heading">Decrypt Data</h3>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Master Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" class="form-input" id="decryptPassword" 
+                                   placeholder="Enter the same master password" autocomplete="off">
+                            <button class="input-icon" id="toggleDecryptPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Encrypted Token</label>
+                        <textarea class="form-input form-textarea" id="encryptedToken" 
+                                  placeholder="Paste the encrypted token here..."></textarea>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="decryptBtn">
+                            <i class="fas fa-unlock"></i> Decrypt Now
+                        </button>
+                        <button class="btn btn-secondary" id="checkToken">
+                            <i class="fas fa-search"></i> Validate Token
+                        </button>
+                    </div>
+
+                    <!-- Decrypted Output -->
+                    <div class="output-container">
+                        <div class="output-header">
+                            <div class="output-title">Decrypted Message</div>
+                            <div class="output-actions">
+                                <button class="output-btn" id="copyDecrypted">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                                <button class="output-btn" id="clearDecrypted">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                            </div>
+                        </div>
+                        <div class="output-display" id="decryptedOutput">
+                            <div id="decryptedText">Decrypted message will appear here...</div>
+                        </div>
+                    </div>
+
+                    <!-- Expiry Warning -->
+                    <div class="timer-container hidden" id="decryptTimer">
+                        <i class="fas fa-exclamation-triangle timer-icon"></i>
+                        <span class="timer-text">This token expired:</span>
+                        <span class="timer-value" id="expiredTime">--:--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="settings-panel">
+                <h3 class="settings-title"><i class="fas fa-sliders-h"></i> Settings</h3>
+                
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-volume-up"></i>
+                            <span>Sound Effects</span>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-music"></i>
+                            <span>Master Volume</span>
+                        </div>
+                        <input type="range" class="range-slider" id="volumeSlider" min="0" max="100" value="70">
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-clock"></i>
+                            <span>Auto-clear (minutes)</span>
+                        </div>
+                        <select class="form-input" id="autoClear" style="width: 120px; padding: 8px 12px; font-size: 0.9rem;">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="30">30</option>
+                            <option value="0">Never</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-eye"></i>
+                            <span>Show Passwords</span>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="showPasswords">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="btn-group mt-20">
+                    <button class="btn btn-secondary" id="aboutBtn">
+                        <i class="fas fa-info-circle"></i> About SWARG
+                    </button>
+                    <button class="btn btn-secondary" id="securityInfo">
+                        <i class="fas fa-shield-alt"></i> Security Info
+                    </button>
+                    <button class="btn btn-danger" id="clearAllBtn">
+                        <i class="fas fa-broom"></i> Clear Everything
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-items">
+                <div class="status-item">
+                    <i class="fas fa-lock"></i>
+                    <span>AES-256-GCM Active</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-database"></i>
+                    <span>Zero Cloud Storage</span>
+                </div>
+                <div class="sound-toggle" id="soundStatus">
+                    <i class="fas fa-volume-up"></i>
+                    <span>Sound: ON</span>
+                </div>
+            </div>
+            <div class="status-item">
+                <i class="fas fa-mobile-alt"></i>
+                <span>PWA Ready</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scanning Animation -->
+    <div class="scanning-overlay" id="scanningOverlay">
+        <div class="scanning-content">
+            <i class="fas fa-shield-alt scanning-icon"></i>
+            <h2 class="scanning-title">Encrypting Data</h2>
+            <p class="scanning-text">Your data is being encrypted with military-grade AES-256-GCM encryption. This happens locally on your device.</p>
+            <div class="scanning-progress">
+                <div class="scanning-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div class="about-modal" id="aboutModal">
+        <div class="about-content">
+            <div class="about-header">
+                <button class="about-close" id="closeAbout">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2 class="about-title">SWARG Shield</h2>
+                <p class="about-subtitle">Ultimate Encryption Vault</p>
+                <p class="about-version">Version 6.0 • Real AES-256-GCM</p>
+            </div>
+            
+            <div class="about-body">
+                <div class="about-section">
+                    <h3 class="about-section-title">
+                        <i class="fas fa-star"></i>
+                        About SWARG
+                    </h3>
+                    <p style="color: var(--text-dim); margin-bottom: 15px;">
+                        SWARG Shield is a premium encryption tool that protects your sensitive data with military-grade AES-256-GCM encryption. All encryption happens locally on your device - no data ever leaves your browser.
+                    </p>
+                    
+                    <div class="about-features">
+                        <div class="about-feature">
+                            <i class="fas fa-microchip"></i>
+                            <span>AES-256-GCM Encryption</span>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-key"></i>
+                            <span>PBKDF2 Key Derivation</span>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-volume-up"></i>
+                            <span>Sound Feedback System</span>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-clock"></i>
+                            <span>Self-Destructing Tokens</span>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>PWA - Install as App</span>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-database"></i>
+                            <span>Zero Cloud Storage</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-section">
+                    <h3 class="about-section-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Security Features
+                    </h3>
+                    <ul class="about-list">
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span><strong>Real AES-256-GCM:</strong> Military grade encryption using Web Crypto API</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span><strong>PBKDF2 Key Derivation:</strong> 100,000 iterations for strong key generation</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span><strong>Zero Knowledge:</strong> All encryption happens locally - no data sent to servers</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span><strong>Self-Destructing Tokens:</strong> Tokens auto-destroy after expiry time</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span><strong>Memory Security:</strong> Sensitive data wiped from memory after use</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span><strong>Clipboard Protection:</strong> Auto-clear clipboard after 30 seconds</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="about-section">
+                    <h3 class="about-section-title">
+                        <i class="fas fa-question-circle"></i>
+                        How to Use
+                    </h3>
+                    <ul class="about-list">
+                        <li>
+                            <i class="fas fa-1"></i>
+                            <span><strong>Encrypt:</strong> Enter password → Type text → Click Encrypt → Copy token</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-2"></i>
+                            <span><strong>Share:</strong> Share token with recipient (via secure channel)</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-3"></i>
+                            <span><strong>Decrypt:</strong> Enter same password → Paste token → Click Decrypt</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span><strong>Important:</strong> Share password and token via different channels</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="about-footer">
+                    <p class="about-developer">
+                        <i class="fas fa-user-check" style="color: var(--gold); margin-right: 8px;"></i>
+                        Developed by Amar Kumar
+                    </p>
+                    <p class="about-security-note">
+                        <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+                        All encryption happens locally in your b
