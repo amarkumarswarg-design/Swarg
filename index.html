@@ -548,4 +548,397 @@
                         },
                         keyMaterial,
                         {
-                            name: SECURITY_CONFIG.ENC
+                            name: SECURITY_CONFIG.ENCRYPTION.ALGORITHM,
+                            length: SECURITY_CONFIG.ENCRYPTION.KEY_LENGTH
+                        },
+                        false,
+                        ['encrypt', 'decrypt']
+                    );
+                    
+                    return derivedKey;
+                } catch (error) {
+                    throw new Error('Key derivation failed');
+                }
+            }
+            
+            async encryptData(plaintext, password) {
+                try {
+                    // Generate random salt and IV
+                    const salt = crypto.getRandomValues(new Uint8Array(SECURITY_CONFIG.ENCRYPTION.KEY_DERIVATION.SALT_LENGTH));
+                    const iv = crypto.getRandomValues(new Uint8Array(SECURITY_CONFIG.ENCRYPTION.IV_LENGTH));
+                    
+                    // Derive key
+                    const key = await this.deriveKey(password, salt);
+                    
+                    // Encrypt data
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(plaintext);
+                    
+                    const encrypted = await crypto.subtle.encrypt(
+                        {
+                            name: SECURITY_CONFIG.ENCRYPTION.ALGORITHM,
+                            iv: iv,
+                            tagLength: SECURITY_CONFIG.ENCRYPTION.TAG_LENGTH * 8
+                        },
+                        key,
+                        data
+                    );
+                    
+                    // Extract ciphertext and authentication tag
+                    const ciphertext = encrypted.slice(0, encrypted.byteLength - SECURITY_CONFIG.ENCRYPTION.TAG_LENGTH);
+                    const tag = encrypted.slice(encrypted.byteLength - SECURITY_CONFIG.ENCRYPTION.TAG_LENGTH);
+                    
+                    // Store in memory (not persistent)
+                    const tokenId = this.generateTokenId();
+                    this.encryptedTokens.set(tokenId, {
+                        iv: iv,
+                        salt: salt,
+                        ciphertext: ciphertext,
+                        tag: tag,
+                        timestamp: Date.now()
+                    });
+                    
+                    // Return token (contains only tokenId, not actual data)
+                    return {
+                        tokenId: tokenId,
+                        format: 'SWARGv3',
+                        timestamp: Date.now()
+                    };
+                    
+                } catch (error) {
+                    throw new Error('Encryption failed');
+                }
+            }
+            
+            async decryptData(tokenId, password) {
+                try {
+                    // Retrieve from memory
+                    const tokenData = this.encryptedTokens.get(tokenId);
+                    if (!tokenData) {
+                        throw new Error('Token not found or expired');
+                    }
+                    
+                    // Derive key using stored salt
+                    const key = await this.deriveKey(password, tokenData.salt);
+                    
+                    // Combine ciphertext and tag
+                    const encryptedData = new Uint8Array(
+                        tokenData.ciphertext.byteLength + tokenData.tag.byteLength
+                    );
+                    encryptedData.set(new Uint8Array(tokenData.ciphertext), 0);
+                    encryptedData.set(new Uint8Array(tokenData.tag), tokenData.ciphertext.byteLength);
+                    
+                    // Decrypt
+                    const decrypted = await crypto.subtle.decrypt(
+                        {
+                            name: SECURITY_CONFIG.ENCRYPTION.ALGORITHM,
+                            iv: tokenData.iv,
+                            tagLength: SECURITY_CONFIG.ENCRYPTION.TAG_LENGTH * 8
+                        },
+                        key,
+                        encryptedData
+                    );
+                    
+                    const decoder = new TextDecoder();
+                    return decoder.decode(decrypted);
+                    
+                } catch (error) {
+                    throw new Error('Decryption failed - Invalid password or corrupted data');
+                }
+            }
+            
+            async destroyToken(tokenId) {
+                const tokenData = this.encryptedTokens.get(tokenId);
+                if (tokenData) {
+                    // Overwrite memory 7 times (DoD standard)
+                    for (let i = 0; i < SECURITY_CONFIG.MEMORY.OVERWRITE_COUNT; i++) {
+                        crypto.getRandomValues(tokenData.iv);
+                        crypto.getRandomValues(tokenData.salt);
+                        crypto.getRandomValues(new Uint8Array(tokenData.ciphertext));
+                        crypto.getRandomValues(new Uint8Array(tokenData.tag));
+                    }
+                    
+                    // Remove from memory
+                    this.encryptedTokens.delete(tokenId);
+                    
+                    // Force garbage collection
+                    if (window.gc) window.gc();
+                }
+            }
+            
+            zeroizeSensitiveData() {
+                // Zeroize all sensitive variables
+                if (this.masterPassword) {
+                    const arr = new Uint8Array(this.masterPassword.length);
+                    crypto.getRandomValues(arr);
+                    this.masterPassword = null;
+                }
+                
+                // Clear derived key from memory
+                this.derivedKey = null;
+                
+                // Update UI
+                document.getElementById('memoryStatus').textContent = 'Yes';
+                setTimeout(() => {
+                    document.getElementById('memoryStatus').textContent = 'No';
+                }, 5000);
+            }
+            
+            lockVault() {
+                this.zeroizeSensitiveData();
+                this.encryptedTokens.clear();
+                this.activeSession = false;
+                
+                // Clear all inputs
+                document.getElementById('masterPassword').value = '';
+                document.getElementById('passwordConfirm').value = '';
+                document.getElementById('plaintext').value = '';
+                document.getElementById('encryptedInput').value = '';
+                document.getElementById('encryptedOutput').textContent = 'Encrypted token will appear here...';
+                document.getElementById('decryptedOutput').textContent = 'Decrypted data will appear here...';
+                
+                // Show notification
+                showNotification('Vault locked due to inactivity', 'error');
+            }
+            
+            generateTokenId() {
+                return crypto.randomUUID();
+            }
+            
+            validatePassword(password) {
+                if (password.length < 12) return false;
+                if (!/[a-z]/.test(password)) return false;
+                if (!/[A-Z]/.test(password)) return false;
+                if (!/[0-9]/.test(password)) return false;
+                if (!/[^A-Za-z0-9]/.test(password)) return false;
+                return true;
+            }
+            
+            calculatePasswordStrength(password) {
+                let score = 0;
+                if (password.length >= 12) score += 25;
+                if (password.length >= 16) score += 15;
+                if (/[a-z]/.test(password)) score += 10;
+                if (/[A-Z]/.test(password)) score += 10;
+                if (/[0-9]/.test(password)) score += 10;
+                if (/[^A-Za-z0-9]/.test(password)) score += 15;
+                if (password.length >= 20) score += 15;
+                
+                // Deduct for patterns
+                const patterns = ['123', 'abc', 'password', 'qwerty', 'admin'];
+                if (patterns.some(p => password.toLowerCase().includes(p))) score -= 20;
+                
+                return Math.max(0, Math.min(100, score));
+            }
+        }
+        
+        // ===== UI MANAGEMENT =====
+        class SecureUI {
+            constructor(secureState) {
+                this.state = secureState;
+                this.currentToken = null;
+                this.expiryTimers = new Map();
+                this.clipboardTimers = new Map();
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.setupClipboardMonitoring();
+            }
+            
+            bindEvents() {
+                // Password events
+                document.getElementById('masterPassword').addEventListener('input', (e) => {
+                    this.updatePasswordStrength(e.target.value);
+                });
+                
+                // Generate password
+                document.getElementById('generatePassword').addEventListener('click', () => {
+                    const password = this.generateStrongPassword();
+                    document.getElementById('masterPassword').value = password;
+                    document.getElementById('passwordConfirm').value = password;
+                    this.updatePasswordStrength(password);
+                });
+                
+                // Clear password
+                document.getElementById('clearPassword').addEventListener('click', () => {
+                    document.getElementById('masterPassword').value = '';
+                    document.getElementById('passwordConfirm').value = '';
+                    this.updatePasswordStrength('');
+                });
+                
+                // Encryption
+                document.getElementById('encryptBtn').addEventListener('click', async () => {
+                    await this.handleEncryption();
+                });
+                
+                // Decryption
+                document.getElementById('decryptBtn').addEventListener('click', async () => {
+                    await this.handleDecryption();
+                });
+                
+                // Security controls
+                document.getElementById('wipeMemory').addEventListener('click', () => {
+                    this.state.zeroizeSensitiveData();
+                    showNotification('Memory wiped securely', 'success');
+                });
+                
+                document.getElementById('clearAll').addEventListener('click', () => {
+                    this.clearAllData();
+                });
+                
+                document.getElementById('lockVault').addEventListener('click', () => {
+                    this.state.lockVault();
+                });
+                
+                document.getElementById('destroyEncrypted').addEventListener('click', () => {
+                    this.destroyCurrentToken();
+                });
+                
+                document.getElementById('copyEncrypted').addEventListener('click', () => {
+                    this.copyToClipboard('encrypted');
+                });
+                
+                document.getElementById('copyDecrypted').addEventListener('click', () => {
+                    this.copyToClipboard('decrypted');
+                });
+                
+                // Preview
+                document.getElementById('previewEncrypt').addEventListener('click', () => {
+                    const text = document.getElementById('plaintext').value;
+                    if (text) {
+                        showNotification(`Preview: ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}`, 'success');
+                    }
+                });
+                
+                // Check expiry
+                document.getElementById('checkExpiry').addEventListener('click', () => {
+                    this.checkTokenExpiry();
+                });
+                
+                // Clear decrypted
+                document.getElementById('clearDecrypted').addEventListener('click', () => {
+                    document.getElementById('decryptedOutput').textContent = 'Decrypted data will appear here...';
+                    showNotification('Decrypted data cleared', 'success');
+                });
+            }
+            
+            async handleEncryption() {
+                const password = document.getElementById('masterPassword').value;
+                const confirmPassword = document.getElementById('passwordConfirm').value;
+                const plaintext = document.getElementById('plaintext').value;
+                const expiry = parseInt(document.getElementById('expiry').value);
+                
+                // Validation
+                if (password !== confirmPassword) {
+                    showNotification('Passwords do not match', 'error');
+                    return;
+                }
+                
+                if (!this.state.validatePassword(password)) {
+                    showNotification('Password must be at least 12 characters with mixed case, numbers, and symbols', 'error');
+                    return;
+                }
+                
+                if (!plaintext.trim()) {
+                    showNotification('Please enter data to encrypt', 'error');
+                    return;
+                }
+                
+                try {
+                    // Show loading
+                    const btn = document.getElementById('encryptBtn');
+                    btn.disabled = true;
+                    btn.textContent = 'Encrypting...';
+                    
+                    // Encrypt
+                    const token = await this.state.encryptData(plaintext, password);
+                    this.currentToken = token.tokenId;
+                    
+                    // Display token (not actual data)
+                    const displayToken = `SWARGv3:${token.tokenId.substring(0, 8)}...`;
+                    document.getElementById('encryptedOutput').textContent = displayToken;
+                    
+                    // Set expiry timer if applicable
+                    if (expiry > 0) {
+                        this.setExpiryTimer(token.tokenId, expiry);
+                        document.getElementById('encryptTimer').classList.remove('hidden');
+                        this.startCountdown('encryptTimerValue', expiry / 1000);
+                    }
+                    
+                    // Auto-destroy after expiry
+                    if (expiry > 0) {
+                        setTimeout(async () => {
+                            await this.state.destroyToken(token.tokenId);
+                            document.getElementById('encryptTimer').classList.add('hidden');
+                            document.getElementById('encryptedOutput').textContent = 'Token expired and destroyed';
+                            showNotification('Token auto-destroyed', 'error');
+                        }, expiry);
+                    }
+                    
+                    showNotification('Data encrypted successfully', 'success');
+                    
+                } catch (error) {
+                    showNotification('Encryption failed: ' + error.message, 'error');
+                } finally {
+                    const btn = document.getElementById('encryptBtn');
+                    btn.disabled = false;
+                    btn.textContent = '🔒 Encrypt Data';
+                }
+            }
+            
+            async handleDecryption() {
+                const password = document.getElementById('masterPassword').value;
+                const tokenId = this.extractTokenId(document.getElementById('encryptedInput').value);
+                
+                if (!password) {
+                    showNotification('Please enter master password', 'error');
+                    return;
+                }
+                
+                if (!tokenId) {
+                    showNotification('Invalid token format', 'error');
+                    return;
+                }
+                
+                try {
+                    // Show loading
+                    const btn = document.getElementById('decryptBtn');
+                    btn.disabled = true;
+                    btn.textContent = 'Decrypting...';
+                    
+                    // Decrypt
+                    const decrypted = await this.state.decryptData(tokenId, password);
+                    
+                    // Display decrypted data
+                    document.getElementById('decryptedOutput').textContent = decrypted;
+                    
+                    // Check if token is expired
+                    const tokenData = this.state.encryptedTokens.get(tokenId);
+                    if (tokenData && tokenData.expiry && Date.now() > tokenData.expiry) {
+                        document.getElementById('decryptTimer').classList.remove('hidden');
+                        document.getElementById('decryptTimerValue').textContent = 'EXPIRED';
+                        await this.state.destroyToken(tokenId);
+                    }
+                    
+                    showNotification('Data decrypted successfully', 'success');
+                    
+                } catch (error) {
+                    showNotification('Decryption failed: ' + error.message, 'error');
+                } finally {
+                    const btn = document.getElementById('decryptBtn');
+                    btn.disabled = false;
+                    btn.textContent = '🔓 Decrypt Token';
+                }
+            }
+            
+            extractTokenId(input) {
+                // Extract token ID from input
+                if (input.startsWith('SWARGv3:')) {
+                    return input.split(':')[1];
+                }
+                return input; // Assume it's already tokenId
+            }
+            
+            setEx
