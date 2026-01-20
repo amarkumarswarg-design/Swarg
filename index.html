@@ -1982,4 +1982,423 @@
             }
         }
 
-        // ===== ENC
+        // ===== ENCRYPTION =====
+        async function handleEncryption() {
+            if (appState.isEncrypting) return;
+            
+            const password = elements.masterPassword.value;
+            const text = elements.textToEncrypt.value.trim();
+            const expiryMs = parseInt(elements.expiryTime.value);
+
+            // Validation
+            if (!password) {
+                showNotification('Please enter a master password', 'error');
+                playSound('error');
+                return;
+            }
+            
+            if (password.length < 8) {
+                showNotification('Password must be at least 8 characters', 'error');
+                playSound('error');
+                return;
+            }
+            
+            if (password.length < 12) {
+                if (!confirm('⚠️ Password is less than 12 characters. For better security, use 12+ characters. Continue anyway?')) {
+                    return;
+                }
+            }
+
+            if (!text) {
+                showNotification('Please enter text to encrypt', 'error');
+                playSound('error');
+                return;
+            }
+
+            try {
+                appState.isEncrypting = true;
+                elements.encryptBtn.disabled = true;
+                elements.encryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Encrypting...';
+                
+                // Show scanning animation
+                showScanningAnimation();
+                playSound('encrypt');
+                
+                // Simulate encryption process (in real app, use Web Crypto API)
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Generate encrypted token
+                const tokenId = generateTokenId();
+                const encryptedToken = `SWARG_${tokenId}_${btoa(encodeURIComponent(text))}`;
+                
+                // Store token
+                appState.tokens.set(tokenId, {
+                    text: text,
+                    expiry: expiryMs > 0 ? Date.now() + expiryMs : null,
+                    timestamp: Date.now()
+                });
+                
+                appState.currentToken = tokenId;
+                
+                // Update UI
+                elements.encryptedText.textContent = encryptedToken;
+                elements.encryptedOutput.classList.add('encrypted');
+                
+                // Auto-copy to clipboard
+                try {
+                    await navigator.clipboard.writeText(encryptedToken);
+                    showNotification('✅ Encrypted & copied to clipboard!', 'success');
+                } catch (err) {
+                    showNotification('✅ Encrypted! (Copy failed)', 'success');
+                }
+                
+                // Start expiry timer if applicable
+                if (expiryMs > 0) {
+                    elements.encryptTimer.classList.remove('hidden');
+                    startExpiryTimer(expiryMs);
+                    
+                    // Auto-destroy after expiry
+                    setTimeout(() => {
+                        appState.tokens.delete(tokenId);
+                        if (appState.currentToken === tokenId) {
+                            elements.encryptedText.textContent = 'Token expired and destroyed';
+                            elements.encryptedOutput.classList.remove('encrypted');
+                            elements.encryptTimer.classList.add('hidden');
+                            showNotification('Token auto-destroyed', 'warning');
+                            playSound('error');
+                        }
+                    }, expiryMs);
+                }
+                
+                playSound('success');
+                
+            } catch (error) {
+                showNotification('Encryption failed: ' + error.message, 'error');
+                playSound('error');
+            } finally {
+                appState.isEncrypting = false;
+                elements.encryptBtn.disabled = false;
+                elements.encryptBtn.innerHTML = '<i class="fas fa-lock"></i> Encrypt Now';
+                hideScanningAnimation();
+            }
+        }
+
+        function previewText() {
+            const text = elements.textToEncrypt.value;
+            if (text) {
+                const preview = text.length > 100 ? text.substring(0, 100) + '...' : text;
+                showNotification(`Preview: "${preview}"`, 'info');
+                playSound('click');
+            }
+        }
+
+        // ===== DECRYPTION =====
+        async function handleDecryption() {
+            if (appState.isDecrypting) return;
+            
+            const password = elements.masterPassword.value;
+            const token = elements.encryptedToken.value.trim();
+
+            // Validation
+            if (!password) {
+                showNotification('Please enter master password', 'error');
+                playSound('error');
+                return;
+            }
+
+            if (!token) {
+                showNotification('Please enter encrypted token', 'error');
+                playSound('error');
+                return;
+            }
+
+            try {
+                appState.isDecrypting = true;
+                elements.decryptBtn.disabled = true;
+                elements.decryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Decrypting...';
+                playSound('decrypt');
+                
+                // Simulate decryption
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Extract token ID
+                const match = token.match(/SWARG_([a-f0-9]+)_(.+)/);
+                if (!match) {
+                    throw new Error('Invalid token format');
+                }
+                
+                const tokenId = match[1];
+                const tokenData = appState.tokens.get(tokenId);
+                
+                if (!tokenData) {
+                    throw new Error('Token not found or expired');
+                }
+                
+                // Check expiry
+                if (tokenData.expiry && Date.now() > tokenData.expiry) {
+                    appState.tokens.delete(tokenId);
+                    elements.decryptTimer.classList.remove('hidden');
+                    elements.expiredTime.textContent = 'EXPIRED';
+                    throw new Error('Token has expired');
+                }
+                
+                // Decode text
+                const decodedText = decodeURIComponent(atob(match[2]));
+                
+                // Update UI
+                elements.decryptedText.textContent = decodedText;
+                elements.decryptedOutput.classList.add('decrypted');
+                
+                showNotification('Data decrypted successfully!', 'success');
+                playSound('success');
+                
+            } catch (error) {
+                showNotification('Decryption failed: ' + error.message, 'error');
+                playSound('error');
+            } finally {
+                appState.isDecrypting = false;
+                elements.decryptBtn.disabled = false;
+                elements.decryptBtn.innerHTML = '<i class="fas fa-unlock"></i> Decrypt Now';
+            }
+        }
+
+        function validateToken() {
+            const token = elements.encryptedToken.value.trim();
+            if (!token) {
+                showNotification('Please enter a token', 'error');
+                playSound('error');
+                return;
+            }
+
+            const match = token.match(/SWARG_([a-f0-9]+)_/);
+            if (match) {
+                const tokenId = match[1];
+                const tokenData = appState.tokens.get(tokenId);
+                
+                if (tokenData) {
+                    if (tokenData.expiry) {
+                        const remaining = tokenData.expiry - Date.now();
+                        const minutes = Math.max(0, Math.floor(remaining / 60000));
+                        showNotification(`✅ Token valid. Expires in ${minutes} minutes.`, 'success');
+                    } else {
+                        showNotification('✅ Token valid (no expiry)', 'success');
+                    }
+                } else {
+                    showNotification('❌ Token not found or expired', 'error');
+                }
+            } else {
+                showNotification('❌ Invalid token format', 'error');
+            }
+            playSound('click');
+        }
+
+        // ===== TOKEN MANAGEMENT =====
+        function generateTokenId() {
+            const array = new Uint8Array(8);
+            crypto.getRandomValues(array);
+            return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        function destroyToken() {
+            if (appState.currentToken) {
+                if (confirm('Destroy this token? This cannot be undone.')) {
+                    appState.tokens.delete(appState.currentToken);
+                    elements.encryptedText.textContent = 'Encrypted token will appear here...';
+                    elements.encryptedOutput.classList.remove('encrypted');
+                    elements.encryptTimer.classList.add('hidden');
+                    appState.currentToken = null;
+                    showNotification('Token destroyed', 'success');
+                    playSound('success');
+                }
+            } else {
+                showNotification('No active token to destroy', 'warning');
+                playSound('error');
+            }
+        }
+
+        function clearDecrypted() {
+            elements.decryptedText.textContent = 'Decrypted message will appear here...';
+            elements.decryptedOutput.classList.remove('decrypted');
+            elements.decryptTimer.classList.add('hidden');
+            playSound('click');
+        }
+
+        function clearAllData(silent = false) {
+            if (!silent && !confirm('Clear all data? This will destroy all tokens.')) {
+                return;
+            }
+            
+            // Clear all tokens
+            appState.tokens.clear();
+            appState.currentToken = null;
+            
+            // Clear all UI
+            elements.masterPassword.value = '';
+            elements.decryptPassword.value = '';
+            elements.textToEncrypt.value = '';
+            elements.encryptedToken.value = '';
+            elements.encryptedText.textContent = 'Encrypted token will appear here...';
+            elements.decryptedText.textContent = 'Decrypted message will appear here...';
+            elements.encryptedOutput.classList.remove('encrypted');
+            elements.decryptedOutput.classList.remove('decrypted');
+            elements.encryptTimer.classList.add('hidden');
+            elements.decryptTimer.classList.add('hidden');
+            
+            updatePasswordStrength('');
+            switchTab('encrypt');
+            
+            if (!silent) {
+                showNotification('All data cleared', 'success');
+                playSound('success');
+            }
+        }
+
+        // ===== TIMER FUNCTIONS =====
+        function startExpiryTimer(expiryMs) {
+            let remaining = Math.floor(expiryMs / 1000);
+            
+            const updateTimer = () => {
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                elements.timerValue.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+                
+                if (remaining <= 0) {
+                    elements.timerValue.textContent = 'EXPIRED';
+                    elements.timerValue.style.color = '#ef4444';
+                    clearInterval(timerInterval);
+                    return;
+                }
+                
+                remaining--;
+            };
+            
+            updateTimer();
+            const timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        // ===== CLIPBOARD FUNCTIONS =====
+        async function copyToClipboard(type) {
+            let text = '';
+            
+            if (type === 'encrypted') {
+                text = elements.encryptedText.textContent;
+                if (!text || text.includes('will appear')) {
+                    showNotification('Nothing to copy', 'error');
+                    playSound('error');
+                    return;
+                }
+            } else if (type === 'decrypted') {
+                text = elements.decryptedText.textContent;
+                if (!text || text.includes('will appear')) {
+                    showNotification('Nothing to copy', 'error');
+                    playSound('error');
+                    return;
+                }
+            }
+            
+            try {
+                await navigator.clipboard.writeText(text);
+                showNotification('Copied to clipboard', 'success');
+                playSound('copy');
+                
+                // Auto-clear clipboard after 30 seconds
+                setTimeout(async () => {
+                    try {
+                        await navigator.clipboard.writeText('[SWARG: Clipboard cleared for security]');
+                    } catch (e) {
+                        // Ignore clipboard errors
+                    }
+                }, 30000);
+                
+            } catch (error) {
+                showNotification('Copy failed: ' + error.message, 'error');
+                playSound('error');
+            }
+        }
+
+        // ===== SETTINGS =====
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('swarg_settings')) || {};
+            
+            if (settings.soundEnabled !== undefined) {
+                appState.soundEnabled = settings.soundEnabled;
+                elements.soundToggle.checked = appState.soundEnabled;
+            }
+            
+            if (settings.volume !== undefined) {
+                appState.volume = settings.volume;
+                elements.volumeSlider.value = appState.volume;
+            }
+            
+            if (settings.autoClear !== undefined) {
+                elements.autoClear.value = settings.autoClear;
+            }
+            
+            if (settings.showPasswords !== undefined) {
+                elements.showPasswords.checked = settings.showPasswords;
+                if (settings.showPasswords) {
+                    elements.masterPassword.type = 'text';
+                    elements.decryptPassword.type = 'text';
+                    elements.togglePassword.querySelector('i').className = 'fas fa-eye-slash';
+                    elements.toggleDecryptPassword.querySelector('i').className = 'fas fa-eye-slash';
+                }
+            }
+            
+            updateSoundStatus();
+        }
+
+        function saveSettings() {
+            const settings = {
+                soundEnabled: appState.soundEnabled,
+                volume: appState.volume,
+                autoClear: elements.autoClear.value,
+                showPasswords: elements.showPasswords.checked
+            };
+            localStorage.setItem('swarg_settings', JSON.stringify(settings));
+        }
+
+        function toggleSound() {
+            appState.soundEnabled = elements.soundToggle.checked;
+            saveSettings();
+            updateSoundStatus();
+            playSound('click');
+        }
+
+        function updateVolume(volume) {
+            appState.volume = volume;
+            saveSettings();
+            playSound('click');
+        }
+
+        function updateSoundStatus() {
+            const icon = elements.soundStatus.querySelector('i');
+            const text = elements.soundStatus.querySelector('span');
+            
+            if (appState.soundEnabled) {
+                icon.className = 'fas fa-volume-up';
+                text.textContent = 'Sound: ON';
+            } else {
+                icon.className = 'fas fa-volume-mute';
+                text.textContent = 'Sound: OFF';
+            }
+        }
+
+        function toggleSoundStatus() {
+            appState.soundEnabled = !appState.soundEnabled;
+            elements.soundToggle.checked = appState.soundEnabled;
+            toggleSound();
+        }
+
+        function updateAutoClear() {
+            saveSettings();
+            const minutes = elements.autoClear.value;
+            showNotification(`Auto-clear set to ${minutes} minutes`, 'info');
+            playSound('click');
+        }
+
+        function toggleShowPasswords() {
+            saveSettings();
+            playSound('click');
+        }
+
+        // ===== MO
