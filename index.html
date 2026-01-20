@@ -1977,5 +1977,308 @@
                     // Real encryption
                     const encryptedToken = await this.engine.encryptData(text, password, expiryMs);
                     
-                    // Up
+                    // Update UI
+                    this.elements.encryptedText.textContent = encryptedToken;
+                    this.elements.encryptedOutput.classList.add('encrypted');
+                    
+                    // Extract token ID for timer
+                    const tokenMatch = encryptedToken.match(/SWARGv5_([a-f0-9]+)_/);
+                    if (tokenMatch) {
+                        this.currentTokenId = tokenMatch[1];
+                        
+                        // Start expiry timer if applicable
+                        if (expiryMs > 0) {
+                            this.elements.encryptTimer.classList.remove('hidden');
+                            this.startExpiryTimer(expiryMs);
+                        }
+                    }
+                    
+                    this.showNotification('Data encrypted with AES-256-GCM!', 'success');
+                    this.playSound('success');
+                    
+                } catch (error) {
+                    this.showNotification('Encryption failed: ' + error.message, 'error');
+                    this.playSound('error');
+                } finally {
+                    this.elements.encryptBtn.disabled = false;
+                    this.elements.encryptBtn.innerHTML = '<i class="fas fa-lock"></i> Encrypt Now';
+                    this.hideScanningAnimation();
+                }
+            }
+
+            previewText() {
+                const text = this.elements.textToEncrypt.value;
+                if (text) {
+                    this.showNotification(`Preview: ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}`, 'info');
+                    this.playSound('click');
+                }
+            }
+
+            // Decryption
+            async handleDecryption() {
+                const password = this.elements.decryptPassword.value;
+                const token = this.elements.encryptedToken.value.trim();
+
+                // Validation
+                if (!password) {
+                    this.showNotification('Please enter master password', 'error');
+                    this.playSound('error');
+                    return;
+                }
+
+                if (!token) {
+                    this.showNotification('Please enter encrypted token', 'error');
+                    this.playSound('error');
+                    return;
+                }
+
+                try {
+                    // Disable button
+                    this.elements.decryptBtn.disabled = true;
+                    this.elements.decryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Decrypting...';
+                    this.playSound('decrypt');
+
+                    // Real decryption
+                    const result = await this.engine.decryptData(token, password);
+                    
+                    // Update UI
+                    this.elements.decryptedText.textContent = result.data;
+                    this.elements.decryptedOutput.classList.add('decrypted');
+                    
+                    // Check expiry
+                    if (result.expiry && Date.now() > result.expiry) {
+                        this.elements.decryptTimer.classList.remove('hidden');
+                        this.elements.expiredTime.textContent = 'EXPIRED';
+                        this.showNotification('Warning: Token has expired', 'warning');
+                    }
+                    
+                    this.showNotification('Data decrypted successfully!', 'success');
+                    this.playSound('success');
+                    
+                } catch (error) {
+                    this.showNotification('Decryption failed: ' + error.message, 'error');
+                    this.playSound('error');
+                } finally {
+                    this.elements.decryptBtn.disabled = false;
+                    this.elements.decryptBtn.innerHTML = '<i class="fas fa-unlock"></i> Decrypt Now';
+                }
+            }
+
+            validateToken() {
+                const token = this.elements.encryptedToken.value.trim();
+                if (!token) {
+                    this.showNotification('Please enter a token', 'error');
+                    this.playSound('error');
+                    return;
+                }
+
+                const validation = this.engine.validateToken(token);
+                if (validation.valid) {
+                    if (validation.expiry) {
+                        const remaining = validation.expiry - Date.now();
+                        const minutes = Math.max(0, Math.floor(remaining / 60000));
+                        this.showNotification(`Token valid. Expires in ${minutes} minutes.`, 'success');
+                    } else {
+                        this.showNotification('Token valid (no expiry)', 'success');
+                    }
+                } else {
+                    this.showNotification(`Token invalid: ${validation.reason}`, 'error');
+                }
+                this.playSound('click');
+            }
+
+            // Token management
+            destroyToken() {
+                if (this.currentTokenId) {
+                    if (confirm('Destroy this token? This cannot be undone.')) {
+                        const destroyed = this.engine.destroyToken(this.currentTokenId);
+                        if (destroyed) {
+                            this.elements.encryptedText.textContent = 'Encrypted token will appear here...';
+                            this.elements.encryptedOutput.classList.remove('encrypted');
+                            this.elements.encryptTimer.classList.add('hidden');
+                            this.currentTokenId = null;
+                            this.showNotification('Token securely destroyed', 'success');
+                            this.playSound('success');
+                        }
+                    }
+                } else {
+                    this.showNotification('No active token to destroy', 'warning');
+                    this.playSound('error');
+                }
+            }
+
+            clearDecrypted() {
+                this.elements.decryptedText.textContent = 'Decrypted message will appear here...';
+                this.elements.decryptedOutput.classList.remove('decrypted');
+                this.elements.decryptTimer.classList.add('hidden');
+                this.playSound('click');
+            }
+
+            // Timer functions
+            startExpiryTimer(expiryMs) {
+                let remaining = Math.floor(expiryMs / 1000);
+                
+                const updateTimer = () => {
+                    const mins = Math.floor(remaining / 60);
+                    const secs = remaining % 60;
+                    this.elements.timerValue.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+                    
+                    if (remaining <= 0) {
+                        this.elements.timerValue.textContent = 'EXPIRED';
+                        this.elements.timerValue.style.color = '#ff7675';
+                        
+                        // Auto-destroy expired token
+                        if (this.currentTokenId) {
+                            this.engine.destroyToken(this.currentTokenId);
+                            this.currentTokenId = null;
+                        }
+                        
+                        clearInterval(timerInterval);
+                        this.showNotification('Token expired and destroyed', 'warning');
+                        this.playSound('error');
+                        return;
+                    }
+                    
+                    remaining--;
+                };
+                
+                updateTimer();
+                const timerInterval = setInterval(updateTimer, 1000);
+                this.timers.set(this.currentTokenId, timerInterval);
+            }
+
+            // Clipboard
+            async copyToClipboard(type) {
+                let text = '';
+                
+                if (type === 'encrypted') {
+                    text = this.elements.encryptedText.textContent;
+                } else if (type === 'decrypted') {
+                    text = this.elements.decryptedText.textContent;
+                }
+                
+                if (!text || text.includes('will appear')) {
+                    this.showNotification('Nothing to copy', 'error');
+                    this.playSound('error');
+                    return;
+                }
+                
+                try {
+                    await navigator.clipboard.writeText(text);
+                    this.showNotification('Copied to clipboard', 'success');
+                    this.playSound('copy');
+                    
+                    // Auto-clear clipboard after 30 seconds
+                    setTimeout(async () => {
+                        try {
+                            await navigator.clipboard.writeText('[SWARG: Clipboard cleared]');
+                        } catch (e) {
+                            // Ignore clipboard errors
+                        }
+                    }, 30000);
+                    
+                } catch (error) {
+                    this.showNotification('Copy failed: ' + error.message, 'error');
+                    this.playSound('error');
+                }
+            }
+
+            // Settings
+            loadSettings() {
+                const settings = JSON.parse(localStorage.getItem('swarg_settings')) || {};
+                
+                if (settings.soundEnabled !== undefined) {
+                    this.elements.soundToggle.checked = settings.soundEnabled;
+                    this.engine.soundManager.setEnabled(settings.soundEnabled);
+                }
+                
+                if (settings.volume !== undefined) {
+                    this.elements.volumeSlider.value = settings.volume;
+                    this.engine.soundManager.setVolume(settings.volume);
+                }
+                
+                if (settings.autoClear !== undefined) {
+                    this.elements.autoClear.value = settings.autoClear;
+                }
+                
+                if (settings.showPasswords !== undefined) {
+                    this.elements.showPasswords.checked = settings.showPasswords;
+                }
+                
+                this.updateSoundStatus();
+            }
+
+            saveSettings() {
+                const settings = {
+                    soundEnabled: this.elements.soundToggle.checked,
+                    volume: this.elements.volumeSlider.value,
+                    autoClear: this.elements.autoClear.value,
+                    showPasswords: this.elements.showPasswords.checked
+                };
+                localStorage.setItem('swarg_settings', JSON.stringify(settings));
+            }
+
+            toggleSound() {
+                const enabled = this.elements.soundToggle.checked;
+                this.engine.soundManager.setEnabled(enabled);
+                this.saveSettings();
+                this.updateSoundStatus();
+                this.playSound('click');
+            }
+
+            updateVolume(volume) {
+                this.engine.soundManager.setVolume(volume);
+                this.saveSettings();
+                this.playSound('click');
+            }
+
+            updateSoundStatus() {
+                const icon = this.elements.soundStatus.querySelector('i');
+                const text = this.elements.soundStatus.querySelector('span');
+                
+                if (this.elements.soundToggle.checked) {
+                    icon.className = 'fas fa-volume-up';
+                    text.textContent = 'Sound: ON';
+                } else {
+                    icon.className = 'fas fa-volume-mute';
+                    text.textContent = 'Sound: OFF';
+                }
+            }
+
+            toggleSoundStatus() {
+                this.elements.soundToggle.checked = !this.elements.soundToggle.checked;
+                this.toggleSound();
+            }
+
+            toggleShowPasswords() {
+                this.saveSettings();
+                this.playSound('click');
+            }
+
+            updateAutoClear() {
+                this.saveSettings();
+                this.showNotification(`Auto-clear set to ${this.elements.autoClear.value} minutes`, 'info');
+                this.playSound('click');
+            }
+
+            setupAutoClear() {
+                const minutes = parseInt(this.elements.autoClear.value);
+                if (minutes > 0) {
+                    setInterval(() => {
+                        this.clearAllData(true);
+                    }, minutes * 60 * 1000);
+                }
+            }
+
+            // Clear all data
+            clearAllData(silent = false) {
+                if (!silent && !confirm('Clear all data? This will destroy all tokens.')) {
+                    return;
+                }
+                
+                this.engine.zeroizeMemory();
+                this.timers.forEach(timer => clearInterval(timer));
+                this.timers.clear();
+                
+                // Cle
             
