@@ -9,256 +9,245 @@
     <link rel="icon" href="icon.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
+            
 
+
+
+
+<style>
         :root {
-    --primary: #0ea5e9;
-    --primary-dark: #0284c7;
-    --accent: #10b981;
-    --danger: #ef4444;
-    --warning: #f59e0b;
-    --dark-900: #0a0a0f;
-    --dark-800: #121218;
-    --dark-700: #1a1a24;
-    --dark-600: #242432;
-    --light: #f8fafc;
-    --gray: #94a3b8;
-    --success: #22c55e;
-}
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark-900: #0a0a0f;
+            --dark-800: #121218;
+            --dark-700: #1a1a24;
+            --dark-600: #242432;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --success: #22c55e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-900);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Subtle animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        
+        .bg-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        /* Header */
+        .header {
+            padding: 2rem 1.5rem;
+            text-align: center;
+            background: linear-gradient(to bottom, var(--dark-900), transparent);
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--primary), transparent);
+        }
+        
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }            background: var(--dark-700);
+            border: 2px solid var(--dark-600);
+            border-radius: 12px;
+            color: var(--light);
+            font-size: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+        
+        .textarea:focus, .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+            background: var(--dark-800);
+        }
+        
+        .textarea {
+            min-height: 180px;
+            line-height: 1.6;
+        }
+        
+        .password-input {
+            padding-right: 50px;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+        
+        .toggle-password:hover {
+            color: var(--light);
+        }
+        
+        .key-info {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .key-info i {
+            color: var(--warning);
+        }
+        
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .button {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .button-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+        
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
+        }
+        
+        .button-primary:active {
+            transform: translateY(0);
+        }
+        
+        .button-secondary {
+            background: var(--dark-700);
+            color: var(--light);
+            border: 2px solid var(--dark-600);
+        }
+        
+        .button-secondary:hover {
+            background: var(--dark-600);
+            border-color: var(--gray);
+        }
+        
+        /* Result Container */
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--dark-700);
+            border-radius: 12px;
+            border: 1px solid var(--dark-600);
+            display: none;
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-container.show {
+            display: block;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom            .logo {
+                font-size: 2.8rem;
+            }
+            
+            .developer {
+                font-size: 1rem;
+            }
+            
+            .container, .tabs-container {
+                padding: 0 1rem;
+            }
+        }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
-
-body {
-    background-color: var(--dark-900);
-    color: var(--light);
-    min-height: 100vh;
-    overflow-x: hidden;
-    position: relative;
-}
-
-/* Subtle animated background */
-.bg-animation {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    opacity: 0.1;
-    pointer-events: none;
-}
-
-.bg-grid {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(14, 165, 233, 0.05) 1px, transparent 1px);
-    background-size: 50px 50px;
-    animation: gridMove 20s linear infinite;
-}
-
-@keyframes gridMove {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(50px, 50px); }
-}
-
-/* Header */
-.header {
-    padding: 2rem 1.5rem;
-    text-align: center;
-    background: linear-gradient(to bottom, var(--dark-900), transparent);
-    position: relative;
-}
-
-.header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--primary), transparent);
-}
-
-.logo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-}
-
-.logo {
-    font-size: 2.8rem;
-}
-
-.developer {
-    font-size: 1rem;
-}
-
-/* ✅ FIX 1: Yeh block pehle beech mein toot gaya tha, ab sahi jagah hai */
-.textarea,
-.input {
-    width: 100%;
-    padding: 14px 16px;
-    background: var(--dark-700);
-    border: 2px solid var(--dark-600);
-    border-radius: 12px;
-    color: var(--light);
-    font-size: 1rem;
-    font-family: 'JetBrains Mono', monospace;
-    resize: vertical;
-    transition: all 0.3s ease;
-}
-
-.textarea:focus,
-.input:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
-    background: var(--dark-800);
-}
-
-.textarea {
-    min-height: 180px;
-    line-height: 1.6;
-}
-
-.password-input {
-    padding-right: 50px;
-}
-
-.toggle-password {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--gray);
-    cursor: pointer;
-    font-size: 1.1rem;
-    transition: color 0.2s;
-}
-
-.toggle-password:hover {
-    color: var(--light);
-}
-
-.key-info {
-    margin-top: 0.5rem;
-    font-size: 0.875rem;
-    color: var(--gray);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.key-info i {
-    color: var(--warning);
-}
-
-/* Buttons */
-.button-group {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-    flex-wrap: wrap;
-}
-
-.button {
-    padding: 16px 32px;
-    border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    flex: 1;
-    min-width: 200px;
-}
-
-.button-primary {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
-}
-
-.button-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
-}
-
-.button-primary:active {
-    transform: translateY(0);
-}
-
-.button-secondary {
-    background: var(--dark-700);
-    color: var(--light);
-    border: 2px solid var(--dark-600);
-}
-
-.button-secondary:hover {
-    background: var(--dark-600);
-    border-color: var(--gray);
-}
-
-/* Result Container */
-.result-container {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: var(--dark-700);
-    border-radius: 12px;
-    border: 1px solid var(--dark-600);
-    display: none;
-    animation: slideUp 0.4s ease-out;
-}
-
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.result-container.show {
-    display: block;
-}
-
-/* ✅ FIX 2: result-header mein margin-bottom adhoora tha, ab complete hai */
-.result-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-/* Container & Tabs */
-.container,
-.tabs-container {
-    padding: 0 1rem;
-}
-
-/* Dots animation */
-.dots {
+    .dots {
     position: fixed !important;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100vw !important;
     height: 100vh !important;
     background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 1px, transparent 1px) !important;
     background-size: 50px 50px !important;
-    z-index: 1 !important;
+    z-index: 1 !important; /* इसे 1 कर दिया ताकि यह बैकग्राउंड ग्रिड के ऊपर दिखे */
     pointer-events: none !important;
     animation: floatUpDots 40s linear infinite !important;
 }
@@ -266,10 +255,9 @@ body {
 @keyframes floatUpDots {
     from { transform: translateY(0); }
     to { transform: translateY(-1000px); }
-    }
-    
+}
 
-         </style>
+            </style>
 </head>
 <body>
     <!-- Background Animation -->
