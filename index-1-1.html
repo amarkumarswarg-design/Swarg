@@ -1,0 +1,1364 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWARG - Military Grade AES-256 Encryption</title>
+    <meta name="description" content="Professional AES-256 Encryption Tool with Real Security">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark-900: #0a0a0f;
+            --dark-800: #121218;
+            --dark-700: #1a1a24;
+            --dark-600: #242432;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --success: #22c55e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-900);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Subtle animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        
+        .bg-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating Dots Canvas */
+        .dots-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* Header */
+        .header {
+            padding: 2rem 1.5rem;
+            text-align: center;
+            background: linear-gradient(to bottom, var(--dark-900), transparent);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--primary), transparent);
+        }
+        
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ✅ FIX 1: SWARG shine reduced - naam clearly visible */
+        .logo {
+            font-size: 5rem;
+            font-weight: 800;
+            letter-spacing: 8px;
+            position: relative;
+            display: inline-block;
+            color: #fff8dc;
+            /* Glow kam kiya - sirf halka glow */
+            animation: swargGlow 2.5s ease-in-out infinite alternate;
+        }
+
+        .logo::before {
+            content: 'SWARG';
+            position: absolute;
+            top: 0; left: 0;
+            background: linear-gradient(135deg, #fff5a0 0%, #ffd700 25%, #fffacd 50%, #ff9900 75%, #ffd700 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: goldShine 2s linear infinite;
+        }
+
+        @keyframes goldShine {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* ✅ Glow halka kiya - naam clearly dikhega */
+        @keyframes swargGlow {
+            0% {
+                text-shadow: 0 0 6px rgba(255, 215, 0, 0.5), 0 0 12px rgba(255, 170, 0, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 10px rgba(255, 224, 102, 0.6), 0 0 20px rgba(255, 215, 0, 0.4), 0 0 35px rgba(255, 170, 0, 0.2);
+            }
+            100% {
+                text-shadow: 0 0 8px rgba(255, 215, 0, 0.5), 0 0 16px rgba(255, 136, 0, 0.3);
+            }
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, #ffd700, #ff9900, #ffd700, transparent);
+            border-radius: 50%;
+            animation: swargGlow 2.5s ease-in-out infinite alternate;
+        }
+
+        /* AMAR KUMAR Gold Shine */
+        .developer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            color: var(--gray);
+        }
+        
+        .developer-name {
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg,
+                #b8860b 0%,
+                #ffd700 20%,
+                #fffacd 40%,
+                #ffd700 60%,
+                #ff9900 80%,
+                #ffd700 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: goldShine 1.8s linear infinite;
+            filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.6));
+        }
+        
+        .verified {
+            color: #ffd700;
+            font-size: 1rem;
+            filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.8));
+            animation: verifiedPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes verifiedPulse {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.8)); }
+            50% { filter: drop-shadow(0 0 12px rgba(255, 215, 0, 1)); }
+        }
+        
+        /* Tabs */
+        .tabs-container {
+            max-width: 900px;
+            margin: 0 auto 2rem;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* UPDATED: Tabs always side by side - never stack */
+        .tabs {
+            display: flex;
+            flex-direction: row;
+            background: var(--dark-700);
+            border-radius: 12px;
+            padding: 6px;
+            border: 1px solid var(--dark-600);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 18px 24px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray);
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .tab:hover {
+            color: var(--light);
+            background: rgba(14, 165, 233, 0.1);
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: var(--light);
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card {
+            background: var(--dark-800);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--dark-600);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--light);
+        }
+        
+        /* Form Elements */
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--gray);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .textarea, .input {
+            width: 100%;
+            padding: 18px;
+            background: var(--dark-700);
+            border: 2px solid var(--dark-600);
+            border-radius: 12px;
+            color: var(--light);
+            font-size: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+        
+        .textarea:focus, .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+            background: var(--dark-800);
+        }
+        
+        .textarea {
+            min-height: 180px;
+            line-height: 1.6;
+        }
+        
+        .password-input {
+            padding-right: 50px;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+        
+        .toggle-password:hover {
+            color: var(--light);
+        }
+        
+        .key-info {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .key-info i {
+            color: var(--warning);
+        }
+        
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .button {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .button-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+        
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
+        }
+        
+        .button-primary:active {
+            transform: translateY(0);
+        }
+        
+        .button-secondary {
+            background: var(--dark-700);
+            color: var(--light);
+            border: 2px solid var(--dark-600);
+        }
+        
+        .button-secondary:hover {
+            background: var(--dark-600);
+            border-color: var(--gray);
+        }
+        
+        /* Result Container */
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--dark-700);
+            border-radius: 12px;
+            border: 1px solid var(--dark-600);
+            display: none;
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-container.show {
+            display: block;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+        
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+        
+        .copy-button {
+            padding: 8px 16px;
+            background: var(--dark-600);
+            color: var(--light);
+            border: 1px solid var(--dark-600);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .copy-button:hover {
+            background: var(--dark-500);
+            border-color: var(--primary);
+        }
+        
+        .result-content {
+            padding: 1rem;
+            background: var(--dark-900);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--light);
+            margin-bottom: 1.25rem;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .expiry-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--warning);
+            font-size: 0.9rem;
+            padding: 12px;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid var(--warning);
+        }
+        
+        /* About Section */
+        .about-section {
+            margin-top: 3rem;
+            padding: 2.5rem;
+            background: var(--dark-800);
+            border-radius: 16px;
+            border: 1px solid var(--dark-600);
+        }
+        
+        .about-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--light);
+            text-align: center;
+        }
+        
+        .about-content {
+            line-height: 1.7;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .tech-card {
+            background: var(--dark-700);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--dark-600);
+        }
+        
+        .tech-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--light);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tech-desc {
+            font-size: 0.95rem;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--dark-700);
+            margin-top: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 1rem 1.5rem;
+            background: var(--dark-800);
+            color: var(--light);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-left: 4px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            max-width: 380px;
+            border: 1px solid var(--dark-600);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            border-left-color: var(--success);
+        }
+        
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+        
+        /* ✅ FIX 3: Scan/Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 15, 0.92);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .loading-content {
+            text-align: center;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        /* Scan bar + scan line effect */
+        .scan-box {
+            position: relative;
+            width: 260px;
+            height: 80px;
+            margin: 1.5rem auto;
+            border: 2px solid rgba(14, 165, 233, 0.4);
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(14, 165, 233, 0.04);
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--primary) 30%,
+                #ffffff 50%,
+                var(--primary) 70%,
+                transparent 100%);
+            box-shadow: 0 0 12px var(--primary), 0 0 24px rgba(14,165,233,0.5);
+            animation: scanMove 1.2s ease-in-out infinite;
+        }
+
+        @keyframes scanMove {
+            0%   { top: 0; opacity: 1; }
+            45%  { top: calc(100% - 3px); opacity: 1; }
+            50%  { top: calc(100% - 3px); opacity: 0.3; }
+            55%  { top: 0; opacity: 0.3; }
+            60%  { opacity: 1; }
+            100% { top: 0; opacity: 1; }
+        }
+
+        .scan-text-inside {
+            position: absolute;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            color: rgba(14, 165, 233, 0.7);
+            font-family: 'JetBrains Mono', monospace;
+            animation: blinkText 1.2s ease-in-out infinite;
+        }
+
+        @keyframes blinkText {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .scanning-animation {
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--primary) 20%, 
+                var(--accent) 50%, 
+                var(--primary) 80%, 
+                transparent 100%);
+            margin: 1rem auto 0;
+            border-radius: 4px;
+            animation: scanning 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes scanning {
+            0% { transform: translateX(-100px) scaleX(0.1); opacity: 0; }
+            50% { transform: translateX(0) scaleX(1); opacity: 1; }
+            100% { transform: translateX(100px) scaleX(0.1); opacity: 0; }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 3.5rem;
+            }
+            
+            .button {
+                min-width: 100%;
+            }
+            
+            /* Tabs hamesha side by side */
+            .tabs {
+                flex-direction: row;
+            }
+
+            .tab {
+                padding: 14px 10px;
+                font-size: 0.95rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .about-section {
+                padding: 1.5rem;
+            }
+            
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2.8rem;
+                letter-spacing: 4px;
+            }
+            
+            .developer {
+                font-size: 1rem;
+            }
+            
+            .container, .tabs-container {
+                padding: 0 1rem;
+            }
+
+            .tab {
+                padding: 12px 8px;
+                font-size: 0.85rem;
+                gap: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="bg-grid"></div>
+    </div>
+
+    <!-- Floating Dots Canvas -->
+    <canvas class="dots-canvas" id="dotsCanvas"></canvas>
+    
+    <!-- ✅ FIX 3: Loading Overlay with proper scan animation -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="card-icon" style="margin: 0 auto 1.5rem;">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2 style="color: var(--light); margin-bottom: 0.5rem;">Military Grade Encryption</h2>
+            <p style="color: var(--gray); margin-bottom: 0.5rem;">Processing with AES-256-GCM</p>
+            <div class="scan-box">
+                <div class="scan-line"></div>
+                <div class="scan-text-inside">SCANNING...</div>
+            </div>
+            <div class="scanning-animation"></div>
+            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 1.5rem;">
+                <i class="fas fa-lock"></i> All operations are performed locally
+            </p>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <h1 class="logo">SWARG</h1>
+            <div class="developer">
+                <span class="developer-name">AMAR KUMAR</span>
+                <i class="fas fa-check-circle verified"></i>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Tabs -->
+    <div class="tabs-container">
+        <div class="tabs">
+            <button class="tab active" data-tab="encrypt">
+                <i class="fas fa-lock"></i> ENCRYPT
+            </button>
+            <button class="tab" data-tab="decrypt">
+                <i class="fas fa-unlock"></i> DECRYPT
+            </button>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Encrypt Tab -->
+        <div class="tab-content active" id="encrypt-tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2 class="card-title">AES-256 Encryption</h2>
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">Text to Encrypt</label>
+                    <textarea 
+                        class="textarea" 
+                        id="encryptText" 
+                        placeholder="Enter sensitive text to encrypt..."
+                        rows="5"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">Encryption Password</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            class="input password-input" 
+                            id="encryptPassword" 
+                            placeholder="Enter strong password (required)">
+                        <button class="toggle-password" type="button" data-target="encryptPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="key-info">
+                        <i class="fas fa-info-circle"></i>
+                        Password is required for AES-256 encryption. Store it securely.
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="button button-primary" id="encryptBtn">
+                        <i class="fas fa-shield-alt"></i> ENCRYPT NOW
+                    </button>
+                    <button class="button button-secondary" id="clearEncryptBtn">
+                        <i class="fas fa-eraser"></i> CLEAR ALL
+                    </button>
+                </div>
+                
+                <!-- Result will appear here -->
+                <div class="result-container" id="encryptResult">
+                    <div class="result-header">
+                        <h3 class="result-title">ENCRYPTED OUTPUT</h3>
+                        <button class="copy-button" id="copyEncryptBtn">
+                            <i class="fas fa-copy"></i> COPY
+                        </button>
+                    </div>
+                    <div class="result-content" id="encryptedOutput"></div>
+                    <div class="expiry-info">
+                        <i class="fas fa-clock"></i>
+                        <span>This encrypted data will expire in <span id="expiryTimer">30:00</span> minutes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Decrypt Tab -->
+        <div class="tab-content" id="decrypt-tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-unlock"></i>
+                    </div>
+                    <h2 class="card-title">AES-256 Decryption</h2>
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">Encrypted Text</label>
+                    <textarea 
+                        class="textarea" 
+                        id="decryptText" 
+                        placeholder="Paste encrypted text here..."
+                        rows="5"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">Decryption Password</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            class="input password-input" 
+                            id="decryptPassword" 
+                            placeholder="Enter the same password used for encryption">
+                        <button class="toggle-password" type="button" data-target="decryptPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="key-info">
+                        <i class="fas fa-key"></i>
+                        Must match the password used during encryption
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="button button-primary" id="decryptBtn">
+                        <i class="fas fa-unlock-alt"></i> DECRYPT NOW
+                    </button>
+                    <button class="button button-secondary" id="clearDecryptBtn">
+                        <i class="fas fa-eraser"></i> CLEAR ALL
+                    </button>
+                </div>
+                
+                <!-- Result will appear here -->
+                <div class="result-container" id="decryptResult">
+                    <div class="result-header">
+                        <h3 class="result-title">DECRYPTED TEXT</h3>
+                        <button class="copy-button" id="copyDecryptBtn">
+                            <i class="fas fa-copy"></i> COPY
+                        </button>
+                    </div>
+                    <div class="result-content" id="decryptedOutput"></div>
+                    <div class="expiry-info">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>Decryption successful. Data integrity verified.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- About Section -->
+        <div class="about-section">
+            <h2 class="about-title">About SWARG Encryption</h2>
+            <div class="about-content">
+                <p>SWARG implements genuine AES-256-GCM (Advanced Encryption Standard with 256-bit key in Galois/Counter Mode), the same encryption standard used by government agencies, financial institutions, and security professionals worldwide.</p>
+                <p>All cryptographic operations are performed locally in your browser using the Web Crypto API. No data is transmitted to any server, ensuring complete privacy and security.</p>
+            </div>
+            
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h3 class="tech-title">
+                        <i class="fas fa-shield-alt"></i> Military Grade Security
+                    </h3>
+                    <p class="tech-desc">AES-256 is approved by the NSA for protecting classified information up to TOP SECRET level.</p>
+                </div>
+                
+                <div class="tech-card">
+                    <h3 class="tech-title">
+                        <i class="fas fa-user-secret"></i> Zero Knowledge
+                    </h3>
+                    <p class="tech-desc">Your data never leaves your device. All encryption/decryption happens locally in your browser.</p>
+                </div>
+                
+                <div class="tech-card">
+                    <h3 class="tech-title">
+                        <i class="fas fa-clock"></i> Auto Expiry
+                    </h3>
+                    <p class="tech-desc">Encrypted data automatically expires after 30 minutes, adding an extra layer of security.</p>
+                </div>
+                
+                <div class="tech-card">
+                    <h3 class="tech-title">
+                        <i class="fas fa-mobile-alt"></i> PWA Ready
+                    </h3>
+                    <p class="tech-desc">Install as a Progressive Web App on any device for offline access to encryption tools.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 SWARG Encryption Tool | Military Grade AES-256 Implementation</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--gray);">
+            Powered by Web Crypto API | All cryptographic operations performed locally
+        </p>
+    </footer>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle" id="toastIcon"></i>
+        <span id="toastMessage">Operation completed successfully!</span>
+    </div>
+    
+    <!-- Audio Elements (fallback) -->
+    <audio id="typeSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-keyboard-typing-1386.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="encryptSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-sci-fi-positive-notification-905.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="decryptSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ✅ FIX 4: UPGRADED Floating Dots - More dots + SWARG word formation every 10s -->
+    <script>
+    (function() {
+        var canvas = document.getElementById('dotsCanvas');
+        var ctx = canvas.getContext('2d');
+        var DOT_COUNT = 220; // increased from 130
+        var dots = [];
+        var swargMode = false;
+        var swargTargets = [];
+        var swargTimer = 0;
+        var SWARG_INTERVAL = 10000; // 10 seconds
+        var FORM_DURATION = 2500;   // 2.5s forming
+        var HOLD_DURATION = 2000;   // 2s hold
+        var BREAK_DURATION = 1500;  // 1.5s breaking
+        var phase = 'float'; // float | forming | hold | breaking
+        var phaseStart = 0;
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Generate SWARG letter pixel points using canvas text rendering
+        function getSwargPoints(count) {
+            var offscreen = document.createElement('canvas');
+            var ow = Math.min(window.innerWidth * 0.7, 500);
+            var oh = 100;
+            offscreen.width = ow;
+            offscreen.height = oh;
+            var octx = offscreen.getContext('2d');
+            octx.fillStyle = '#fff';
+            octx.font = 'bold ' + Math.floor(oh * 0.75) + 'px Inter, Arial';
+            octx.textAlign = 'center';
+            octx.textBaseline = 'middle';
+            octx.fillText('SWARG', ow / 2, oh / 2);
+
+            var imageData = octx.getImageData(0, 0, ow, oh);
+            var pixels = imageData.data;
+            var points = [];
+            var step = 4;
+            for (var y = 0; y < oh; y += step) {
+                for (var x = 0; x < ow; x += step) {
+                    var idx = (y * ow + x) * 4;
+                    if (pixels[idx + 3] > 128) {
+                        points.push({ x: x, y: y });
+                    }
+                }
+            }
+            // Shuffle
+            for (var i = points.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var tmp = points[i]; points[i] = points[j]; points[j] = tmp;
+            }
+
+            // Scale to screen center-top area
+            var screenX = window.innerWidth / 2 - ow / 2;
+            var screenY = 40;
+            var scaleX = Math.min(window.innerWidth * 0.7, 500) / ow;
+            var scaleY = 1;
+
+            var result = [];
+            var take = Math.min(count, points.length);
+            for (var k = 0; k < take; k++) {
+                result.push({
+                    x: screenX + points[k].x * scaleX,
+                    y: screenY + points[k].y * scaleY
+                });
+            }
+            return result;
+        }
+
+        // Init dots
+        for (var i = 0; i < DOT_COUNT; i++) {
+            dots.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                ox: 0, oy: 0,       // origin (float position)
+                tx: 0, ty: 0,       // target (SWARG position)
+                r: Math.random() * 2.2 + 0.6,
+                speed: Math.random() * 0.8 + 0.25,
+                opacity: Math.random() * 0.5 + 0.15,
+                color: Math.random() > 0.5 ? 'rgba(255,215,0,' : 'rgba(255,255,255,'
+            });
+        }
+
+        var lastSwarg = performance.now();
+
+        function easeInOut(t) {
+            return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        }
+
+        function animate(now) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Phase logic
+            if (phase === 'float') {
+                if (now - lastSwarg >= SWARG_INTERVAL) {
+                    // Start forming SWARG
+                    swargTargets = getSwargPoints(DOT_COUNT);
+                    // Save current positions as origins
+                    for (var i = 0; i < dots.length; i++) {
+                        dots[i].ox = dots[i].x;
+                        dots[i].oy = dots[i].y;
+                        if (swargTargets[i]) {
+                            dots[i].tx = swargTargets[i].x;
+                            dots[i].ty = swargTargets[i].y;
+                        } else {
+                            dots[i].tx = dots[i].x;
+                            dots[i].ty = dots[i].y;
+                        }
+                    }
+                    phase = 'forming';
+                    phaseStart = now;
+                }
+            }
+
+            if (phase === 'forming') {
+                var t = Math.min((now - phaseStart) / FORM_DURATION, 1);
+                var et = easeInOut(t);
+                for (var i = 0; i < dots.length; i++) {
+                    dots[i].x = dots[i].ox + (dots[i].tx - dots[i].ox) * et;
+                    dots[i].y = dots[i].oy + (dots[i].ty - dots[i].oy) * et;
+                    // Gold glow while forming
+                    var op = dots[i].opacity + et * 0.3;
+                    ctx.beginPath();
+                    ctx.arc(dots[i].x, dots[i].y, dots[i].r + et, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255,215,0,' + Math.min(op, 0.9) + ')';
+                    ctx.fill();
+                }
+                if (t >= 1) { phase = 'hold'; phaseStart = now; }
+
+            } else if (phase === 'hold') {
+                // Draw in SWARG position, shining gold
+                var elapsed = now - phaseStart;
+                var pulse = 0.6 + 0.3 * Math.sin(elapsed / 200);
+                for (var i = 0; i < dots.length; i++) {
+                    ctx.beginPath();
+                    ctx.arc(dots[i].x, dots[i].y, dots[i].r + 0.5, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255,215,0,' + pulse + ')';
+                    ctx.fill();
+                }
+                if (elapsed >= HOLD_DURATION) {
+                    // Save hold positions as new origins, random targets to break away
+                    for (var i = 0; i < dots.length; i++) {
+                        dots[i].ox = dots[i].x;
+                        dots[i].oy = dots[i].y;
+                        dots[i].tx = Math.random() * canvas.width;
+                        dots[i].ty = Math.random() * canvas.height;
+                    }
+                    phase = 'breaking';
+                    phaseStart = now;
+                }
+
+            } else if (phase === 'breaking') {
+                var t = Math.min((now - phaseStart) / BREAK_DURATION, 1);
+                var et = easeInOut(t);
+                for (var i = 0; i < dots.length; i++) {
+                    dots[i].x = dots[i].ox + (dots[i].tx - dots[i].ox) * et;
+                    dots[i].y = dots[i].oy + (dots[i].ty - dots[i].oy) * et;
+                    var op = dots[i].opacity * (1 - et * 0.5) + et * dots[i].opacity;
+                    ctx.beginPath();
+                    ctx.arc(dots[i].x, dots[i].y, dots[i].r, 0, Math.PI * 2);
+                    ctx.fillStyle = dots[i].color + Math.min(op + 0.1, 0.7) + ')';
+                    ctx.fill();
+                }
+                if (t >= 1) {
+                    // Restore normal float behaviour
+                    for (var i = 0; i < dots.length; i++) {
+                        dots[i].speed = Math.random() * 0.8 + 0.25;
+                    }
+                    phase = 'float';
+                    lastSwarg = now;
+                }
+
+            } else {
+                // Normal float
+                for (var i = 0; i < dots.length; i++) {
+                    var d = dots[i];
+                    ctx.beginPath();
+                    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                    ctx.fillStyle = d.color + d.opacity + ')';
+                    ctx.fill();
+                    d.y -= d.speed;
+                    if (d.y + d.r < 0) {
+                        d.y = canvas.height + d.r;
+                        d.x = Math.random() * canvas.width;
+                    }
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+    })();
+    </script>
+
+    <!-- ✅ FIX 2: Sound Effects using Web Audio API (no external URLs needed) -->
+    <script>
+    (function() {
+        var AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        var actx = null;
+
+        function getCtx() {
+            if (!actx) actx = new AudioCtx();
+            return actx;
+        }
+
+        // Typing click sound - short tick
+        function playTyping() {
+            try {
+                var ctx = getCtx();
+                var osc = ctx.createOscillator();
+                var gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.04);
+                gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.05);
+            } catch(e) {}
+        }
+
+        // Encrypt sound - sci-fi rising beep
+        function playEncrypt() {
+            try {
+                var ctx = getCtx();
+                var t = ctx.currentTime;
+                // Rising sweep
+                var osc1 = ctx.createOscillator();
+                var osc2 = ctx.createOscillator();
+                var gain = ctx.createGain();
+                osc1.connect(gain); osc2.connect(gain);
+                gain.connect(ctx.destination);
+                osc1.type = 'sine';
+                osc2.type = 'triangle';
+                osc1.frequency.setValueAtTime(300, t);
+                osc1.frequency.exponentialRampToValueAtTime(1200, t + 0.3);
+                osc2.frequency.setValueAtTime(600, t);
+                osc2.frequency.exponentialRampToValueAtTime(2400, t + 0.3);
+                gain.gain.setValueAtTime(0.3, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+                osc1.start(t); osc1.stop(t + 0.5);
+                osc2.start(t); osc2.stop(t + 0.5);
+                // Second beep
+                var osc3 = ctx.createOscillator();
+                var g2 = ctx.createGain();
+                osc3.connect(g2); g2.connect(ctx.destination);
+                osc3.type = 'sine';
+                osc3.frequency.setValueAtTime(1800, t + 0.35);
+                g2.gain.setValueAtTime(0.2, t + 0.35);
+                g2.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+                osc3.start(t + 0.35); osc3.stop(t + 0.7);
+            } catch(e) {}
+        }
+
+        // Decrypt sound - unlock chime descending
+        function playDecrypt() {
+            try {
+                var ctx = getCtx();
+                var t = ctx.currentTime;
+                var freqs = [1200, 900, 600, 400];
+                for (var i = 0; i < freqs.length; i++) {
+                    (function(freq, delay) {
+                        var osc = ctx.createOscillator();
+                        var gain = ctx.createGain();
+                        osc.connect(gain); gain.connect(ctx.destination);
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, t + delay);
+                        gain.gain.setValueAtTime(0.25, t + delay);
+                        gain.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.25);
+                        osc.start(t + delay);
+                        osc.stop(t + delay + 0.25);
+                    })(freqs[i], i * 0.12);
+                }
+            } catch(e) {}
+        }
+
+        // Throttle typing sound
+        var lastType = 0;
+        document.querySelectorAll('.textarea, .input').forEach(function(el) {
+            el.addEventListener('keydown', function() {
+                var now = Date.now();
+                if (now - lastType > 80) {
+                    lastType = now;
+                    playTyping();
+                }
+            });
+        });
+
+        // Button sounds
+        document.addEventListener('click', function(e) {
+            var btn = e.target.closest('button');
+            if (!btn) return;
+            if (btn.id === 'encryptBtn') {
+                playEncrypt();
+            } else if (btn.id === 'decryptBtn') {
+                playDecrypt();
+            } else if (btn.classList.contains('button') || btn.classList.contains('tab') || btn.classList.contains('toggle-password') || btn.classList.contains('copy-button')) {
+                playTyping();
+            }
+        });
+
+        // Expose for script.js in case it calls them
+        window.swargSounds = { playEncrypt: playEncrypt, playDecrypt: playDecrypt, playTyping: playTyping };
+    })();
+    </script>
+
+    <!-- ✅ FIX 3: Scan animation trigger - show on encrypt/decrypt button click -->
+    <script>
+    (function() {
+        function showScan(duration) {
+            var overlay = document.getElementById('loadingOverlay');
+            if (!overlay) return;
+            overlay.classList.add('show');
+            setTimeout(function() {
+                overlay.classList.remove('show');
+            }, duration || 2000);
+        }
+
+        // Intercept encrypt & decrypt buttons BEFORE script.js runs
+        document.addEventListener('click', function(e) {
+            var btn = e.target.closest('button');
+            if (!btn) return;
+            if (btn.id === 'encryptBtn' || btn.id === 'decryptBtn') {
+                var encText = document.getElementById('encryptText');
+                var decText = document.getElementById('decryptText');
+                var encPass = document.getElementById('encryptPassword');
+                var decPass = document.getElementById('decryptPassword');
+                // Only show scan if there is input
+                if (btn.id === 'encryptBtn' && encText && encText.value.trim() && encPass && encPass.value) {
+                    showScan(2000);
+                }
+                if (btn.id === 'decryptBtn' && decText && decText.value.trim() && decPass && decPass.value) {
+                    showScan(2000);
+                }
+            }
+        }, true); // capture phase so it fires before script.js handlers
+    })();
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
