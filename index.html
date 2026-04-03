@@ -128,13 +128,15 @@
         }
         
         .developer-name {
-            font-weight: 600;
-            color: var(--light);
-            background: linear-gradient(to right, var(--light), var(--gray));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+    font-weight: 800;
+    background: linear-gradient(90deg, #ffd700, #fff5b1, #ffd700);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: goldShine 3s linear infinite;
+}
+@keyframes goldShine { to { background-position: 200% center; } }
+
         
         .verified {
             color: var(--primary);
