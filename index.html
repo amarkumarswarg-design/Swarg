@@ -128,22 +128,23 @@
         }
         
         .developer-name {
+    font.developer-name {
     font-weight: 800 !important;
-    font-size: 1.4rem !important;
-    /* हाई-कॉन्ट्रास्ट गोल्ड ग्रेडिएंट */
-    background: linear-gradient(90deg, #b8860b 0%, #f5da81 25%, #ffffff 50%, #f5da81 75%, #b8860b 100%) !important;
+    background: linear-gradient(90deg, #ffd700 0%, #fff5b1 50%, #ffd700 100%) !important;
     background-size: 200% auto !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
     display: inline-block !important;
-    animation: goldFlash 2s linear infinite !important;
-    text-shadow: 0 0 15px rgba(184, 134, 11, 0.3);
+    /* एनीमेशन का नाम चेक करें: shineGolden */
+    animation: shineGolden 2s linear infinite !important;
 }
 
-@keyframes goldFlash {
+/* यह एनीमेशन की चाबी है, इसे डालना न भूलें */
+@keyframes shineGolden {
     0% { background-position: -200% center; }
     100% { background-position: 200% center; }
 }
+
 
 
         
@@ -637,22 +638,21 @@
     .dots {
     position: fixed !important;
     top: 0; left: 0;
-    width: 100%; height: 100%;
-    /* डॉट्स थोड़े बड़े और साफ़ कर दिए हैं */
-    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 1.5px, transparent 1.5px) !important;
-    background-size: 80px 80px !important;
-    z-index: 0 !important; /* ग्रिड के ऊपर लेकिन कार्ड के नीचे */
-    pointer-events: none;
-    animation: floatUp 30s linear infinite !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 1px, transparent 1px) !important;
+    background-size: 50px 50px !important;
+    z-index: 1 !important; /* इसे 1 कर दिया ताकि यह बैकग्राउंड ग्रिड के ऊपर दिखे */
+    pointer-events: none !important;
+    animation: floatUpDots 40s linear infinite !important;
 }
 
-@keyframes floatUp {
+@keyframes floatUpDots {
     from { transform: translateY(0); }
     to { transform: translateY(-1000px); }
 }
 
-        
-    </style>
+         </style>
 </head>
 <body>
     <!-- Background Animation -->
