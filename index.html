@@ -128,15 +128,19 @@
         }
         
         .developer-name {
-    font-weight: 800;
-    background: linear-gradient(90deg, #ffd700 0%, #fff5b1 50%, #ffd700 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
-    animation: shineGolden 2.5s linear infinite;
+    font-weight: 800 !important;
+    font-size: 1.4rem !important;
+    /* हाई-कॉन्ट्रास्ट गोल्ड ग्रेडिएंट */
+    background: linear-gradient(90deg, #b8860b 0%, #f5da81 25%, #ffffff 50%, #f5da81 75%, #b8860b 100%) !important;
+    background-size: 200% auto !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    display: inline-block !important;
+    animation: goldFlash 2s linear infinite !important;
+    text-shadow: 0 0 15px rgba(184, 134, 11, 0.3);
 }
-@keyframes shineGolden {
+
+@keyframes goldFlash {
     0% { background-position: -200% center; }
     100% { background-position: 200% center; }
 }
@@ -156,33 +160,24 @@
         }
         
         .tabs {
-    display: flex;
-    background: rgba(26, 26, 36, 0.8);
+    display: flex !important;
+    flex-direction: row !important; /* अगल-बगल लाने के लिए */
+    background: rgba(18, 18, 24, 0.9) !important;
     backdrop-filter: blur(10px);
-    border-radius: 50px; /* एकदम गोल पिल जैसा */
-    padding: 5px;
-    border: 1px solid rgba(255,255,255,0.1);
-    gap: 5px;
+    border-radius: 50px !important;
+    padding: 6px !important;
+    border: 1px solid rgba(14, 165, 233, 0.3) !important;
+    max-width: 400px;
+    margin: 20px auto !important;
 }
 
-        
-        .tab {
-            flex: 1;
-            padding: 18px 24px;
-            text-align: center;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--gray);
-            background: transparent;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+.tab {
+    flex: 1 !important;
+    padding: 12px 20px !important;
+    border-radius: 40px !important;
+    font-size: 0.9rem !important;
+}
+
         
         .tab:hover {
             color: var(--light);
@@ -640,23 +635,22 @@
         }
 
     .dots {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* यह लाइन छोटे-छोटे सफेद डॉट्स बनाती है */
-    background-image: radial-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px);
-    background-size: 40px 40px; /* डॉट्स के बीच की दूरी */
-    z-index: -1; /* यह बैकग्राउंड में रहेगा, बटनों के ऊपर नहीं आएगा */
-    animation: moveDots 30s linear infinite;
+    position: fixed !important;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    /* डॉट्स थोड़े बड़े और साफ़ कर दिए हैं */
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 1.5px, transparent 1.5px) !important;
+    background-size: 80px 80px !important;
+    z-index: 0 !important; /* ग्रिड के ऊपर लेकिन कार्ड के नीचे */
+    pointer-events: none;
+    animation: floatUp 30s linear infinite !important;
 }
 
-/* डॉट्स को धीरे-धीरे ऊपर ले जाने वाला एनीमेशन */
-@keyframes moveDots {
+@keyframes floatUp {
     from { transform: translateY(0); }
     to { transform: translateY(-1000px); }
 }
+
         
     </style>
 </head>
