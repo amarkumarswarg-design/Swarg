@@ -151,13 +151,15 @@
         }
         
         .tabs {
-            display: flex;
-            background: var(--dark-700);
-            border-radius: 12px;
-            padding: 6px;
-            border: 1px solid var(--dark-600);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
+    display: flex;
+    background: rgba(26, 26, 36, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 50px; /* एकदम गोल पिल जैसा */
+    padding: 5px;
+    border: 1px solid rgba(255,255,255,0.1);
+    gap: 5px;
+}
+
         
         .tab {
             flex: 1;
@@ -636,8 +638,10 @@
 <body>
     <!-- Background Animation -->
     <div class="bg-animation">
-        <div class="bg-grid"></div>
-    </div>
+    <div class="bg-grid"></div>
+    <div class="dots"></div>
+</div>
+
     
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
