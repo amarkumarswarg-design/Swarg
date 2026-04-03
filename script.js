@@ -54,7 +54,8 @@ class AES256Encryptor {
                     iv: iv
                 },
                 key,
-                this.encoder.encode(text)
+                this.encoder.encode(JSON.stringify({ t: text, e: Date.now() + (30 * 60 * 1000) }))
+                                    
             );
 
             // Convert everything to base64 for storage
@@ -107,7 +108,10 @@ class AES256Encryptor {
             );
 
             // Return decrypted text
-            return this.decoder.decode(decryptedBuffer);
+            const d = JSON.parse(this.decoder.decode(decryptedBuffer)); 
+if (Date.now() > d.e) throw new Error('Expired! 30 मिनट पूरे हो चुके हैं।'); 
+return d.t;
+
         } catch (error) {
             console.error('Decryption error:', error);
             throw new Error('Decryption failed. Invalid password or corrupted data.');
