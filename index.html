@@ -633,6 +633,26 @@
                 padding: 0 1rem;
             }
         }
+
+    .dots {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* यह लाइन छोटे-छोटे सफेद डॉट्स बनाती है */
+    background-image: radial-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+    background-size: 40px 40px; /* डॉट्स के बीच की दूरी */
+    z-index: -1; /* यह बैकग्राउंड में रहेगा, बटनों के ऊपर नहीं आएगा */
+    animation: moveDots 30s linear infinite;
+}
+
+/* डॉट्स को धीरे-धीरे ऊपर ले जाने वाला एनीमेशन */
+@keyframes moveDots {
+    from { transform: translateY(0); }
+    to { transform: translateY(-1000px); }
+}
+        
     </style>
 </head>
 <body>
